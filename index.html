@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vikas Tiwari Resume</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body onload="showGreeting()">
+    <!-- Greeting Message -->
+    <div id="greeting" class="greeting">
+        <h2>Welcome to My Profile!</h2>
+        <p>Explore my journey by clicking the sections below.</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Left Section (Dark Blue) -->
+        <div class="left-section">
+            <img src="profile-image.jpg" alt="Vikas Tiwari" class="profile-image">
+            <h1>VIKAS TIWARI</h1>
+            <div class="section">
+                <h2>CONTACT</h2>
+                <p><i class="fas fa-phone"></i> 7974123411</p>
+                <p><i class="fas fa-envelope"></i> vikastiwari0693@gmail.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> Jabalpur, Madhya Pradesh 482003</p>
+                <p><i class="fab fa-linkedin"></i> <a href="https://www.linkedin.com/in/vikas-tiwari-sales" target="_blank">linkedin.com/in/vikas-tiwari-sales</a></p>
+            </div>
+            <div class="section">
+                <h2>CORE COMPETENCIES</h2>
+                <ul>
+                    <li>Digital Marketing | SEO | SEM</li>
+                    <li>Sales Planning | Market Analysis</li>
+                    <li>Team Leadership | Sales Coordination</li>
+                    <li>Consumer Behavior Research</li>
+                    <li>Field Sales | Client Handling</li>
+                    <li>Negotiation | Sales Coordination</li>
+                    <li>Financial Analysis | Budgeting</li>
+                    <li>GST & Taxation | Cash Flow Management</li>
+                    <li>Good Communication | Problem-Solving</li>
+                    <li>Quick Learning</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Right Section (White) -->
+        <div class="right-section">
+            <div class="section">
+                <h2><i class="fas fa-briefcase"></i> PROFESSIONAL SUMMARY</h2>
+                <button onclick="toggleSection('summary-content')">Click Here to Know More About Vikas</button>
+                <div id="summary-content" class="content">
+                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-briefcase"></i> PROFESSIONAL EXPERIENCE</h2>
+                <button onclick="toggleSection('experience-content')">Click Here for More Details</button>
+                <div id="experience-content" class="content">
+                    <h3>Sales Executive (Financial Consultant)</h3>
+                    <p>HDFC Life Insurance Company Ltd. | June 2024 – April 2025</p>
+                    <ul>
+                        <li>Found new clients and built relationships through direct sales and client meetings.</li>
+                        <li>Met sales targets with good negotiation and client interaction skills.</li>
+                        <li>Created a client list, ensuring business growth through regular follow-ups.</li>
+                    </ul>
+                    <h3>Customer Service Expert (Customer Service Associate)</h3>
+                    <p>Magnum Group (MPPKVCL Process) | Sep 2020 – Jun 2024 (3 years, 9 months)</p>
+                    <ul>
+                        <li>Handled customer queries and resolved issues, achieving a 100% quality score in March 2023 and August 2023.</li>
+                        <li>Used CRM software to manage complaints and track solutions.</li>
+                        <li>Received Certificates of Excellence for good performance.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-graduation-cap"></i> EDUCATION HISTORY</h2>
+                <button onclick="toggleSection('education-content')">Click Here for Education Details</button>
+                <div id="education-content" class="content">
+                    <h3>Master of Business Administration (M.B.A.) – Marketing and Finance</h3>
+                    <p>Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Katni (M.P.) | 2024</p>
+                    <p>CGPA: 7.49 | Equivalent Percentage: 74.9% | First Division</p>
+                    <p>Completed projects on digital marketing strategies (SEO, SEM) and financial analysis, including budgeting and GST & taxation.</p>
+                    <h3>Bachelor of Computer Applications (B.C.A.)</h3>
+                    <p>Makhanlal Chaturvedi National University of Journalism and Communication, Bhopal | 2021</p>
+                    <p>Percentage: 59.70% | Second Division</p>
+                    <p>Gained foundational knowledge in computer applications through projects on database management and software development.</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-certificate"></i> CERTIFICATIONS</h2>
+                <button onclick="toggleSection('certifications-content')">Click Here for Certifications</button>
+                <div id="certifications-content" class="content">
+                    <p>Certification in MS Office (MS Excel, MS Word, MS PowerPoint), Advanced Photoshop, and Tally ERP</p>
+                    <p>British Heights Education, Jabalpur | 2012</p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-tools"></i> TOOLS & TECHNOLOGIES</h2>
+                <button onclick="toggleSection('tools-content')">Click Here for Tools & Technologies</button>
+                <div id="tools-content" class="content">
+                    <ul>
+                        <li>MS Office (MS Excel, MS Word, MS PowerPoint)</li>
+                        <li>Tally ERP</li>
+                        <li>Advanced Photoshop</li>
+                        <li>CRM Software</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2><i class="fas fa-language"></i> LANGUAGES</h2>
+                <button onclick="toggleSection('languages-content')">Click Here for Languages</button>
+                <div id="languages-content" class="content">
+                    <ul>
+                        <li>Hindi (Native)</li>
+                        <li>English (Basic Proficiency)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
