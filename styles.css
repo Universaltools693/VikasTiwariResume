@@ -25,10 +25,11 @@ body {
 }
 
 .profile-image {
-    width: 200px;
-    height: 200px;
-    object-fit: contain;
-    border-radius: 50%;
+    width: 240px; /* साइज को और बड़ा किया, ताकि इमेज सही से फिट हो */
+    height: 240px; /* साइज को और बड़ा किया */
+    object-fit: cover; /* सर्कल को पूरी तरह से भरने के लिए */
+    object-position: center 10%; /* फोकस ऊपरी हिस्से (सिर, चेहरा) पर */
+    border-radius: 50%; /* सर्कल फ्रेम */
     margin: 20px auto;
     display: block;
     border: 3px solid white;
@@ -159,8 +160,9 @@ button:hover {
     }
 
     .profile-image {
-        width: 150px;
-        height: 150px;
+        width: 180px; /* मोबाइल में साइज एडजस्ट */
+        height: 180px;
+        object-position: center 10%; /* फोकस वही */
     }
 
     .left-section h1 {
@@ -182,8 +184,9 @@ button:hover {
 
 @media (max-width: 480px) {
     .profile-image {
-        width: 120px;
-        height: 120px;
+        width: 150px; /* छोटे मोबाइल में साइज एडजस्ट */
+        height: 150px;
+        object-position: center 10%; /* फोकस वही */
     }
 
     .left-section h1 {
