@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left Section (Dark Blue) */
+.left-section {
+    width: 30%;
+    background-color: #003087; /* Dark Blue from Template */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover; /* Ensures image fits without cropping */
+    border-radius: 50%;
+    margin: 20px auto;
+    display: block;
+}
+
+.left-section h1 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.left-section .section {
+    margin-bottom: 20px;
+}
+
+.left-section h2 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    border-bottom: 1px solid white;
+    padding-bottom: 5px;
+}
+
+.left-section p, .left-section ul {
+    font-size: 0.9em;
+    line-height: 1.5;
+}
+
+.left-section ul {
+    list-style: none;
+    text-align: left;
+    margin-left: 20px;
+}
+
+.left-section a {
+    color: white;
+    text-decoration: none;
+}
+
+.left-section a:hover {
+    text-decoration: underline;
+}
+
+/* Right Section (White) */
+.right-section {
+    width: 70%;
+    background-color: white;
+    padding: 20px;
+}
+
+.right-section .section {
+    margin-bottom: 20px;
+}
+
+.right-section h2 {
+    font-size: 1.5em;
+    color: #003087;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #003087;
+    padding-bottom: 5px;
+}
+
+.right-section h3 {
+    font-size: 1.2em;
+    margin-top: 10px;
+}
+
+.right-section p, .right-section ul {
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.right-section ul {
+    list-style: disc;
+    margin-left: 20px;
+}
+
+/* Dynamic Section Toggle */
+button {
+    background-color: #003087;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #0056d2;
+}
+
+.content {
+    display: none;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+/* Greeting Message */
+.greeting {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 1000;
+}
+
+.greeting h2 {
+    margin-bottom: 10px;
+}
+
+.greeting p {
+    font-size: 1em;
+}
