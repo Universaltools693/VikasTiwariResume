@@ -25,7 +25,18 @@ function displayGreeting() {
         greeting = "Good Night";
     }
 
-    alert(`${greeting}, Welcome to Vikas Tiwari's Resume!`);
+    // Set the greeting message in the custom popup
+    const greetingMessage = document.getElementById("greeting-message");
+    greetingMessage.textContent = greeting;
+
+    // Show the popup with animation
+    const greetingPopup = document.getElementById("greeting-popup");
+    greetingPopup.classList.add("show");
+
+    // Hide the popup after 3 seconds
+    setTimeout(() => {
+        greetingPopup.classList.remove("show");
+    }, 3000);
 }
 
 window.onload = displayGreeting;
