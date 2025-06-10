@@ -6,11 +6,13 @@ function showGreeting() {
 }
 
 // Toggle Section Content
-function toggleSection(sectionId) {
+function toggleSection(sectionId, buttonId) {
     const content = document.getElementById(sectionId);
+    const button = document.getElementById(buttonId);
     if (content.style.display === 'block') {
         content.style.display = 'none';
     } else {
         content.style.display = 'block';
+        button.style.display = 'none'; // Hide the button when section is expanded
     }
 }
