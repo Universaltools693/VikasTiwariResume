@@ -116,6 +116,52 @@ body {
     margin-bottom: 20px;
 }
 
+/* Custom Greeting Popup Styling */
+.greeting-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(135deg, #003087 0%, #0056b3 100%); /* Gradient background matching your theme */
+    color: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Modern shadow for depth */
+    text-align: center;
+    z-index: 1000;
+    opacity: 0; /* Initially hidden for animation */
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth fade-in and scale animation */
+    border: 2px solid #fff; /* White border for a professional look */
+    max-width: 90%; /* Ensure it fits on smaller screens */
+    width: 400px; /* Fixed width for consistency */
+}
+
+.greeting-popup.show {
+    opacity: 1; /* Fade in when shown */
+    transform: translate(-50%, -50%) scale(1); /* Slight scale animation */
+}
+
+.greeting-popup h2 {
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    font-weight: bold;
+    letter-spacing: 1px; /* Professional spacing */
+    text-transform: uppercase; /* Modern and official look */
+}
+
+.greeting-popup p {
+    font-size: 1.2em;
+    font-style: italic; /* Subtle elegance */
+    opacity: 0.9; /* Slightly lighter for contrast */
+}
+
+/* Hide the popup in print */
+@media print {
+    .greeting-popup {
+        display: none; /* Ensure the popup doesn't appear in print/PDF */
+    }
+}
+
 /* Media Query for Mobile View */
 @media (max-width: 768px) {
     .container {
@@ -135,6 +181,19 @@ body {
         height: 180px;
         object-position: center 10%;
     }
+
+    .greeting-popup {
+        width: 80%; /* Adjust width for mobile */
+        padding: 20px; /* Reduce padding for smaller screens */
+    }
+
+    .greeting-popup h2 {
+        font-size: 1.5em; /* Adjust font size for mobile */
+    }
+
+    .greeting-popup p {
+        font-size: 1em; /* Adjust font size for mobile */
+    }
 }
 
 @media (max-width: 480px) {
@@ -142,6 +201,19 @@ body {
         width: 150px;
         height: 150px;
         object-position: center 10%;
+    }
+
+    .greeting-popup {
+        width: 90%; /* Further adjust for smaller screens */
+        padding: 15px;
+    }
+
+    .greeting-popup h2 {
+        font-size: 1.3em;
+    }
+
+    .greeting-popup p {
+        font-size: 0.9em;
     }
 }
 
@@ -174,11 +246,12 @@ body {
     }
 
     .profile-image {
-        width: 180pt; /* Adjusted to match the larger size (240px = 180pt at 96 DPI) */
-        height: 180pt;
+        width: 150pt;
+        height: 150pt;
         border: 3pt solid white;
         object-fit: cover;
         object-position: center 10%;
+        margin: 15pt auto;
     }
 
     .left-section h1 {
