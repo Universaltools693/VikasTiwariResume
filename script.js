@@ -4,14 +4,13 @@ function toggleSection(contentId, buttonId) {
 
     if (content.style.display === "none" || content.style.display === "") {
         content.style.display = "block";
-        button.style.display = "none"; // Hide the button after expanding
+        button.style.display = "none";
     } else {
         content.style.display = "none";
         button.style.display = "block";
     }
 }
 
-// Display greeting message based on time
 function displayGreeting() {
     const hour = new Date().getHours();
     let greeting;
@@ -29,5 +28,4 @@ function displayGreeting() {
     alert(`${greeting}, Welcome to Vikas Tiwari's Resume!`);
 }
 
-// Call the greeting function when the page loads
 window.onload = displayGreeting;
