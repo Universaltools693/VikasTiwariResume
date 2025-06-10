@@ -6,16 +6,16 @@
 }
 
 body {
-    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
 }
 
 .container {
     display: flex;
     min-height: 100vh;
-    flex-direction: row;
+    width: 100%;
 }
 
-/* Left Section (Dark Blue) */
 .left-section {
     width: 30%;
     background-color: #003087;
@@ -24,15 +24,12 @@ body {
     text-align: center;
 }
 
-.profile-image {
-    width: 240px; /* साइज को और बड़ा किया, ताकि इमेज सही से फिट हो */
-    height: 240px; /* साइज को और बड़ा किया */
-    object-fit: cover; /* सर्कल को पूरी तरह से भरने के लिए */
-    object-position: center 10%; /* फोकस ऊपरी हिस्से (सिर, चेहरा) पर */
-    border-radius: 50%; /* सर्कल फ्रेम */
-    margin: 20px auto;
-    display: block;
-    border: 3px solid white;
+.left-section img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    border: 5px solid white;
 }
 
 .left-section h1 {
@@ -40,26 +37,17 @@ body {
     margin-bottom: 20px;
 }
 
-.left-section .section {
-    margin-bottom: 20px;
-}
-
 .left-section h2 {
-    font-size: 1.2em;
-    margin-bottom: 10px;
-    border-bottom: 1px solid white;
+    font-size: 1.5em;
+    margin: 20px 0;
+    border-bottom: 2px solid white;
     padding-bottom: 5px;
 }
 
-.left-section p, .left-section ul {
-    font-size: 0.9em;
+.left-section p {
+    font-size: 1em;
     line-height: 1.5;
-}
-
-.left-section ul {
-    list-style: none;
-    text-align: left;
-    margin-left: 20px;
+    margin-bottom: 10px;
 }
 
 .left-section a {
@@ -71,53 +59,50 @@ body {
     text-decoration: underline;
 }
 
-/* Right Section (White) */
 .right-section {
     width: 70%;
-    background-color: white;
     padding: 20px;
-}
-
-.right-section .section {
-    margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .right-section h2 {
     font-size: 1.5em;
     color: #003087;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #003087;
-    padding-bottom: 5px;
+    margin: 20px 0;
+}
+
+.right-section h2 i {
+    margin-right: 10px;
 }
 
 .right-section h3 {
     font-size: 1.2em;
-    margin-top: 10px;
+    margin: 10px 0;
 }
 
 .right-section p, .right-section ul {
     font-size: 1em;
     line-height: 1.5;
     margin-bottom: 10px;
+    color: black; /* Explicitly set to black for body text */
 }
 
 .right-section ul {
-    list-style: disc;
-    margin-left: 20px;
+    padding-left: 20px;
 }
 
-/* Dynamic Section Toggle */
-button {
+.right-section button {
     background-color: #003087;
     color: white;
     border: none;
     padding: 10px 20px;
+    margin: 10px 0;
     cursor: pointer;
-    margin-bottom: 10px;
+    border-radius: 5px;
 }
 
-button:hover {
-    background-color: #0056d2;
+.right-section button:hover {
+    background-color: #0056b3;
 }
 
 .content {
@@ -125,31 +110,10 @@ button:hover {
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 5px;
+    margin-bottom: 20px;
 }
 
-/* Greeting Message */
-.greeting {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    z-index: 1000;
-}
-
-.greeting h2 {
-    margin-bottom: 10px;
-}
-
-.greeting p {
-    font-size: 1em;
-}
-
-/* Responsive Design */
+/* Media Query for Mobile View */
 @media (max-width: 768px) {
     .container {
         flex-direction: column;
@@ -159,45 +123,107 @@ button:hover {
         width: 100%;
     }
 
-    .profile-image {
-        width: 180px; /* मोबाइल में साइज एडजस्ट */
-        height: 180px;
-        object-position: center 10%; /* फोकस वही */
-    }
-
-    .left-section h1 {
-        font-size: 1.5em;
-    }
-
-    .left-section h2, .right-section h2 {
-        font-size: 1.2em;
-    }
-
-    .left-section p, .left-section ul, .right-section p, .right-section ul {
-        font-size: 0.9em;
-    }
-
-    button {
-        width: 100%;
+    .left-section {
+        padding-bottom: 40px;
     }
 }
 
-@media (max-width: 480px) {
-    .profile-image {
-        width: 150px; /* छोटे मोबाइल में साइज एडजस्ट */
-        height: 150px;
-        object-position: center 10%; /* फोकस वही */
+/* Media Query for Print (A4 Size Compatibility and Background Fix) */
+@media print {
+    @page {
+        size: A4;
+        margin: 1in; /* 1 inch margins on all sides for A4 */
+    }
+
+    body {
+        margin: 0;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: row; /* Ensure left-right layout for print */
+        width: 794px; /* A4 width at 96 DPI */
+        min-height: 1123px; /* A4 height at 96 DPI */
+        margin: 0;
+    }
+
+    .left-section {
+        width: 30%; /* 238px at 794px A4 width */
+        background-color: #003087 !important; /* Force background color for print */
+        -webkit-print-color-adjust: exact;
+        color: white;
+        padding: 20pt; /* Use pt for print */
+        font-size: 12pt; /* Standard font size for print */
+    }
+
+    .left-section img {
+        width: 120pt;
+        height: 120pt;
+        border: 5pt solid white;
     }
 
     .left-section h1 {
-        font-size: 1.2em;
+        font-size: 18pt;
+        margin-bottom: 15pt;
     }
 
-    .left-section h2, .right-section h2 {
-        font-size: 1em;
+    .left-section h2 {
+        font-size: 14pt;
+        margin: 15pt 0;
+        padding-bottom: 5pt;
     }
 
-    .left-section p, .left-section ul, .right-section p, .right-section ul {
-        font-size: 0.8em;
+    .left-section p {
+        font-size: 10pt;
+        line-height: 1.5;
+        margin-bottom: 10pt;
+    }
+
+    .right-section {
+        width: 70%; /* 556px at 794px A4 width */
+        padding: 20pt;
+        background-color: #fff;
+    }
+
+    .right-section h2 {
+        font-size: 14pt;
+        color: #003087;
+        margin: 15pt 0;
+    }
+
+    .right-section h3 {
+        font-size: 12pt;
+        margin: 10pt 0;
+    }
+
+    .right-section p, .right-section ul {
+        font-size: 10pt; /* Standard for body text in print */
+        line-height: 1.5;
+        margin-bottom: 10pt;
+        color: black !important; /* Ensure body text is black */
+    }
+
+    .right-section ul {
+        padding-left: 15pt;
+    }
+
+    .right-section button {
+        display: none; /* Hide buttons in print */
+    }
+
+    .content {
+        display: block !important; /* Ensure all content is visible in print */
+        background-color: #f9f9f9;
+        padding: 10pt;
+        margin-bottom: 15pt;
+    }
+
+    /* Page break handling for future content updates */
+    .right-section > h2 {
+        page-break-before: avoid; /* Avoid breaking section headings */
+    }
+
+    .content {
+        page-break-inside: auto; /* Allow content to break naturally */
     }
 }
