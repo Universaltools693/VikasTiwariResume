@@ -24,12 +24,15 @@ body {
     text-align: center;
 }
 
-.left-section img {
-    width: 150px;
-    height: 150px;
+.profile-image {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+    object-position: center 10%;
     border-radius: 50%;
-    margin-bottom: 20px;
-    border: 5px solid white;
+    margin: 20px auto;
+    display: block;
+    border: 3px solid white;
 }
 
 .left-section h1 {
@@ -84,7 +87,7 @@ body {
     font-size: 1em;
     line-height: 1.5;
     margin-bottom: 10px;
-    color: black; /* Explicitly set to black for body text */
+    color: black;
 }
 
 .right-section ul {
@@ -126,13 +129,27 @@ body {
     .left-section {
         padding-bottom: 40px;
     }
+
+    .profile-image {
+        width: 180px;
+        height: 180px;
+        object-position: center 10%;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        object-position: center 10%;
+    }
 }
 
 /* Media Query for Print (A4 Size Compatibility and Background Fix) */
 @media print {
     @page {
         size: A4;
-        margin: 1in; /* 1 inch margins on all sides for A4 */
+        margin: 1in;
     }
 
     body {
@@ -141,25 +158,27 @@ body {
 
     .container {
         display: flex;
-        flex-direction: row; /* Ensure left-right layout for print */
-        width: 794px; /* A4 width at 96 DPI */
-        min-height: 1123px; /* A4 height at 96 DPI */
+        flex-direction: row;
+        width: 794px;
+        min-height: 1123px;
         margin: 0;
     }
 
     .left-section {
-        width: 30%; /* 238px at 794px A4 width */
-        background-color: #003087 !important; /* Force background color for print */
+        width: 30%;
+        background-color: #003087 !important;
         -webkit-print-color-adjust: exact;
         color: white;
-        padding: 20pt; /* Use pt for print */
-        font-size: 12pt; /* Standard font size for print */
+        padding: 20pt;
+        font-size: 12pt;
     }
 
-    .left-section img {
-        width: 120pt;
-        height: 120pt;
-        border: 5pt solid white;
+    .profile-image {
+        width: 180pt; /* Adjusted to match the larger size (240px = 180pt at 96 DPI) */
+        height: 180pt;
+        border: 3pt solid white;
+        object-fit: cover;
+        object-position: center 10%;
     }
 
     .left-section h1 {
@@ -180,7 +199,7 @@ body {
     }
 
     .right-section {
-        width: 70%; /* 556px at 794px A4 width */
+        width: 70%;
         padding: 20pt;
         background-color: #fff;
     }
@@ -197,10 +216,10 @@ body {
     }
 
     .right-section p, .right-section ul {
-        font-size: 10pt; /* Standard for body text in print */
+        font-size: 10pt;
         line-height: 1.5;
         margin-bottom: 10pt;
-        color: black !important; /* Ensure body text is black */
+        color: black !important;
     }
 
     .right-section ul {
@@ -208,22 +227,21 @@ body {
     }
 
     .right-section button {
-        display: none; /* Hide buttons in print */
+        display: none;
     }
 
     .content {
-        display: block !important; /* Ensure all content is visible in print */
+        display: block !important;
         background-color: #f9f9f9;
         padding: 10pt;
         margin-bottom: 15pt;
     }
 
-    /* Page break handling for future content updates */
     .right-section > h2 {
-        page-break-before: avoid; /* Avoid breaking section headings */
+        page-break-before: avoid;
     }
 
     .content {
-        page-break-inside: auto; /* Allow content to break naturally */
+        page-break-inside: auto;
     }
 }
