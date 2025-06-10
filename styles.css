@@ -47,10 +47,26 @@ body {
     padding-bottom: 5px;
 }
 
+.left-section h3 {
+    font-size: 1.2em;
+    margin: 15px 0;
+    color: white;
+    border-bottom: 1px solid white;
+    padding-bottom: 3px;
+}
+
 .left-section p {
     font-size: 1em;
     line-height: 1.5;
     margin-bottom: 10px;
+}
+
+.left-section p.tools-languages {
+    text-align: left;
+    padding-left: 20px;
+    font-size: 1em;
+    line-height: 1.5;
+    margin-bottom: 5px;
 }
 
 .left-section a {
@@ -122,43 +138,43 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, #003087 0%, #0056b3 100%); /* Gradient background matching your theme */
+    background: linear-gradient(135deg, #003087 0%, #0056b3 100%);
     color: white;
     padding: 30px;
     border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); /* Modern shadow for depth */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
     text-align: center;
     z-index: 1000;
-    opacity: 0; /* Initially hidden for animation */
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; /* Smooth fade-in and scale animation */
-    border: 2px solid #fff; /* White border for a professional look */
-    max-width: 90%; /* Ensure it fits on smaller screens */
-    width: 400px; /* Fixed width for consistency */
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+    border: 2px solid #fff;
+    max-width: 90%;
+    width: 400px;
 }
 
 .greeting-popup.show {
-    opacity: 1; /* Fade in when shown */
-    transform: translate(-50%, -50%) scale(1); /* Slight scale animation */
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
 }
 
 .greeting-popup h2 {
     font-size: 1.8em;
     margin-bottom: 10px;
     font-weight: bold;
-    letter-spacing: 1px; /* Professional spacing */
-    text-transform: uppercase; /* Modern and official look */
+    letter-spacing: 1px;
+    text-transform: uppercase;
 }
 
 .greeting-popup p {
     font-size: 1.2em;
-    font-style: italic; /* Subtle elegance */
-    opacity: 0.9; /* Slightly lighter for contrast */
+    font-style: italic;
+    opacity: 0.9;
 }
 
 /* Hide the popup in print */
 @media print {
     .greeting-popup {
-        display: none; /* Ensure the popup doesn't appear in print/PDF */
+        display: none;
     }
 }
 
@@ -183,16 +199,16 @@ body {
     }
 
     .greeting-popup {
-        width: 80%; /* Adjust width for mobile */
-        padding: 20px; /* Reduce padding for smaller screens */
+        width: 80%;
+        padding: 20px;
     }
 
     .greeting-popup h2 {
-        font-size: 1.5em; /* Adjust font size for mobile */
+        font-size: 1.5em;
     }
 
     .greeting-popup p {
-        font-size: 1em; /* Adjust font size for mobile */
+        font-size: 1em;
     }
 }
 
@@ -204,7 +220,7 @@ body {
     }
 
     .greeting-popup {
-        width: 90%; /* Further adjust for smaller screens */
+        width: 90%;
         padding: 15px;
     }
 
@@ -265,10 +281,24 @@ body {
         padding-bottom: 5pt;
     }
 
+    .left-section h3 {
+        font-size: 12pt;
+        margin: 10pt 0;
+        padding-bottom: 3pt;
+    }
+
     .left-section p {
         font-size: 10pt;
         line-height: 1.5;
         margin-bottom: 10pt;
+    }
+
+    .left-section p.tools-languages {
+        font-size: 10pt;
+        line-height: 1.5;
+        margin-bottom: 5pt;
+        padding-left: 15pt;
+        text-align: left;
     }
 
     .right-section {
