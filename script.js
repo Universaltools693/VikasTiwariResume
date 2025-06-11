@@ -14,29 +14,17 @@ document.addEventListener("DOMContentLoaded", function () {
         greeting = "Good Night";
     }
 
-    // Simulate fetching the user's email and profile name
-    let userName = null;
+    // Default name since we can't fetch the logged-in user's profile name in a static site
+    let userName = "Guest";
 
-    // Prompt for the email to identify the logged-in user (simulation)
-    const userEmail = prompt("Please enter your email to personalize the greeting:");
-    
-    // Instead of extracting the name from the email address, prompt for the profile name
-    if (userEmail) {
-        userName = prompt(`Please enter the name associated with ${userEmail} (as it appears in your email profile):`);
-    }
-
-    // If no profile name or email is provided, prompt for the name directly
-    if (!userName) {
-        userName = prompt("Please enter your name:");
-        if (!userName) {
-            userName = "Guest";
-        } else {
-            userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
-        }
-    } else {
-        // Capitalize the profile name
-        userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
-    }
+    // In a production environment, use OAuth (e.g., Google Sign-In) to fetch the user's profile name
+    // Example pseudocode for Google Sign-In (requires setup with Google Developer Console):
+    /*
+    gapi.auth2.getAuthInstance().signIn().then(function (googleUser) {
+        const profile = googleUser.getBasicProfile();
+        userName = profile.getName(); // e.g., "Rama Sharma"
+    });
+    */
 
     // Display the greeting and welcome message
     const greetingText = document.getElementById("greeting-text");
