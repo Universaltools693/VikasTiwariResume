@@ -80,7 +80,7 @@ body {
 
 .sidebar {
     width: 30%;
-    background-color: white; /* Changed to white as requested */
+    background-color: white;
     color: black;
     padding: 20px;
 }
@@ -95,7 +95,7 @@ body {
     height: 100px;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 3px solid #ccc; /* Adjusted border color since background is now white */
+    border: 3px solid #ccc;
 }
 
 .profile h1 {
@@ -137,15 +137,7 @@ ul {
 
 .core-competencies ul li, .soft-skills ul li, .tools ul li, .languages ul li {
     margin-bottom: 8px;
-    position: relative;
-    padding-left: 20px;
-}
-
-.core-competencies ul li:before, .soft-skills ul li:before, .tools ul li:before, .languages ul li:before {
-    content: "•";
-    color: black;
-    position: absolute;
-    left: 0;
+    padding-left: 20px; /* Indentation without bullet points */
 }
 
 .main-content {
