@@ -2,374 +2,114 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f4f4f4;
 }
 
 .container {
-    display: flex;
-    min-height: 100vh;
-    width: 100%;
-}
-
-.left-section {
-    width: 30%;
-    background-color: #003087;
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
-
-.profile-image {
-    width: 240px;
-    height: 240px;
-    object-fit: cover;
-    object-position: center 10%;
-    border-radius: 50%;
+    max-width: 800px;
     margin: 20px auto;
-    display: block;
-    border: 3px solid white;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-.left-section h1 {
-    font-size: 2em;
-    margin-bottom: 20px;
+header {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #007bff;
 }
 
-.left-section h2 {
-    font-size: 1.5em;
+.profile-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #007bff;
+}
+
+header p {
+    font-size: 1.1em;
+    color: #555;
+    margin: 10px 0;
+}
+
+.contact-info p {
+    margin: 5px 0;
+}
+
+.contact-info i {
+    margin-right: 10px;
+    color: #007bff;
+}
+
+.section {
     margin: 20px 0;
-    border-bottom: 2px solid white;
+}
+
+h2 {
+    font-size: 1.8em;
+    color: #007bff;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
 }
 
-.left-section h3 {
-    font-size: 1.2em;
-    margin: 15px 0;
-    color: white;
-    border-bottom: 1px solid white;
-    padding-bottom: 3px;
-}
-
-.left-section p {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 10px;
-}
-
-.left-section p.tools-languages {
-    text-align: left;
-    padding-left: 20px;
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 5px;
-}
-
-.left-section a {
-    color: white;
-    text-decoration: none;
-}
-
-.left-section a:hover {
-    text-decoration: underline;
-}
-
-.right-section {
-    width: 70%;
-    padding: 20px;
-    background-color: #fff;
-}
-
-.right-section h2 {
-    font-size: 1.5em;
-    color: #003087;
-    margin: 20px 0;
-}
-
-.right-section h2 i {
-    margin-right: 10px;
-}
-
-.right-section h3 {
-    font-size: 1.2em;
-    margin: 10px 0;
-}
-
-.right-section p, .right-section ul {
-    font-size: 1em;
-    line-height: 1.5;
-    margin-bottom: 10px;
-    color: black;
-}
-
-.right-section ul {
-    padding-left: 20px;
-}
-
-.right-section button {
-    background-color: #003087;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin: 10px 0;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.right-section button:hover {
-    background-color: #0056b3;
-}
-
-.content {
-    display: none;
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 5px;
+.job, .education {
     margin-bottom: 20px;
 }
 
-/* Custom Greeting Popup Styling */
-.greeting-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: linear-gradient(135deg, #003087 0%, #0056b3 100%);
-    color: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    border: 2px solid white;
-    max-width: 90%;
-    width: 400px;
+.job h3, .education h3 {
+    font-size: 1.4em;
+    color: #333;
 }
 
-.greeting-popup.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-}
-
-.greeting-popup h2 {
-    font-size: 1.8em;
-    margin-bottom: 10px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-.greeting-popup p {
-    font-size: 1.2em;
+.job p, .education p {
     font-style: italic;
-    opacity: 0.9;
+    color: #777;
 }
 
-/* Hide the popup in print */
-@media print {
-    .greeting-popup {
-        display: none;
-    }
+ul {
+    list-style-type: disc;
+    margin-left: 20px;
 }
 
-/* Media Query for Mobile View */
-@media (max-width: 768px) {
+li {
+    margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
     .container {
-        flex-direction: column;
-    }
-
-    .left-section, .right-section {
-        width: 100%;
-    }
-
-    .left-section {
-        padding-bottom: 40px;
-    }
-
-    .profile-image {
-        width: 180px;
-        height: 180px;
-        object-position: center 10%;
-    }
-
-    .greeting-popup {
-        width: 80%;
-        padding: 20px;
-    }
-
-    .greeting-popup h2 {
-        font-size: 1.5em;
-    }
-
-    .greeting-popup p {
-        font-size: 1em;
-    }
-}
-
-@media (max-width: 480px) {
-    .profile-image {
-        width: 150px;
-        height: 150px;
-        object-position: center 10%;
-    }
-
-    .greeting-popup {
-        width: 90%;
+        margin: 10px;
         padding: 15px;
     }
 
-    .greeting-popup h2 {
-        font-size: 1.3em;
+    h1 {
+        font-size: 2em;
     }
 
-    .greeting-popup p {
-        font-size: 0.9em;
-    }
-}
-
-/* Media Query for Print (A4 Size Compatibility and Background Fix) */
-@media print {
-    @page {
-        size: A4 portrait;
-        margin: 0.5in; /* Reduced margin for better content fit */
+    .profile-img {
+        width: 120px;
+        height: 120px;
     }
 
-    body {
-        margin: 0;
-        padding: 0;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact; /* Ensure colors are printed */
+    h2 {
+        font-size: 1.5em;
     }
 
-    .container {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        min-height: auto; /* Let content define the height */
-        margin: 0;
-        box-sizing: border-box;
-    }
-
-    .left-section {
-        width: 30%;
-        background-color: #003087 !important; /* Force background color */
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-        color: white !important; /* Default to white text */
-        padding: 15pt; /* Slightly reduced padding */
-        font-size: 12pt;
-        box-sizing: border-box;
-        min-height: 100%;
-        /* Fallback for text visibility if background doesn't print */
-        border-right: 1pt solid black; /* Add a border to separate sections */
-    }
-
-    /* Fallback: If background doesn't print, make text black for visibility */
-    @media print and (-webkit-print-color-adjust: none), print and (print-color-adjust: none) {
-        .left-section {
-            background-color: transparent !important;
-            color: black !important;
-        }
-        .left-section a {
-            color: black !important;
-        }
-        .left-section h1, .left-section h2, .left-section h3 {
-            color: black !important;
-        }
-    }
-
-    .profile-image {
-        width: 120pt; /* Reduced size for better fit */
-        height: 120pt;
-        border: 3pt solid white;
-        object-fit: cover;
-        object-position: center 10%;
-        margin: 10pt auto;
-    }
-
-    .left-section h1 {
-        font-size: 20pt; /* Increased for better readability */
-        margin-bottom: 15pt;
-    }
-
-    .left-section h2 {
-        font-size: 16pt; /* Increased */
-        margin: 15pt 0;
-        padding-bottom: 5pt;
-    }
-
-    .left-section h3 {
-        font-size: 14pt; /* Increased */
-        margin: 10pt 0;
-        padding-bottom: 3pt;
-    }
-
-    .left-section p {
-        font-size: 12pt; /* Increased */
-        line-height: 1.5;
-        margin-bottom: 10pt;
-    }
-
-    .left-section p.tools-languages {
-        font-size: 12pt;
-        line-height: 1.5;
-        margin-bottom: 5pt;
-        padding-left: 15pt;
-        text-align: left;
-    }
-
-    .right-section {
-        width: 70%;
-        padding: 15pt; /* Slightly reduced padding */
-        background-color: #fff;
-        box-sizing: border-box;
-        min-height: 100%;
-    }
-
-    .right-section h2 {
-        font-size: 16pt; /* Increased */
-        color: #003087;
-        margin: 15pt 0;
-    }
-
-    .right-section h3 {
-        font-size: 14pt; /* Increased */
-        margin: 10pt 0;
-    }
-
-    .right-section p, .right-section ul {
-        font-size: 12pt; /* Increased */
-        line-height: 1.5;
-        margin-bottom: 10pt;
-        color: black !important;
-    }
-
-    .right-section ul {
-        padding-left: 15pt;
-    }
-
-    .right-section button {
-        display: none;
-    }
-
-    .content {
-        display: block !important;
-        background-color: #f9f9f9;
-        padding: 10pt;
-        margin-bottom: 15pt;
-    }
-
-    .right-section > h2 {
-        page-break-before: avoid;
-    }
-
-    .content {
-        page-break-inside: auto;
+    .job h3, .education h3 {
+        font-size: 1.2em;
     }
 }
