@@ -13,6 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     greetingElement.textContent = `${greeting}, Welcome to My Resume`;
+    greetingElement.style.display = 'block'; // Show the greeting on page load
+
+    // Optional: Ensure the element is removed from the DOM after the animation
+    setTimeout(() => {
+        greetingElement.style.display = 'none';
+    }, 4000); // 4000ms (3s animation + 1s buffer)
 });
 
 // Smooth scrolling for any anchor links (if added later)
