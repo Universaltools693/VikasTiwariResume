@@ -48,8 +48,8 @@ body {
 /* Sidebar */
 .sidebar {
     width: 30%;
-    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
-    color: #fff;
+    background: #fff;
+    color: #333;
     padding: 20px;
     position: relative;
     overflow: hidden;
@@ -58,171 +58,175 @@ body {
 .circle-bg {
     position: absolute;
     border-radius: 50%;
-    background: rgba(59, 130, 246, 0.2);
+    background: rgba(59, 130, 246, 0.15); /* Adjusted opacity to match */
     z-index: 0;
 }
 
 .circle-sidebar-top {
-    width: 250px;
-    height: 250px;
-    top: -80px;
-    left: -80px;
+    width: 300px; /* Increased size to match */
+    height: 300px;
+    top: -100px;
+    left: -100px;
 }
 
 .circle-sidebar-bottom {
-    width: 200px;
-    height: 200px;
-    bottom: -50px;
-    right: -50px;
+    width: 250px; /* Adjusted size to match */
+    height: 250px;
+    bottom: -80px;
+    right: -80px;
 }
 
 .profile-section {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Adjusted spacing */
     position: relative;
     z-index: 1;
 }
 
 .profile-circle {
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 130px; /* Adjusted size to match */
+    height: 130px;
     margin: 0 auto;
 }
 
 .profile-circle::before {
     content: '';
     position: absolute;
-    top: -20px;
-    left: -20px;
-    width: 160px;
-    height: 160px;
-    background: rgba(59, 130, 246, 0.2);
+    top: -25px; /* Adjusted position to match */
+    left: -25px;
+    width: 180px; /* Increased size to match */
+    height: 180px;
+    background: rgba(59, 130, 246, 0.15);
     border-radius: 50%;
     z-index: 0;
 }
 
 .profile-img {
-    width: 120px;
-    height: 120px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
-    border: 4px solid #fff;
+    border: 5px solid #fff; /* Adjusted border to match */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Added shadow to match */
     object-fit: cover;
     position: relative;
     z-index: 1;
 }
 
 .sidebar h1 {
-    font-size: 1.8em;
-    color: #fff;
+    font-size: 1.6em; /* Adjusted to match */
+    color: #333;
     margin-top: 10px;
     text-transform: uppercase;
 }
 
 .sidebar h2 {
-    font-size: 1.4em;
-    margin: 20px 0 10px;
-    border-bottom: 1px solid #fff;
-    padding-bottom: 5px;
+    font-size: 1.3em; /* Adjusted to match */
+    color: #1e3a8a;
+    margin: 15px 0 8px; /* Adjusted spacing */
+    border-bottom: 0.5px solid #1e3a8a; /* Thinner underline to match */
+    padding-bottom: 3px;
     text-transform: uppercase;
 }
 
 .sidebar p {
-    margin: 8px 0;
-    font-size: 0.95em;
+    margin: 6px 0; /* Adjusted spacing */
+    font-size: 0.9em; /* Adjusted to match */
 }
 
 .sidebar i {
-    margin-right: 10px;
+    margin-right: 8px; /* Adjusted spacing */
+    color: #1e3a8a;
+    font-size: 0.9em; /* Adjusted to match */
 }
 
 .sidebar ul {
     list-style-type: disc;
-    margin-left: 20px;
+    margin-left: 18px; /* Adjusted to match */
 }
 
 .sidebar li {
-    margin: 8px 0;
-    font-size: 0.95em;
+    margin: 6px 0; /* Adjusted spacing */
+    font-size: 0.9em;
 }
 
 /* Main Content */
 .main-content {
     width: 70%;
-    padding: 30px;
+    padding: 25px; /* Adjusted padding to match */
     position: relative;
     background: #fff;
 }
 
 .circle-top-left {
-    width: 300px;
-    height: 300px;
-    top: -100px;
-    left: -100px;
+    width: 350px; /* Adjusted size to match */
+    height: 350px;
+    top: -120px;
+    left: -120px;
 }
 
 .circle-top-right {
-    width: 200px;
-    height: 200px;
-    top: -50px;
-    right: -50px;
+    width: 220px; /* Adjusted size to match */
+    height: 220px;
+    top: -60px;
+    right: -60px;
 }
 
 .circle-middle-right {
-    width: 250px;
-    height: 250px;
-    top: 40%;
-    right: -80px;
+    width: 280px; /* Adjusted size to match */
+    height: 280px;
+    top: 35%; /* Adjusted position to match */
+    right: -90px;
 }
 
 .circle-bottom-left {
-    width: 200px;
-    height: 200px;
-    bottom: -50px;
-    left: 50%;
+    width: 240px; /* Adjusted size to match */
+    height: 240px;
+    bottom: -60px;
+    left: 45%; /* Adjusted position to match */
 }
 
 .section {
-    margin: 30px 0;
+    margin: 25px 0; /* Adjusted spacing */
     position: relative;
     z-index: 1;
 }
 
 h2 {
-    font-size: 1.6em;
+    font-size: 1.5em; /* Adjusted to match */
     color: #1e3a8a;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #1e3a8a;
-    padding-bottom: 5px;
+    margin-bottom: 10px; /* Adjusted spacing */
+    border-bottom: 0.5px solid #1e3a8a; /* Thinner underline to match */
+    padding-bottom: 3px;
     text-transform: uppercase;
 }
 
 .job, .education {
-    margin-bottom: 30px;
+    margin-bottom: 25px; /* Adjusted spacing */
 }
 
 .job h3, .education h3 {
-    font-size: 1.3em;
+    font-size: 1.2em; /* Adjusted to match */
     color: #333;
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 4px; /* Adjusted spacing */
 }
 
 .job p, .education p {
     font-style: italic;
     color: #777;
-    margin-bottom: 10px;
-    font-size: 0.95em;
+    margin-bottom: 8px; /* Adjusted spacing */
+    font-size: 0.9em;
 }
 
 ul {
     list-style-type: disc;
-    margin-left: 20px;
+    margin-left: 18px; /* Adjusted to match */
 }
 
 li {
-    margin: 10px 0;
-    font-size: 0.95em;
+    margin: 8px 0; /* Adjusted spacing */
+    font-size: 0.9em;
 }
 
 /* Responsive Design */
@@ -250,21 +254,21 @@ li {
     }
 
     .profile-circle::before {
-        width: 140px;
-        height: 140px;
-        top: -20px;
-        left: -20px;
+        width: 150px;
+        height: 150px;
+        top: -25px;
+        left: -25px;
     }
 
     .sidebar h1 {
-        font-size: 1.5em;
-    }
-
-    h2 {
         font-size: 1.4em;
     }
 
+    h2 {
+        font-size: 1.3em;
+    }
+
     .job h3, .education h3 {
-        font-size: 1.2em;
+        font-size: 1.1em;
     }
 }
