@@ -147,7 +147,7 @@ body {
     z-index: 1000;
     opacity: 0;
     transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
-    border: 2px solid #fff;
+    border: 2px solid white;
     max-width: 90%;
     width: 400px;
 }
@@ -236,65 +236,88 @@ body {
 /* Media Query for Print (A4 Size Compatibility and Background Fix) */
 @media print {
     @page {
-        size: A4;
-        margin: 1in;
+        size: A4 portrait;
+        margin: 0.5in; /* Reduced margin for better content fit */
     }
 
     body {
         margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact; /* Ensure colors are printed */
     }
 
     .container {
         display: flex;
         flex-direction: row;
-        width: 794px;
-        min-height: 1123px;
+        width: 100%;
+        min-height: auto; /* Let content define the height */
         margin: 0;
+        box-sizing: border-box;
     }
 
     .left-section {
         width: 30%;
-        background-color: #003087 !important;
+        background-color: #003087 !important; /* Force background color */
         -webkit-print-color-adjust: exact;
-        color: white;
-        padding: 20pt;
+        print-color-adjust: exact;
+        color: white !important; /* Default to white text */
+        padding: 15pt; /* Slightly reduced padding */
         font-size: 12pt;
+        box-sizing: border-box;
+        min-height: 100%;
+        /* Fallback for text visibility if background doesn't print */
+        border-right: 1pt solid black; /* Add a border to separate sections */
+    }
+
+    /* Fallback: If background doesn't print, make text black for visibility */
+    @media print and (-webkit-print-color-adjust: none), print and (print-color-adjust: none) {
+        .left-section {
+            background-color: transparent !important;
+            color: black !important;
+        }
+        .left-section a {
+            color: black !important;
+        }
+        .left-section h1, .left-section h2, .left-section h3 {
+            color: black !important;
+        }
     }
 
     .profile-image {
-        width: 150pt;
-        height: 150pt;
+        width: 120pt; /* Reduced size for better fit */
+        height: 120pt;
         border: 3pt solid white;
         object-fit: cover;
         object-position: center 10%;
-        margin: 15pt auto;
+        margin: 10pt auto;
     }
 
     .left-section h1 {
-        font-size: 18pt;
+        font-size: 20pt; /* Increased for better readability */
         margin-bottom: 15pt;
     }
 
     .left-section h2 {
-        font-size: 14pt;
+        font-size: 16pt; /* Increased */
         margin: 15pt 0;
         padding-bottom: 5pt;
     }
 
     .left-section h3 {
-        font-size: 12pt;
+        font-size: 14pt; /* Increased */
         margin: 10pt 0;
         padding-bottom: 3pt;
     }
 
     .left-section p {
-        font-size: 10pt;
+        font-size: 12pt; /* Increased */
         line-height: 1.5;
         margin-bottom: 10pt;
     }
 
     .left-section p.tools-languages {
-        font-size: 10pt;
+        font-size: 12pt;
         line-height: 1.5;
         margin-bottom: 5pt;
         padding-left: 15pt;
@@ -303,23 +326,25 @@ body {
 
     .right-section {
         width: 70%;
-        padding: 20pt;
+        padding: 15pt; /* Slightly reduced padding */
         background-color: #fff;
+        box-sizing: border-box;
+        min-height: 100%;
     }
 
     .right-section h2 {
-        font-size: 14pt;
+        font-size: 16pt; /* Increased */
         color: #003087;
         margin: 15pt 0;
     }
 
     .right-section h3 {
-        font-size: 12pt;
+        font-size: 14pt; /* Increased */
         margin: 10pt 0;
     }
 
     .right-section p, .right-section ul {
-        font-size: 10pt;
+        font-size: 12pt; /* Increased */
         line-height: 1.5;
         margin-bottom: 10pt;
         color: black !important;
