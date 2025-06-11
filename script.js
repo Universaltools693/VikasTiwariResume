@@ -14,24 +14,12 @@ document.addEventListener("DOMContentLoaded", function () {
         greeting = "Good Night";
     }
 
-    // Default name since we can't fetch the logged-in user's profile name in a static site
-    let userName = "Guest";
-
-    // In a production environment, use OAuth (e.g., Google Sign-In) to fetch the user's profile name
-    // Example pseudocode for Google Sign-In (requires setup with Google Developer Console):
-    /*
-    gapi.auth2.getAuthInstance().signIn().then(function (googleUser) {
-        const profile = googleUser.getBasicProfile();
-        userName = profile.getName(); // e.g., "Rama Sharma"
-    });
-    */
-
     // Display the greeting and welcome message
     const greetingText = document.getElementById("greeting-text");
     const welcomeText = document.getElementById("welcome-text");
     const greetingPopup = document.getElementById("greeting-popup");
 
-    greetingText.textContent = `${greeting} ${userName}`;
+    greetingText.textContent = greeting; // Only the time-based greeting, no name
     welcomeText.textContent = "Welcome to my resume";
 
     // Auto-disappear after 4 seconds
