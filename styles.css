@@ -137,7 +137,7 @@ ul {
 
 .core-competencies ul li, .soft-skills ul li, .tools ul li, .languages ul li {
     margin-bottom: 8px;
-    padding-left: 20px; /* Indentation without bullet points */
+    padding-left: 15px; /* Adjusted indentation to match the image more closely */
 }
 
 .main-content {
