@@ -14,23 +14,18 @@ document.addEventListener("DOMContentLoaded", function () {
         greeting = "Good Night";
     }
 
-    // Function to extract name from email
-    function getNameFromEmail(email) {
-        if (!email) return null;
-        const namePart = email.split("@")[0];
-        let name = namePart.replace(/[^a-zA-Z]/g, "");
-        if (name) {
-            return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-        }
-        return null;
+    // Simulate fetching the user's email and profile name
+    let userName = null;
+
+    // Prompt for the email to identify the logged-in user (simulation)
+    const userEmail = prompt("Please enter your email to personalize the greeting:");
+    
+    // Instead of extracting the name from the email address, prompt for the profile name
+    if (userEmail) {
+        userName = prompt(`Please enter the name associated with ${userEmail} (as it appears in your email profile):`);
     }
 
-    // Try to get the user's email (simulated for demo)
-    let userName = null;
-    const dummyEmail = "vikastiwari0693@gmail.com"; // Replace with actual email fetching logic if available
-    userName = getNameFromEmail(dummyEmail);
-
-    // If no name is found, prompt the user for their name
+    // If no profile name or email is provided, prompt for the name directly
     if (!userName) {
         userName = prompt("Please enter your name:");
         if (!userName) {
@@ -38,6 +33,9 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
         }
+    } else {
+        // Capitalize the profile name
+        userName = userName.charAt(0).toUpperCase() + userName.slice(1).toLowerCase();
     }
 
     // Display the greeting and welcome message
