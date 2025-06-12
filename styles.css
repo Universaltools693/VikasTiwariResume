@@ -104,11 +104,11 @@ body {
     text-transform: uppercase;
 }
 
-.contact, .personal-details, .core-competencies, .soft-skills, .tools, .languages {
+.contact, .personal-details, .core-competencies, .tools, .languages {
     margin-bottom: 20px;
 }
 
-.contact h2, .personal-details h2, .core-competencies h2, .soft-skills h2, .tools h2, .languages h2 {
+.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
     font-size: 16px;
     font-weight: bold;
     margin-bottom: 10px;
@@ -123,7 +123,7 @@ body {
     margin-right: 8px;
 }
 
-.contact p, .personal-details p, .core-competencies ul, .soft-skills ul, .tools ul, .languages ul {
+.contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
     font-size: 14px;
     line-height: 1.8;
 }
@@ -136,13 +136,13 @@ ul {
     list-style: none;
 }
 
-.core-competencies ul li, .soft-skills ul li, .tools ul li, .languages ul li {
+.core-competencies ul li, .tools ul li, .languages ul li {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
 }
 
-.core-competencies ul li:before, .soft-skills ul li:before, .tools ul li:before, .languages ul li:before {
+.core-competencies ul li:before, .tools ul li:before, .languages ul li:before {
     content: "•";
     color: black;
     position: absolute;
