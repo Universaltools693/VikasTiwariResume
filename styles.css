@@ -2,11 +2,13 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif; /* Modern font for body text */
 }
 
+/* Body Background with Gradient */
 body {
-    background-color: #f4f4f4;
+    background: linear-gradient(135deg, #e6f0fa 0%, #f4f4f4 100%); /* Subtle gradient for a modern look */
+    min-height: 100vh;
 }
 
 /* Pop-up Styles */
@@ -37,6 +39,8 @@ body {
 }
 
 .greeting-content h1 {
+    font-family: 'Montserrat', sans-serif; /* Modern font for greeting */
+    font-weight: 700;
     font-size: 40px;
     color: #ffffff;
     margin-bottom: 15px;
@@ -44,6 +48,7 @@ body {
 }
 
 .greeting-content p {
+    font-family: 'Poppins', sans-serif;
     font-size: 24px;
     color: #e0e0e0;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
@@ -74,49 +79,98 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 20px auto;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background: #ffffff; /* White base */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Deeper shadow for depth */
+    border-radius: 15px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners apply to children */
+    position: relative;
+}
+
+/* Add a subtle overlay gradient to the container */
+.resume-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 48, 135, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+    z-index: 0;
 }
 
 .sidebar {
     width: 30%;
-    background-color: white;
-    color: black;
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.9); /* Glassmorphism effect */
+    backdrop-filter: blur(10px); /* Subtle blur for modern look */
+    color: #333;
+    padding: 25px;
+    border-right: 1px solid rgba(0, 0, 0, 0.05);
+    z-index: 1;
 }
 
 .profile {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .profile img {
-    width: 150px; /* Increased from 100px to 150px */
-    height: 150px; /* Increased from 100px to 150px */
+    width: 180px; /* Increased from 150px to 180px */
+    height: 180px; /* Increased from 150px to 180px */
     border-radius: 50%;
-    margin-bottom: 10px;
-    border: 4px solid #ccc; /* Increased border from 3px to 4px for proportion */
+    margin-bottom: 15px;
+    border: 5px solid #003087; /* Increased border with brand color */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    transition: transform 0.3s ease, border-color 0.3s ease; /* Smooth hover effect */
+}
+
+.profile img:hover {
+    transform: scale(1.05); /* Slight zoom on hover */
+    border-color: #0055d4; /* Lighter shade on hover */
 }
 
 .profile h1 {
-    font-size: 24px;
-    font-weight: bold;
+    font-family: 'Montserrat', sans-serif; /* Modern font for name */
+    font-weight: 700;
+    font-size: 26px;
     text-transform: uppercase;
+    color: #003087;
+    letter-spacing: 1px;
 }
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
+    font-family: 'Montserrat', sans-serif; /* Modern font for headings */
+    font-weight: 500;
     font-size: 16px;
-    font-weight: bold;
     margin-bottom: 10px;
-    border-bottom: 2px solid #003087;
     padding-bottom: 5px;
     color: #003087;
     display: flex;
     align-items: center;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.contact h2::after, .personal-details h2::after, .core-competencies h2::after, .tools h2::after, .languages h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #003087, #0055d4); /* Gradient underline */
+    transition: width 0.3s ease;
+}
+
+.contact h2:hover::after, .personal-details h2:hover::after, .core-competencies h2:hover::after, .tools h2:hover::after, .languages h2:hover::after {
+    width: 100%; /* Underline animation on hover */
+}
+
+.contact h2:hover, .personal-details h2:hover, .core-competencies h2:hover, .tools h2:hover, .languages h2:hover {
+    color: #0055d4; /* Lighter shade on hover */
 }
 
 .contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
@@ -124,12 +178,16 @@ body {
 }
 
 .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
     font-size: 14px;
     line-height: 1.8;
+    color: #444;
 }
 
 .contact p i {
     margin-right: 10px;
+    color: #003087;
 }
 
 ul {
@@ -140,11 +198,16 @@ ul {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
+    transition: color 0.3s ease;
+}
+
+.core-competencies ul li:hover, .tools ul li:hover, .languages ul li:hover {
+    color: #0055d4; /* Slight color change on hover */
 }
 
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before {
     content: "•";
-    color: black;
+    color: #003087;
     position: absolute;
     left: 0;
 }
@@ -152,7 +215,8 @@ ul {
 .main-content {
     width: 70%;
     padding: 30px;
-    background-color: white;
+    background: #ffffff;
+    z-index: 1;
 }
 
 section {
@@ -160,14 +224,35 @@ section {
 }
 
 section h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     font-size: 18px;
-    font-weight: bold;
     margin-bottom: 15px;
-    border-bottom: 2px solid #003087;
     padding-bottom: 5px;
     color: #003087;
     display: flex;
     align-items: center;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #003087, #0055d4);
+    transition: width 0.3s ease;
+}
+
+section h2:hover::after {
+    width: 100%;
+}
+
+section h2:hover {
+    color: #0055d4;
 }
 
 section h2 i {
@@ -175,16 +260,24 @@ section h2 i {
 }
 
 section p, section ul {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
     font-size: 14px;
     line-height: 1.6;
-    color: #333;
+    color: #444;
 }
 
 section h3 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
     font-size: 16px;
-    font-weight: bold;
     margin-bottom: 5px;
     color: #003087;
+    transition: color 0.3s ease;
+}
+
+section h3:hover {
+    color: #0055d4;
 }
 
 section ul {
@@ -195,6 +288,11 @@ section ul li {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
+    transition: color 0.3s ease;
+}
+
+section ul li:hover {
+    color: #0055d4;
 }
 
 section ul li:before {
