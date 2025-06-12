@@ -121,87 +121,76 @@ body {
     background: #fff; /* White background for printing */
     padding: 48px; /* 0.5-inch margins */
     color: #000; /* Black text for printing */
+    display: flex;
+    flex-wrap: wrap; /* Allow content to wrap if needed */
 }
 
-.header {
+.sidebar {
+    width: 30%; /* Approximately 180px after margins */
+    background: #fff;
+    color: #000;
+    padding-right: 15px;
+    border-right: 1px solid #000;
+    page-break-inside: avoid;
+}
+
+.profile {
     text-align: center;
     margin-bottom: 15px;
-    page-break-inside: avoid;
 }
 
-.header h1 {
-    font-size: 18px; /* 14pt */
+.profile img {
+    width: 100px; /* Reduced to save space */
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 8px;
+    border: 3px solid #000;
+}
+
+.profile h1 {
+    font-size: 16px; /* 12pt */
     text-transform: uppercase;
-    margin-bottom: 10px;
+    color: #000;
 }
 
-.contact-info {
-    font-size: 11px; /* 8pt */
-    line-height: 1.3;
-}
-
-.contact-info p {
-    margin-bottom: 5px;
-}
-
-.contact-info i {
-    margin-right: 8px;
-}
-
-.main-content {
-    width: 100%;
-}
-
-section {
+.contact, .personal-details, .core-competencies, .tools, .languages {
     margin-bottom: 15px;
     page-break-inside: avoid;
 }
 
-section h2 {
-    font-size: 14px; /* 10pt */
+.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
+    font-size: 12px; /* 9pt */
     margin-bottom: 8px;
     padding-bottom: 4px;
     border-bottom: 2px solid #000;
+    color: #000;
     display: flex;
     align-items: center;
 }
 
-section h2 i {
-    margin-right: 8px;
+.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
+    margin-right: 6px;
 }
 
-section .section-content {
+.section-content {
     padding: 8px;
+    font-size: 10px; /* 8pt */
+    line-height: 1.3;
 }
 
-section p, section ul {
-    font-size: 11px; /* 8pt */
+.contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
+    font-size: 10px; /* 8pt */
     line-height: 1.3;
     color: #000;
 }
 
-section h3 {
-    font-size: 12px; /* 9pt */
-    margin-bottom: 4px;
+.contact p i {
+    margin-right: 6px;
     color: #000;
 }
 
-section ul {
-    margin-left: 15px;
+ul {
     list-style: none;
-}
-
-section ul li {
-    margin-bottom: 6px;
-    position: relative;
-    padding-left: 15px;
-}
-
-section ul li:before {
-    content: "•";
-    color: #000;
-    position: absolute;
-    left: 0;
 }
 
 .core-competencies ul li, .tools ul li, .languages ul li {
@@ -211,6 +200,64 @@ section ul li:before {
 }
 
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before {
+    content: "•";
+    color: #000;
+    position: absolute;
+    left: 0;
+}
+
+.main-content {
+    width: 70%; /* Approximately 420px after margins */
+    padding-left: 15px;
+    background: #fff;
+}
+
+section {
+    margin-bottom: 15px;
+    page-break-inside: avoid;
+}
+
+section h2 {
+    font-size: 12px; /* 9pt */
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #000;
+    color: #000;
+    display: flex;
+    align-items: center;
+}
+
+section h2 i {
+    margin-right: 6px;
+}
+
+section .section-content {
+    padding: 8px;
+}
+
+section p, section ul {
+    font-size: 10px; /* 8pt */
+    line-height: 1.3;
+    color: #000;
+}
+
+section h3 {
+    font-size: 11px; /* 8.5pt */
+    margin-bottom: 4px;
+    color: #000;
+}
+
+section ul {
+    margin-left: 15px;
+}
+
+section ul li {
+    margin-bottom: 6px;
+    position: relative;
+    padding-left: 15px;
+}
+
+section ul li:before {
     content: "•";
     color: #000;
     position: absolute;
@@ -239,5 +286,8 @@ section ul li:before {
     @page {
         size: A4;
         margin: 0;
+    }
+    .sidebar, .main-content {
+        page-break-inside: auto; /* Allow breaking if content overflows */
     }
 }
