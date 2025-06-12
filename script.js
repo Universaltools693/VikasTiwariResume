@@ -46,20 +46,22 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
-            // Simplify content for Word
+            // Simplified HTML structure for Word
             const content = `
                 <html>
                 <head>
                     <style>
-                        body { font-family: Arial, sans-serif; color: #000; }
-                        h1 { font-size: 18px; text-align: center; text-transform: uppercase; }
-                        h2 { font-size: 14px; border-bottom: 2px solid #000; padding-bottom: 4px; }
-                        h3 { font-size: 13px; }
-                        p, li { font-size: 12px; line-height: 1.4; }
+                        body { font-family: Arial, sans-serif; color: #000; margin: 48px; }
+                        h1 { font-size: 18px; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+                        h2 { font-size: 14px; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 8px; }
+                        h3 { font-size: 12px; margin-bottom: 4px; }
+                        p, li { font-size: 11px; line-height: 1.3; }
                         ul { list-style: none; margin-left: 15px; }
                         li { position: relative; padding-left: 15px; margin-bottom: 6px; }
                         li:before { content: "•"; position: absolute; left: 0; }
-                        .section-content { border: 1px solid #000; padding: 8px; margin-bottom: 15px; }
+                        .contact-info { text-align: center; margin-bottom: 15px; }
+                        .contact-info p { margin-bottom: 5px; }
+                        .section-content { padding: 8px; margin-bottom: 15px; }
                     </style>
                 </head>
                 <body>
