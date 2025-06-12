@@ -119,14 +119,14 @@ body {
     width: 794px; /* A4 width in pixels at 96 DPI */
     margin: 0 auto;
     background: #fff; /* White background for printing */
-    box-shadow: none; /* Remove shadow for printing */
     padding: 96px; /* 1-inch margins */
     color: #000; /* Black text for printing */
-    break-inside: avoid; /* Ensure content doesn't break awkwardly */
+    display: flex;
+    flex-wrap: wrap; /* Allow content to wrap if needed */
 }
 
 .sidebar {
-    width: 30%;
+    width: 30%; /* Approximately 180px after margins */
     background: #fff; /* White background for printing */
     color: #000;
     padding-right: 20px;
@@ -154,7 +154,7 @@ body {
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
     margin-bottom: 20px;
-    break-inside: avoid;
+    page-break-inside: avoid; /* Prevent breaking inside sections */
 }
 
 .contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
@@ -205,14 +205,14 @@ ul {
 }
 
 .main-content {
-    width: 70%;
+    width: 70%; /* Approximately 420px after margins */
     padding-left: 20px;
     background: #fff;
 }
 
 section {
     margin-bottom: 30px;
-    break-inside: avoid;
+    page-break-inside: avoid; /* Prevent breaking inside sections */
 }
 
 section h2 {
@@ -272,7 +272,6 @@ section ul li:before {
         display: none !important; /* Hide pop-up and download button in print */
     }
     .resume-container {
-        box-shadow: none;
         margin: 0;
         padding: 96px;
         width: 794px;
@@ -281,5 +280,8 @@ section ul li:before {
     @page {
         size: A4;
         margin: 0;
+    }
+    .sidebar, .main-content {
+        page-break-inside: auto; /* Allow breaking if content overflows */
     }
 }
