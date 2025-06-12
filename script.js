@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 },
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css'] }
+            pagebreak: { mode: ['avoid-all', 'css'] } // Respect CSS page breaks
         };
         html2pdf().set(opt).from(resumeContainer).save();
     });
@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
+            // Custom HTML structure for Word to preserve the exact format
             const content = `
                 <html>
                 <head>
@@ -58,62 +59,63 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                         .resume-container {
                             display: flex;
+                            flex-wrap: wrap;
                             width: 100%;
                         }
                         .sidebar {
-                            width: 35%;
-                            padding-right: 10px;
+                            width: 30%;
+                            padding-right: 15px;
                             border-right: 1px solid #000;
                         }
                         .main-content {
-                            width: 65%;
-                            padding-left: 10px;
+                            width: 70%;
+                            padding-left: 15px;
                         }
                         .profile {
                             text-align: center;
-                            margin-bottom: 8px;
+                            margin-bottom: 15px;
                         }
                         .profile img {
-                            width: 80px;
-                            height: 80px;
+                            width: 100px;
+                            height: 100px;
                             border-radius: 50%;
-                            margin-bottom: 5px;
-                            border: 2px solid #000;
+                            margin-bottom: 8px;
+                            border: 3px solid #000;
                         }
                         h1 {
-                            font-size: 14px;
+                            font-size: 16px;
                             text-transform: uppercase;
                             margin: 0;
                         }
                         h2 {
-                            font-size: 10px;
-                            border-bottom: 1px solid #000;
-                            padding-bottom: 2px;
-                            margin-bottom: 4px;
+                            font-size: 12px;
+                            border-bottom: 2px solid #000;
+                            padding-bottom: 4px;
+                            margin-bottom: 8px;
                             display: flex;
                             align-items: center;
                         }
                         h2 i {
-                            margin-right: 4px;
+                            margin-right: 6px;
                         }
                         h3 {
-                            font-size: 9.5px;
-                            margin-bottom: 2px;
+                            font-size: 11px;
+                            margin-bottom: 4px;
                         }
                         p, li {
-                            font-size: 9px;
-                            line-height: 1.2;
+                            font-size: 10px;
+                            line-height: 1.3;
                             margin: 0;
                         }
                         ul {
                             list-style: none;
-                            margin-left: 10px;
+                            margin-left: 15px;
                             padding: 0;
                         }
                         li {
                             position: relative;
-                            padding-left: 10px;
-                            margin-bottom: 3px;
+                            padding-left: 15px;
+                            margin-bottom: 6px;
                         }
                         li:before {
                             content: "•";
@@ -121,14 +123,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             left: 0;
                         }
                         .section-content {
-                            padding: 4px;
-                            margin-bottom: 8px;
+                            padding: 8px;
+                            margin-bottom: 15px;
                         }
-                        .contact p i {
-                            margin-right: 4px;
+                        .contact p i, .personal-details p i {
+                            margin-right: 6px;
                         }
                         section {
-                            margin-bottom: 8px;
+                            margin-bottom: 15px;
+                        }
+                        /* Page break for Word */
+                        .page-break {
+                            page-break-before: always;
+                            height: 0;
                         }
                     </style>
                 </head>
@@ -176,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <h2><i class="fas fa-tools"></i> TOOLS & TECHNOLOGIES</h2>
                                 <div class="section-content">
                                     <ul>
-                                        <li>MS Office (Excel, Word, PowerPoint)</li>
+                                        <li>MS Office (MS Excel, MS Word, MS PowerPoint)</li>
                                         <li>Tally ERP</li>
                                         <li>CRM Software Management</li>
                                         <li>Advanced Photoshop</li>
@@ -197,42 +204,52 @@ document.addEventListener("DOMContentLoaded", function () {
                             <section class="professional-summary">
                                 <h2><i class="fas fa-briefcase"></i> PROFESSIONAL SUMMARY</h2>
                                 <div class="section-content">
-                                    <p>Entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing, meeting targets and coordinating tasks. At Magnum Group, I resolved customer queries. With an M.B.A. in Marketing and Finance, I aim to grow in this field.</p>
+                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
                                 </div>
                             </section>
                             <section class="professional-experience">
                                 <h2><i class="fas fa-briefcase"></i> PROFESSIONAL EXPERIENCE</h2>
                                 <div class="section-content">
                                     <h3>Sales Executive (Financial Consultant)</h3>
-                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | Jun 2024 – Present</p>
+                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
                                     <ul>
-                                        <li>Built client relationships via direct sales and meetings.</li>
-                                        <li>Met sales targets with strong negotiation skills.</li>
-                                        <li>Ensured business growth through regular follow-ups.</li>
+                                        <li>Found new clients and built relationships through direct sales and client meetings.</li>
+                                        <li>Met sales targets with good negotiation and client interaction skills.</li>
+                                        <li>Created a client list, ensuring business growth through regular follow-ups.</li>
                                     </ul>
-                                    <h3>Customer Service Expert (Associate)</h3>
-                                    <p><strong>Magnum Group (Magnum Super Distributors (P) Ltd.)</strong> | Sep 2020 – Jun 2024 (3 yrs, 9 mos)</p>
+                                    <h3>Customer Service Expert (Customer Service Associate)</h3>
+                                    <p><strong>Magnum Group (Magnum Super Distributors (P) Ltd.)</strong> | Sep 2020 – Jun 2024 (3 years, 9 months)</p>
                                     <ul>
-                                        <li>Resolved customer queries, achieving 100% quality score in Mar & Aug 2023.</li>
-                                        <li>Managed complaints using CRM software.</li>
-                                        <li>Earned Certificates of Excellence for performance.</li>
-                                        <li>Audited customer bills for accuracy and compliance.</li>
+                                        <li>Handled customer queries and resolved issues, achieving a 100% quality score in March and August 2023.</li>
+                                        <li>Used CRM software to manage complaints and track solutions.</li>
+                                        <li>Received Certificates of Excellence for good performance.</li>
+                                        <li>Conducted real-time audits of customer bills, performing detailed analysis to ensure accuracy and compliance with company standards.</li>
                                     </ul>
                                 </div>
                             </section>
+                            <div class="page-break"></div>
                             <section class="education">
                                 <h2><i class="fas fa-graduation-cap"></i> EDUCATION HISTORY</h2>
                                 <div class="section-content">
-                                    <p><strong>M.B.A. in Marketing and Finance</strong> | Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Madhya Pradesh | 2024 | CGPA: 7.49 (74.9%), First Division</p>
-                                    <p><strong>B.C.A.</strong> | Makhanlal Chaturvedi National University, Bhopal | 2021 | 59.70%, Second Division</p>
-                                    <p><strong>Higher Secondary (10+2), Science (PCM)</strong> | Board of Secondary Education, Madhya Pradesh | 2016 | 43.6%</p>
-                                    <p><strong>High School (10th)</strong> | Board of Secondary Education, Madhya Pradesh | 2014 | 49%, Second Division</p>
+                                    <h3>Master of Business Administration (M.B.A.) – Marketing and Finance</h3>
+                                    <p><strong>Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Madhya Pradesh</strong> | 2024</p>
+                                    <p>CGPA: 7.49 | Equivalent Percentage: 74.9% | First Division</p>
+                                    <h3>Bachelor of Computer Applications (B.C.A.)</h3>
+                                    <p><strong>Makhanlal Chaturvedi National University of Journalism and Communication, Bhopal</strong> | 2021</p>
+                                    <p>Percentage: 59.70% | Second Division</p>
+                                    <h3>Higher Secondary School Certificate (10+2) – Science (PCM)</h3>
+                                    <p><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2016</p>
+                                    <p>Percentage: 43.6%</p>
+                                    <h3>High School Certificate (10th)</h3>
+                                    <p><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2014</p>
+                                    <p>Percentage: 49% | Second Division</p>
                                 </div>
                             </section>
                             <section class="certifications">
                                 <h2><i class="fas fa-certificate"></i> CERTIFICATIONS</h2>
                                 <div class="section-content">
-                                    <p>MS Office (Excel, Word, PowerPoint), Advanced Photoshop, Tally ERP | British Heights Education, Jabalpur | 2012</p>
+                                    <p>Certification in MS Office (MS Excel, MS Word, MS PowerPoint), Advanced Photoshop, and Tally ERP</p>
+                                    <p><strong>British Heights Education, Jabalpur</strong> | 2012</p>
                                 </div>
                             </section>
                         </div>
