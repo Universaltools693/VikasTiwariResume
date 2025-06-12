@@ -2,12 +2,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Poppins', sans-serif; /* Modern font for body text */
+    font-family: 'Roboto', sans-serif; /* Modern font matching the template */
 }
 
-/* Body Background with Gradient */
+/* Body Background with Purple Gradient */
 body {
-    background: linear-gradient(135deg, #e6f0fa 0%, #f4f4f4 100%); /* Subtle gradient for a modern look */
+    background: linear-gradient(to bottom, #e6d9f5 0%, #4b0082 100%); /* Purple gradient from light to dark */
     min-height: 100vh;
 }
 
@@ -28,7 +28,7 @@ body {
 }
 
 .greeting-content {
-    background: linear-gradient(135deg, #003087 0%, #0055d4 100%);
+    background: linear-gradient(135deg, #4b0082 0%, #6a0dad 100%); /* Purple gradient for pop-up */
     padding: 40px;
     border-radius: 15px;
     text-align: center;
@@ -39,7 +39,6 @@ body {
 }
 
 .greeting-content h1 {
-    font-family: 'Montserrat', sans-serif; /* Modern font for greeting */
     font-weight: 700;
     font-size: 40px;
     color: #ffffff;
@@ -48,7 +47,6 @@ body {
 }
 
 .greeting-content p {
-    font-family: 'Poppins', sans-serif;
     font-size: 24px;
     color: #e0e0e0;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
@@ -79,79 +77,59 @@ body {
     width: 100%;
     max-width: 1200px;
     margin: 20px auto;
-    background: #ffffff; /* White base */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Deeper shadow for depth */
-    border-radius: 15px; /* Rounded corners */
-    overflow: hidden; /* Ensure rounded corners apply to children */
+    background: #ffffff; /* White background for the container */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden;
     position: relative;
-}
-
-/* Add a subtle overlay gradient to the container */
-.resume-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, rgba(0, 48, 135, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
-    z-index: 0;
 }
 
 .sidebar {
     width: 30%;
-    background: rgba(255, 255, 255, 0.9); /* Glassmorphism effect */
-    backdrop-filter: blur(10px); /* Subtle blur for modern look */
+    background: #ffffff; /* White background for the sidebar */
     color: #333;
-    padding: 25px;
+    padding: 20px;
     border-right: 1px solid rgba(0, 0, 0, 0.05);
-    z-index: 1;
 }
 
 .profile {
     text-align: center;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
+    position: relative;
+    top: -80px; /* Move the profile image up to overlap the gradient background */
 }
 
 .profile img {
-    width: 180px; /* Increased from 150px to 180px */
-    height: 180px; /* Increased from 150px to 180px */
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
     margin-bottom: 15px;
-    border: 5px solid #003087; /* Increased border with brand color */
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-    transition: transform 0.3s ease, border-color 0.3s ease; /* Smooth hover effect */
-}
-
-.profile img:hover {
-    transform: scale(1.05); /* Slight zoom on hover */
-    border-color: #0055d4; /* Lighter shade on hover */
+    border: 5px solid #ffffff; /* White border to match the template */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+    background: #ffffff; /* White background behind the image */
 }
 
 .profile h1 {
-    font-family: 'Montserrat', sans-serif; /* Modern font for name */
     font-weight: 700;
-    font-size: 26px;
+    font-size: 24px;
     text-transform: uppercase;
-    color: #003087;
-    letter-spacing: 1px;
+    color: #4b0082; /* Purple theme */
+    margin-top: -60px; /* Adjust name position after moving the image up */
 }
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
 }
 
 .contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
-    font-family: 'Montserrat', sans-serif; /* Modern font for headings */
     font-weight: 500;
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
-    color: #003087;
+    color: #4b0082; /* Purple theme */
     display: flex;
     align-items: center;
     position: relative;
-    transition: color 0.3s ease;
 }
 
 .contact h2::after, .personal-details h2::after, .core-competencies h2::after, .tools h2::after, .languages h2::after {
@@ -159,35 +137,31 @@ body {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 0;
+    width: 50px;
     height: 2px;
-    background: linear-gradient(to right, #003087, #0055d4); /* Gradient underline */
-    transition: width 0.3s ease;
-}
-
-.contact h2:hover::after, .personal-details h2:hover::after, .core-competencies h2:hover::after, .tools h2:hover::after, .languages h2:hover::after {
-    width: 100%; /* Underline animation on hover */
-}
-
-.contact h2:hover, .personal-details h2:hover, .core-competencies h2:hover, .tools h2:hover, .languages h2:hover {
-    color: #0055d4; /* Lighter shade on hover */
+    background: linear-gradient(to right, #4b0082, #6a0dad); /* Purple gradient underline */
 }
 
 .contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
     margin-right: 8px;
+    color: #4b0082; /* Purple theme */
 }
 
-.contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
-    font-family: 'Poppins', sans-serif;
+.contact p, .personal-details p, .core-competencies ul li, .tools ul li, .languages ul li {
     font-weight: 300;
     font-size: 14px;
     line-height: 1.8;
     color: #444;
+    background: rgba(0, 0, 0, 0.02); /* Faint background for line box effect */
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border for line box */
 }
 
 .contact p i {
     margin-right: 10px;
-    color: #003087;
+    color: #4b0082; /* Purple theme */
 }
 
 ul {
@@ -195,28 +169,18 @@ ul {
 }
 
 .core-competencies ul li, .tools ul li, .languages ul li {
-    margin-bottom: 8px;
     position: relative;
-    padding-left: 20px;
-    transition: color 0.3s ease;
-}
-
-.core-competencies ul li:hover, .tools ul li:hover, .languages ul li:hover {
-    color: #0055d4; /* Slight color change on hover */
+    padding-left: 0; /* Remove the bullet indent since we're using boxes */
 }
 
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before {
-    content: "•";
-    color: #003087;
-    position: absolute;
-    left: 0;
+    content: none; /* Remove the bullet since we're using boxes */
 }
 
 .main-content {
     width: 70%;
     padding: 30px;
     background: #ffffff;
-    z-index: 1;
 }
 
 section {
@@ -224,16 +188,14 @@ section {
 }
 
 section h2 {
-    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 18px;
     margin-bottom: 15px;
     padding-bottom: 5px;
-    color: #003087;
+    color: #4b0082; /* Purple theme */
     display: flex;
     align-items: center;
     position: relative;
-    transition: color 0.3s ease;
 }
 
 section h2::after {
@@ -241,63 +203,44 @@ section h2::after {
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 0;
+    width: 50px;
     height: 2px;
-    background: linear-gradient(to right, #003087, #0055d4);
-    transition: width 0.3s ease;
-}
-
-section h2:hover::after {
-    width: 100%;
-}
-
-section h2:hover {
-    color: #0055d4;
+    background: linear-gradient(to right, #4b0082, #6a0dad); /* Purple gradient underline */
 }
 
 section h2 i {
     margin-right: 8px;
+    color: #4b0082; /* Purple theme */
 }
 
-section p, section ul {
-    font-family: 'Poppins', sans-serif;
+section p, section ul li {
     font-weight: 300;
     font-size: 14px;
     line-height: 1.6;
     color: #444;
+    background: rgba(0, 0, 0, 0.02); /* Faint background for line box effect */
+    padding: 8px 12px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.05); /* Subtle border for line box */
 }
 
 section h3 {
-    font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 16px;
     margin-bottom: 5px;
-    color: #003087;
-    transition: color 0.3s ease;
-}
-
-section h3:hover {
-    color: #0055d4;
+    color: #4b0082; /* Purple theme */
 }
 
 section ul {
-    margin-left: 20px;
+    margin-left: 0;
 }
 
 section ul li {
-    margin-bottom: 8px;
     position: relative;
-    padding-left: 20px;
-    transition: color 0.3s ease;
-}
-
-section ul li:hover {
-    color: #0055d4;
+    padding-left: 0; /* Remove the bullet indent since we're using boxes */
 }
 
 section ul li:before {
-    content: "•";
-    color: #003087;
-    position: absolute;
-    left: 0;
+    content: none; /* Remove the bullet since we're using boxes */
 }
