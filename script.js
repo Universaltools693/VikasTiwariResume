@@ -25,43 +25,140 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
+    // Download Functionality
+    const html2canvas = window.html2canvas;
 
-    // =======================================================
-    // ==== YAHAN BADLAV KIYA GAYA HAI ====
-    // =======================================================
-
-    // Download as PDF (Naya logic - ab ye 'pdf-export-area' ko target karega)
-    document.getElementById("download-pdf").addEventListener("click", function (e) {
+    // Download as PDF (UPDATED - Full background per page, header on each, like Ashish's)
+    document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
-        // Naya element jise print karna hai
-        const element = document.getElementById("pdf-export-area");
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'pt', 'a4');
+        const pageW = doc.internal.pageSize.getWidth();
+        const pageH = doc.internal.pageSize.getHeight();
+        const headerH = 15; // Thin header height
+        const gap = 10; // Gap below header
+        const contentTop = headerH + gap;
+        const contentH = pageH - contentTop;
 
-        const opt = {
-            margin: 0, // Margin 0 rakhein, kyonki humne page pehle hi bana liya hai
-            filename: 'Vikas_Tiwari_Resume.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { 
-                scale: 2,
-                useCORS: true // Agar image cross-origin ho
-            },
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['css'], before: '.pdf-page' } // Har .pdf-page se pehle naya page
+        // Load and prepare background image (full cover per page)
+        const bgPromise = new Promise((resolve) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                canvas.width = pageW;
+                canvas.height = pageH;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
+                resolve(canvas.toDataURL('image/jpeg', 0.98));
+            };
+            img.src = 'Dashboard Background Image DBI.webp';
+            img.crossOrigin = "anonymous";
+        });
+        const bgDataUrl = await bgPromise;
+
+        // Function to generate canvas for page content (without bg, with styles)
+        const generatePageCanvas = async (sections) => {
+            const temp = document.createElement('div');
+            temp.className = 'pdf-mode'; // Apply PDF styles
+            temp.style.cssText = `
+                width: ${pageW}px;
+                height: ${contentH}px;
+                display: flex;
+                background: transparent;
+                overflow: hidden;
+                box-sizing: border-box;
+            `;
+
+            // Clone sidebar for left
+            const side = document.querySelector('.sidebar').cloneNode(true);
+            side.style.cssText = `
+                width: 30%;
+                flex-shrink: 0;
+                background: transparent !important;
+                padding: 20px;
+                box-sizing: border-box;
+                height: 100%;
+                overflow: hidden;
+            `;
+            temp.appendChild(side);
+
+            // Main content div for right
+            const mainTemp = document.createElement('div');
+            mainTemp.style.cssText = `
+                width: 70%;
+                padding: 30px;
+                background: transparent;
+                height: 100%;
+                overflow: hidden;
+                box-sizing: border-box;
+            `;
+
+            // Add selected sections
+            sections.forEach(sec => {
+                const cloneSec = sec.cloneNode(true);
+                cloneSec.querySelectorAll('.section-content').forEach(el => {
+                    el.style.backgroundColor = 'transparent';
+                });
+                mainTemp.appendChild(cloneSec);
+            });
+
+            temp.appendChild(mainTemp);
+
+            // Append to body for rendering
+            document.body.appendChild(temp);
+            await new Promise(resolve => setTimeout(resolve, 100)); // Render wait
+
+            // Capture canvas
+            const canvas = await html2canvas(temp, {
+                scale: 1,
+                useCORS: true,
+                allowTaint: true,
+                width: pageW,
+                height: contentH,
+                backgroundColor: null // Transparent bg
+            });
+
+            // Remove temp
+            document.body.removeChild(temp);
+            return canvas;
         };
-        
-        // Naye element se PDF banayein
-        html2pdf().set(opt).from(element).save();
+
+        // Get sections from DOM
+        const summary = document.querySelector('.professional-summary');
+        const experience = document.querySelector('.professional-experience');
+        const education = document.querySelector('.education');
+        const certifications = document.querySelector('.certifications');
+
+        // Page 1: Summary + Experience
+        const canvas1 = await generatePageCanvas([summary, experience]);
+        doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
+        // Add thin header (empty blue strip)
+        doc.setFillColor(0, 48, 135); // #003087
+        doc.rect(0, 0, pageW, headerH, 'F');
+        // Add content
+        doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+
+        // Page 2: Education + Certifications
+        const canvas2 = await generatePageCanvas([education, certifications]);
+        doc.addPage();
+        doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
+        doc.setFillColor(0, 48, 135); // Header again
+        doc.rect(0, 0, pageW, headerH, 'F');
+        doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+
+        // Save
+        doc.save('Vikas_Tiwari_Resume.pdf');
     });
 
-    // =======================================================
-    // ==== MS WORD CODE (FIXED - Isme badlav nahi) ====
-    // =======================================================
-
-    // Download as Word (FIXED - with Base64 image and FULL content)
+    // Download as Word (UPDATED - Full content, no abbreviations)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         
         // Zaroori Note: MS Word download library (html-docx-js) background images ko support NAHI KARTI hai.
+        // Isliye, Word file hamesha white background ke saath hi download hogi.
+        // Ye is library ki limitation hai. Sirf PDF hi background ke saath aayega.
+        
         try {
             // Convert profile image to Base64 to embed in Word
             const profileImg = document.querySelector('.profile img');
@@ -72,8 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ctx.drawImage(profileImg, 0, 0, canvas.width, canvas.height);
             const imgDataUrl = canvas.toDataURL('image/jpeg');
 
-            // We create a standard white-background HTML for Word export
-            // (FIXED: Added full content instead of "...")
+            // Full content HTML for Word (white bg, no bg image)
             const content = `
                 <html>
                 <head>
@@ -89,9 +185,9 @@ document.addEventListener("DOMContentLoaded", function () {
                         h2 { font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; }
                         h3 { font-size: 16px; margin-bottom: 5px; color: #003087; }
                         p, li { font-size: 14px; line-height: 1.6; color: #444; }
-                        ul { list-style: none; padding-left: 20px; }
-                        li { margin-bottom: 5px; }
-                        .section-content { border: 1px solid #ccc; padding: 10px; margin-top: 10px; }
+                        ul { list-style: none; margin-left: 20px; padding: 0; }
+                        li:before { content: "•"; color: #003087; position: absolute; left: 0; }
+                        .section-content { border: 1px solid #000; padding: 10px; }
                         section { page-break-inside: avoid; }
                     </style>
                 </head>
@@ -99,7 +195,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="resume-container">
                         <div class="sidebar">
                             <div class="profile">
-                                <img src="${imgDataUrl}" alt="Profile Image"> <h1>VIKAS TIWARI</h1>
+                                <img src="${imgDataUrl}" alt="Profile Image"> 
+                                <h1>VIKAS TIWARI</h1>
                             </div>
                             <div class="contact">
                                 <h2> CONTACT</h2>
