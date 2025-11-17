@@ -29,26 +29,26 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (OPTIMIZED - Tall two-column fit in 2 pages, no repeat/cut, full flow)
+    // Download as PDF (UPDATED - PDF mode for fit, no cuts, full boxes)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries load nahi hui. Ctrl+F5 refresh kar ke try karo.");
+            alert("PDF libraries load nahi hui. Page refresh kar ke try karo.");
             return;
         }
         
         try {
             const { jsPDF } = jspdfLib;
             const doc = new jsPDF('p', 'pt', 'a4');
-            const pageW = doc.internal.pageSize.getWidth(); // 595.28pt
-            const pageH = doc.internal.pageSize.getHeight(); // 841.89pt
-            const headerH = 15; // Thin header
-            const gap = 10; // Gap
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            const headerH = 15;
+            const gap = 10;
             const contentTop = headerH + gap;
             const contentH = pageH - contentTop;
 
-            // Bg per page
+            // Bg
             let bgDataUrl;
             try {
                 bgDataUrl = await new Promise((resolve, reject) => {
@@ -74,26 +74,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1);
             }
 
-            // Prepare tall container
+            // Prepare for capture
             const resumeContainer = document.querySelector('.resume-container');
             const original = {
                 height: resumeContainer.style.height,
                 maxHeight: resumeContainer.style.maxHeight,
                 overflow: resumeContainer.style.overflow,
-                width: resumeContainer.style.width,
-                flexWrap: resumeContainer.style.flexWrap
+                width: resumeContainer.style.width
             };
             resumeContainer.style.height = 'auto !important';
             resumeContainer.style.maxHeight = 'none !important';
             resumeContainer.style.overflow = 'visible !important';
             resumeContainer.style.width = `${pageW}px !important`;
-            resumeContainer.style.flexWrap = 'nowrap !important'; // Prevent wrap
+            // Add PDF mode class for reduced spacing/fit
+            resumeContainer.classList.add('pdf-mode');
             // Avoid breaks
             const sections = resumeContainer.querySelectorAll('.contact, .personal-details, .core-competencies, .tools, .languages, section');
             sections.forEach(sec => {
                 sec.style.pageBreakInside = 'avoid !important';
                 sec.style.breakInside = 'avoid !important';
-                sec.style.float = 'none !important'; // Prevent float issues
             });
             // Hide UI
             const popup = document.getElementById('greeting-popup');
@@ -102,14 +101,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const originalBtn = downloadBtn.style.display;
             popup.style.display = 'none';
             downloadBtn.style.display = 'none';
-            // Multiple reflow forces
+            // Reflow
             resumeContainer.offsetHeight;
-            document.body.offsetHeight;
-            await new Promise(r => setTimeout(r, 1000)); // 1s wait for full layout
+            await new Promise(r => setTimeout(r, 1200)); // 1.2s wait
 
-            // Capture tall canvas
+            // Capture
             const fullCanvas = await html2canvasLib(resumeContainer, {
-                scale: 0.95, // Slight scale to fit content better in 2 pages
+                scale: 0.98, // Sharp fit
                 useCORS: true,
                 allowTaint: true,
                 width: pageW,
@@ -120,10 +118,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // Restore
             Object.assign(resumeContainer.style, original);
+            resumeContainer.classList.remove('pdf-mode');
             sections.forEach(sec => {
                 sec.style.pageBreakInside = '';
                 sec.style.breakInside = '';
-                sec.style.float = '';
             });
             popup.style.display = originalPopup;
             downloadBtn.style.display = originalBtn;
@@ -131,7 +129,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const fullHeight = fullCanvas.height;
             const numPages = Math.ceil(fullHeight / contentH);
 
-            // Crop function
+            // Crop
             const cropCanvas = (source, startY, h) => {
                 const crop = document.createElement('canvas');
                 crop.width = pageW;
@@ -321,8 +319,8 @@ document.addEventListener("DOMContentLoaded", function () {
             link.download = 'Vikas_Tiwari_Resume.docx';
             link.click();
         } catch (error) {
-            console.error("Word error:", error);
-            alert("Word error. PDF try karo.");
+            console.error("Error generating Word document:", error);
+            alert("Word document generate karne mein error aa gaya hai. Kripya PDF download karne ka prayas karein.");
         }
     });
 });
