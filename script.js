@@ -27,131 +27,144 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Download Functionality
     const html2canvas = window.html2canvas;
+    const jsPDF = window.jsPDF; // FIXED: Correct access to jsPDF from bundle
 
     // Download as PDF (UPDATED - Full background per page, header on each, like Ashish's)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('p', 'pt', 'a4');
-        const pageW = doc.internal.pageSize.getWidth();
-        const pageH = doc.internal.pageSize.getHeight();
-        const headerH = 15; // Thin header height
-        const gap = 10; // Gap below header
-        const contentTop = headerH + gap;
-        const contentH = pageH - contentTop;
+        if (!jsPDF || !html2canvas) {
+            alert("PDF library load nahi hui. Page refresh kar ke try karo.");
+            return;
+        }
+        
+        try {
+            const doc = new jsPDF('p', 'pt', 'a4');
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            const headerH = 15; // Thin header height
+            const gap = 10; // Gap below header
+            const contentTop = headerH + gap;
+            const contentH = pageH - contentTop;
 
-        // Load and prepare background image (full cover per page)
-        const bgPromise = new Promise((resolve) => {
-            const img = new Image();
-            img.onload = () => {
-                const canvas = document.createElement('canvas');
-                canvas.width = pageW;
-                canvas.height = pageH;
-                const ctx = canvas.getContext('2d');
-                ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
-                resolve(canvas.toDataURL('image/jpeg', 0.98));
-            };
-            img.src = 'Dashboard Background Image DBI.webp';
-            img.crossOrigin = "anonymous";
-        });
-        const bgDataUrl = await bgPromise;
+            // Load and prepare background image (full cover per page)
+            const bgPromise = new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = pageW;
+                    canvas.height = pageH;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
+                    resolve(canvas.toDataURL('image/jpeg', 0.98));
+                };
+                img.onerror = () => reject(new Error("Background image load nahi hui."));
+                img.src = 'Dashboard Background Image DBI.webp';
+            });
+            const bgDataUrl = await bgPromise;
 
-        // Function to generate canvas for page content (without bg, with styles)
-        const generatePageCanvas = async (sections) => {
-            const temp = document.createElement('div');
-            temp.className = 'pdf-mode'; // Apply PDF styles
-            temp.style.cssText = `
-                width: ${pageW}px;
-                height: ${contentH}px;
-                display: flex;
-                background: transparent;
-                overflow: hidden;
-                box-sizing: border-box;
-            `;
+            // Function to generate canvas for page content (without bg, with styles)
+            const generatePageCanvas = async (sections) => {
+                const temp = document.createElement('div');
+                temp.className = 'pdf-mode'; // Apply PDF styles
+                temp.style.cssText = `
+                    width: ${pageW}px;
+                    height: ${contentH}px;
+                    display: flex;
+                    background: transparent;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                `;
 
-            // Clone sidebar for left
-            const side = document.querySelector('.sidebar').cloneNode(true);
-            side.style.cssText = `
-                width: 30%;
-                flex-shrink: 0;
-                background: transparent !important;
-                padding: 20px;
-                box-sizing: border-box;
-                height: 100%;
-                overflow: hidden;
-            `;
-            temp.appendChild(side);
+                // Clone sidebar for left (full height for each page)
+                const side = document.querySelector('.sidebar').cloneNode(true);
+                side.style.cssText = `
+                    width: 30%;
+                    flex-shrink: 0;
+                    background: transparent !important;
+                    padding: 20px;
+                    box-sizing: border-box;
+                    height: 100%;
+                    overflow-y: auto;
+                `;
+                temp.appendChild(side);
 
-            // Main content div for right
-            const mainTemp = document.createElement('div');
-            mainTemp.style.cssText = `
-                width: 70%;
-                padding: 30px;
-                background: transparent;
-                height: 100%;
-                overflow: hidden;
-                box-sizing: border-box;
-            `;
+                // Main content div for right
+                const mainTemp = document.createElement('div');
+                mainTemp.style.cssText = `
+                    width: 70%;
+                    padding: 30px;
+                    background: transparent;
+                    height: 100%;
+                    overflow-y: auto;
+                    box-sizing: border-box;
+                `;
 
-            // Add selected sections
-            sections.forEach(sec => {
-                const cloneSec = sec.cloneNode(true);
-                cloneSec.querySelectorAll('.section-content').forEach(el => {
-                    el.style.backgroundColor = 'transparent';
+                // Add selected sections to main
+                sections.forEach(sec => {
+                    if (sec) {
+                        const cloneSec = sec.cloneNode(true);
+                        // Ensure transparent sections
+                        cloneSec.querySelectorAll('.section-content').forEach(el => {
+                            el.style.backgroundColor = 'transparent';
+                        });
+                        mainTemp.appendChild(cloneSec);
+                    }
                 });
-                mainTemp.appendChild(cloneSec);
-            });
 
-            temp.appendChild(mainTemp);
+                temp.appendChild(mainTemp);
 
-            // Append to body for rendering
-            document.body.appendChild(temp);
-            await new Promise(resolve => setTimeout(resolve, 100)); // Render wait
+                // Append to body for rendering
+                document.body.appendChild(temp);
+                await new Promise(resolve => setTimeout(resolve, 200)); // Increased wait for render
 
-            // Capture canvas
-            const canvas = await html2canvas(temp, {
-                scale: 1,
-                useCORS: true,
-                allowTaint: true,
-                width: pageW,
-                height: contentH,
-                backgroundColor: null // Transparent bg
-            });
+                // Capture canvas
+                const canvas = await html2canvas(temp, {
+                    scale: 1,
+                    useCORS: true,
+                    allowTaint: true,
+                    width: pageW,
+                    height: contentH,
+                    backgroundColor: null // Transparent bg
+                });
 
-            // Remove temp
-            document.body.removeChild(temp);
-            return canvas;
-        };
+                // Remove temp
+                document.body.removeChild(temp);
+                return canvas;
+            };
 
-        // Get sections from DOM
-        const summary = document.querySelector('.professional-summary');
-        const experience = document.querySelector('.professional-experience');
-        const education = document.querySelector('.education');
-        const certifications = document.querySelector('.certifications');
+            // Get sections from DOM
+            const summary = document.querySelector('.professional-summary');
+            const experience = document.querySelector('.professional-experience');
+            const education = document.querySelector('.education');
+            const certifications = document.querySelector('.certifications');
 
-        // Page 1: Summary + Experience
-        const canvas1 = await generatePageCanvas([summary, experience]);
-        doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
-        // Add thin header (empty blue strip)
-        doc.setFillColor(0, 48, 135); // #003087
-        doc.rect(0, 0, pageW, headerH, 'F');
-        // Add content
-        doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+            // Page 1: Summary + Experience
+            const canvas1 = await generatePageCanvas([summary, experience]);
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
+            // Add thin header (empty blue strip)
+            doc.setFillColor(0, 48, 135); // #003087
+            doc.rect(0, 0, pageW, headerH, 'F');
+            // Add content
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
 
-        // Page 2: Education + Certifications
-        const canvas2 = await generatePageCanvas([education, certifications]);
-        doc.addPage();
-        doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
-        doc.setFillColor(0, 48, 135); // Header again
-        doc.rect(0, 0, pageW, headerH, 'F');
-        doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+            // Page 2: Education + Certifications
+            const canvas2 = await generatePageCanvas([education, certifications]);
+            doc.addPage();
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
+            doc.setFillColor(0, 48, 135); // Header again
+            doc.rect(0, 0, pageW, headerH, 'F');
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
 
-        // Save
-        doc.save('Vikas_Tiwari_Resume.pdf');
+            // Save
+            doc.save('Vikas_Tiwari_Resume.pdf');
+        } catch (error) {
+            console.error("PDF generation error:", error);
+            alert("PDF download mein error: " + error.message + ". Console check karo ya page refresh karo.");
+        }
     });
 
-    // Download as Word (UPDATED - Full content, no abbreviations)
+    // Download as Word (Unchanged - already full content)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         
