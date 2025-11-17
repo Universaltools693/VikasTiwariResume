@@ -6,19 +6,13 @@
 }
 
 body {
-    /* Updated: Background image */
-    background-image: url('Dashboard Background Image DBI.webp');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed; /* Image ko fix rakhega */
-    
-    /* NEW: Resume ko screen ke beech mein laane ke liye */
+    background: #f4f4f4;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Vertically center */
-    align-items: center;    /* Horizontally center */
-    min-height: 100vh;      /* Poori screen ki height lega */
-    padding: 20px;          /* Thoda spacing */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
 }
 
 /* Pop-up Styles (Unchanged) */
@@ -36,7 +30,6 @@ body {
     opacity: 0;
     animation: fadeIn 0.5s ease-in forwards;
 }
-
 .greeting-content {
     background: #003087;
     padding: 40px;
@@ -47,38 +40,21 @@ body {
     animation: scaleUp 0.5s ease-in-out forwards;
     border: 2px solid #ffffff;
 }
-
 .greeting-content h1 {
     font-size: 40px;
     color: #ffffff;
     margin-bottom: 15px;
     text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
 }
-
 .greeting-content p {
     font-size: 24px;
     color: #e0e0e0;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
 }
-
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-@keyframes scaleUp {
-    from { transform: scale(0.8); }
-    to { transform: scale(1); }
-}
-
-.fade-out {
-    animation: fadeOut 0.5s ease-out forwards;
-}
-
-@keyframes fadeOut {
-    from { opacity: 1; }
-    to { opacity: 0; display: none; }
-}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
+.fade-out { animation: fadeOut 0.5s ease-out forwards; }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
 /* Download Button Styles (Unchanged) */
 .download-container {
@@ -87,7 +63,6 @@ body {
     right: 20px;
     z-index: 1000;
 }
-
 .download-btn {
     background-color: #003087;
     color: #fff;
@@ -98,11 +73,7 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
-
-.download-container:hover .dropdown-content {
-    display: block;
-}
-
+.download-container:hover .dropdown-content { display: block; }
 .dropdown-content {
     display: none;
     position: absolute;
@@ -112,7 +83,6 @@ body {
     z-index: 1;
     right: 0;
 }
-
 .dropdown-content a {
     color: #000;
     padding: 12px 16px;
@@ -120,33 +90,28 @@ body {
     display: block;
     font-size: 14px;
 }
+.dropdown-content a:hover { background-color: #f1f1ff; }
 
-.dropdown-content a:hover {
-    background-color: #f1f1ff;
-}
-
-/* Resume Container Styles (UPDATED) */
+/* Resume Container Styles (Unchanged from last time) */
 .resume-container {
     display: flex;
     width: 100%;
-    max-width: 1000px; /* Standard document width */
-    margin: 0; /* Updated: Flexbox ab center karega */
-    
-    /* NEW: Solid white ki jagah semi-transparent background */
-    background: rgba(255, 255, 255, 0.9); /* 90% opaque white */
-    
+    max-width: 1000px;
+    margin: 20px auto;
+    background-image: url('Dashboard Background Image DBI.webp');
+    background-size: cover;
+    background-position: center;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px; /* Thoda rounded corner */
-    overflow: hidden; /* Rounded corners ke liye */
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .sidebar {
     width: 30%;
-    /* UPDATED: Background transparent taaki container ka background dikhe */
-    background: transparent; 
-    color: #333;
+    background: transparent;
+    color: #ffffff;
     padding: 20px;
-    border-right: 1px solid #e0e0e0;
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 .profile {
@@ -159,13 +124,14 @@ body {
     height: 150px;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 4px solid #003087;
+    border: 4px solid #ffffff;
 }
 
 .profile h1 {
     font-size: 24px;
     text-transform: uppercase;
-    color: #003087;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
@@ -176,10 +142,11 @@ body {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #003087;
-    color: #003087;
+    border-bottom: 2px solid #ffffff;
+    color: #ffffff;
     display: flex;
     align-items: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
@@ -187,21 +154,23 @@ body {
 }
 
 .section-content {
-    border: 1px solid #000;
+    border: 1px solid #ffffff;
     padding: 10px;
-    /* NEW: Text readability ke liye halka background */
-    background: rgba(255, 255, 255, 0.5); 
+    background: transparent;
 }
 
-.contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
+.contact p, .personal-details p, 
+.core-competencies ul, .tools ul, .languages ul,
+section p, section ul, section li {
     font-size: 14px;
-    line-height: 1.8;
-    color: #444;
+    line-height: 1.6;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
 }
 
 .contact p i {
     margin-right: 10px;
-    color: #003087;
+    color: #ffffff;
 }
 
 ul {
@@ -214,9 +183,11 @@ ul {
     padding-left: 20px;
 }
 
-.core-competencies ul li:before, .tools ul li:before, .languages ul li:before {
+.core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
+section ul li:before {
     content: "•";
-    color: #003087;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
     position: absolute;
     left: 0;
 }
@@ -224,8 +195,8 @@ ul {
 .main-content {
     width: 70%;
     padding: 30px;
-    /* UPDATED: Background transparent taaki container ka background dikhe */
     background: transparent;
+    color: #ffffff;
 }
 
 section {
@@ -236,10 +207,11 @@ section h2 {
     font-size: 18px;
     margin-bottom: 15px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #003087;
-    color: #003087;
+    border-bottom: 2px solid #ffffff;
+    color: #ffffff;
     display: flex;
     align-items: center;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 section h2 i {
@@ -247,22 +219,16 @@ section h2 i {
 }
 
 section .section-content {
-    border: 1px solid #000;
+    border: 1px solid #ffffff;
     padding: 10px;
-    /* NEW: Text readability ke liye halka background */
-    background: rgba(255, 255, 255, 0.5);
-}
-
-section p, section ul {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #444;
+    background: transparent;
 }
 
 section h3 {
     font-size: 16px;
     margin-bottom: 5px;
-    color: #003087;
+    color: #ffffff;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 section ul {
@@ -275,35 +241,19 @@ section ul li {
     padding-left: 20px;
 }
 
-section ul li:before {
-    content: "•";
-    color: #003087;
-    position: absolute;
-    left: 0;
-}
-
-/* --- Responsive Styles (UPDATED) --- */
-@media (max-width: 1024px) {
-    .resume-container {
-        width: 95%; /* Thoda space side mein */
-        max-width: 95%;
-    }
-}
-
+/* Responsive Styles (Unchanged) */
 @media (max-width: 768px) {
     body {
-        /* Mobile par centering ki jagah top se start karenge */
+        padding: 0;
         justify-content: flex-start; 
-        padding: 10px;
     }
     
     .resume-container {
-        flex-direction: column; /* Main change: Sidebar upar, content neeche */
+        flex-direction: column;
         width: 100%;
         margin: 0;
         box-shadow: none;
-        /* Mobile par readability ke liye zyada solid background */
-        background: rgba(255, 255, 255, 0.95);
+        border-radius: 0;
     }
 
     .sidebar, .main-content {
@@ -313,64 +263,36 @@ section ul li:before {
 
     .sidebar {
         border-right: none;
-        border-bottom: 2px solid #e0e0e0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     }
-
-    .profile img {
-        width: 120px;
-        height: 120px;
-    }
-
-    .profile h1 {
-        font-size: 22px;
-    }
-    
-    .greeting-content {
-        width: 90%;
-        padding: 30px 20px;
-    }
-    .greeting-content h1 { font-size: 30px; }
-    .greeting-content p { font-size: 20px; }
 }
-
 @media (max-width: 480px) {
-    body {
-        padding: 0;
-    }
-    
-    .resume-container {
-        width: 100%;
-        border-radius: 0;
-    }
-
-    .main-content {
-        padding: 20px 15px;
-    }
-    .sidebar {
+    .main-content, .sidebar {
         padding: 20px 15px;
     }
     .download-container {
         top: 10px;
         right: 10px;
     }
-    .download-btn {
-        padding: 8px 12px;
-        font-size: 14px;
-    }
 }
 
-/* Print Styles for Downloads (Unchanged & Correct) */
-/* Ye styles tabhi kaam karte hain jab aap 'Download' ya 'Print' karte hain */
+/* --- Print Styles (UPDATED AS PER YOUR REQUEST) --- */
+/* Ye naye styles printer ko force karenge ki wo background image ke saath print kare */
 @media print {
     body {
         margin: 0;
         padding: 0;
-        background: #ffffff !important; /* Print mein background hamesha white */
-        display: block; /* Flexbox settings hat jayengi */
+        background: #ffffff !important; /* Body ka background white hi rahega */
+        display: block;
+        /* Force color printing */
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
+
     .greeting-popup, .download-container {
         display: none !important;
     }
+
     .resume-container {
         margin: 0;
         padding: 0;
@@ -378,41 +300,57 @@ section ul li:before {
         max-width: 100%;
         box-shadow: none;
         border: none;
-        background: #ffffff !important; /* Print mein background white */
-    }
-    
-    /* PDF/Print Fixes */
-    p, li, 
-    .contact p, .personal-details p, 
-    .core-competencies ul, .tools ul, .languages ul, 
-    section p, section ul {
-        color: #000 !important; /* Dark black text for printing */
-        font-size: 10pt;
-        line-height: 1.4;
-        background: transparent !important; /* Section ka background print nahi hoga */
-    }
-    .section-content {
-        background: transparent !important;
-    }
-
-    h1 { font-size: 18pt !important; }
-    h2 { font-size: 14pt !important; }
-    h3 { font-size: 12pt !important; }
-
-    /* Page Break Logic */
-    .contact, .personal-details, .core-competencies, .tools, .languages,
-    .professional-summary, .professional-experience, .education, .certifications {
-        page-break-inside: avoid; /* Section ko beech se cutne se rokega */
-    }
-
-    .sidebar {
-        width: 30%;
-        background: #f9f9f9 !important; /* Sidebar ko print mein halka grey background dega */
+        border-radius: 0;
+        
+        /* --- KEY CHANGE --- */
+        /* Force the background image to print */
+        background-image: url('Dashboard Background Image DBI.webp') !important;
+        background-size: cover !important;
+        background-position: center !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
-    .main-content {
-        width: 70%;
-        background: #ffffff !important;
+
+    /* Force text colors to be white with shadow (as seen on screen) */
+    p, li, h1, h2, h3,
+    .contact p, .personal-details p, 
+    .core-competencies ul, .tools ul, .languages ul, 
+    section p, section ul, .profile h1, .contact h2, 
+    .personal-details h2, .core-competencies h2, .tools h2, 
+    .languages h2, section h2, section h3, .contact p i {
+        color: #ffffff !important;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 1) !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+    
+    /* Force bullet points color */
+    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
+    section ul li:before {
+         color: #ffffff !important;
+         text-shadow: 1px 1px 2px rgba(0, 0, 0, 1) !important;
+    }
+
+    /* Force border colors */
+    .sidebar {
+        border-right-color: rgba(255, 255, 255, 0.5) !important;
+    }
+    .section-content, .profile img, .contact h2, 
+    .personal-details h2, .core-competencies h2, .tools h2, 
+    .languages h2, section h2 {
+        border-color: #ffffff !important;
+    }
+
+    /* Keep page break logic */
+    .contact, .personal-details, .core-competencies, .tools, .languages,
+    .professional-summary, .professional-experience, .education, .certifications {
+        page-break-inside: avoid;
+    }
+
+    /* Make sure sidebar and main content are transparent */
+    .sidebar, .main-content {
+        background: transparent !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
 }
