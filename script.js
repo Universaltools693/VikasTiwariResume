@@ -25,31 +25,43 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // Download Functionality
-    const resumeContainer = document.querySelector(".resume-container");
 
-    // Download as PDF (Targets the main container)
-    // Iska fix CSS file mein kiya gaya hai
+    // =======================================================
+    // ==== YAHAN BADLAV KIYA GAYA HAI ====
+    // =======================================================
+
+    // Download as PDF (Naya logic - ab ye 'pdf-export-area' ko target karega)
     document.getElementById("download-pdf").addEventListener("click", function (e) {
         e.preventDefault();
+        
+        // Naya element jise print karna hai
+        const element = document.getElementById("pdf-export-area");
+
         const opt = {
-            margin: 0, 
+            margin: 0, // Margin 0 rakhein, kyonki humne page pehle hi bana liya hai
             filename: 'Vikas_Tiwari_Resume.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 }, 
+            html2canvas: { 
+                scale: 2,
+                useCORS: true // Agar image cross-origin ho
+            },
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css'] } 
+            pagebreak: { mode: ['css'], before: '.pdf-page' } // Har .pdf-page se pehle naya page
         };
-        html2pdf().set(opt).from(resumeContainer).save();
+        
+        // Naye element se PDF banayein
+        html2pdf().set(opt).from(element).save();
     });
+
+    // =======================================================
+    // ==== MS WORD CODE (FIXED - Isme badlav nahi) ====
+    // =======================================================
 
     // Download as Word (FIXED - with Base64 image and FULL content)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         
         // Zaroori Note: MS Word download library (html-docx-js) background images ko support NAHI KARTI hai.
-        // Isliye, Word file hamesha white background ke saath hi download hogi.
-        
         try {
             // Convert profile image to Base64 to embed in Word
             const profileImg = document.querySelector('.profile img');
