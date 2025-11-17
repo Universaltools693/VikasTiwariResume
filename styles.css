@@ -275,20 +275,28 @@ body {
     }
 }
 
-/* Purana @media print hata diya gaya hai kyonki ab uski zaroorat nahi */
-
 
 /* ======================================================= */
-/* ==== NAYA PDF EXPORT STYLE (Ise nahi badla hai) ==== */
+/* ==== NAYA PDF EXPORT STYLE (FIXED - Blank PDF issue) ==== */
 /* ======================================================= */
 /* Ye styles sirf PDF ke liye hain aur ab conflict nahi karenge */
 
-/* 1. Export wale area ko live website par chupao */
+/* 1. Export wale area ko live website par chupao (FIXED) */
 .pdf-export-area {
-    display: none; /* Sabse zaroori: Ise hide rakho */
-    width: 8.27in; /* A4 width */
-    position: absolute; /* Layout se bahar rakho */
+    /* DISPLAY: NONE; <-- YAHI GALATI THI, ISE HATA DIYA HAI 
+    Ab ye render hoga, taki PDF ban sake.
+    */
+    
+    /* Ise layout se bahar rakho taki live site na bigde */
+    position: absolute;
     left: -9999px;
+    top: 0;
+    
+    /* Isko ek size do taki library iska screenshot le sake */
+    width: 8.27in; 
+    
+    /* Ise sabke peeche rakho (just in case) */
+    z-index: -10; 
 }
 
 /* 2. Har PDF page ko style karo */
