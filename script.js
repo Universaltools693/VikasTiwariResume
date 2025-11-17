@@ -29,30 +29,29 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FINAL - Tall two-column capture with natural crop, no repeat/cut-off)
+    // Download as PDF (FIXED - Tall two-column natural flow, no repeat/cut, full bg/header)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries load nahi hui. Page ko refresh kar ke dobara try karo. (Console check karo F12 se)");
-            console.error("Libraries missing:", { html2canvas: !!html2canvasLib, jspdf: !!jspdfLib });
+            alert("PDF libraries load nahi hui. Page refresh (Ctrl+F5) kar ke try karo.");
             return;
         }
         
         try {
             const { jsPDF } = jspdfLib;
             const doc = new jsPDF('p', 'pt', 'a4');
-            const pageW = doc.internal.pageSize.getWidth(); // ~595pt
-            const pageH = doc.internal.pageSize.getHeight(); // ~842pt
-            const headerH = 15; // Thin header height
+            const pageW = doc.internal.pageSize.getWidth(); // 595.28pt
+            const pageH = doc.internal.pageSize.getHeight(); // 841.89pt
+            const headerH = 15; // Thin header
             const gap = 10; // Gap below header
             const contentTop = headerH + gap;
-            const contentH = pageH - contentTop; // ~817pt per page content
+            const contentH = pageH - contentTop;
 
-            // Load background image with fallback
-            let bgDataUrl = null;
+            // Background image per page (full cover)
+            let bgDataUrl;
             try {
-                const bgPromise = new Promise((resolve, reject) => {
+                bgDataUrl = await new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
@@ -62,25 +61,23 @@ document.addEventListener("DOMContentLoaded", function () {
                         ctx.drawImage(img, 0, 0, pageW, pageH);
                         resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
-                    img.onerror = () => reject(new Error("Background image load nahi hui - fallback to white."));
+                    img.onerror = reject;
                     img.src = 'Dashboard Background Image DBI.webp';
-                    img.crossOrigin = "anonymous";
                 });
-                bgDataUrl = await bgPromise;
-            } catch (imgErr) {
-                console.warn("BG Image Error:", imgErr);
+            } catch {
+                // Fallback white bg
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW;
                 canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, pageW, pageH);
-                bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
+                bgDataUrl = canvas.toDataURL('image/jpeg', 1);
             }
 
-            // Adjust resume for tall capture (two-column, no fixed height)
+            // Prepare container for tall capture (two-column, no cut-off)
             const resumeContainer = document.querySelector('.resume-container');
-            const originalStyles = {
+            const original = {
                 height: resumeContainer.style.height,
                 maxHeight: resumeContainer.style.maxHeight,
                 overflow: resumeContainer.style.overflow,
@@ -90,22 +87,24 @@ document.addEventListener("DOMContentLoaded", function () {
             resumeContainer.style.maxHeight = 'none !important';
             resumeContainer.style.overflow = 'visible !important';
             resumeContainer.style.width = `${pageW}px !important`;
-            // Avoid breaks inside sections for better flow
+            // Avoid breaks
             const sections = resumeContainer.querySelectorAll('.contact, .personal-details, .core-competencies, .tools, .languages, section');
             sections.forEach(sec => {
                 sec.style.pageBreakInside = 'avoid !important';
                 sec.style.breakInside = 'avoid !important';
             });
-            // Hide UI elements
+            // Hide UI
             const popup = document.getElementById('greeting-popup');
-            const download = document.querySelector('.download-container');
-            const originalPopupDisplay = popup.style.display;
-            const originalDownloadDisplay = download.style.display;
+            const downloadBtn = document.querySelector('.download-container');
+            const originalPopup = popup.style.display;
+            const originalBtn = downloadBtn.style.display;
             popup.style.display = 'none';
-            download.style.display = 'none';
-            await new Promise(resolve => setTimeout(resolve, 600)); // Extra wait for layout
+            downloadBtn.style.display = 'none';
+            // Force reflow
+            resumeContainer.offsetHeight; // Trigger layout
+            await new Promise(r => setTimeout(r, 800)); // Wait for full render
 
-            // Capture full tall canvas (transparent bg)
+            // Capture tall canvas (transparent for overlay)
             const fullCanvas = await html2canvasLib(resumeContainer, {
                 scale: 1,
                 useCORS: true,
@@ -116,58 +115,56 @@ document.addEventListener("DOMContentLoaded", function () {
                 logging: false
             });
 
-            // Restore styles and UI
-            Object.keys(originalStyles).forEach(key => {
-                resumeContainer.style[key] = originalStyles[key];
-            });
+            // Restore
+            Object.assign(resumeContainer.style, original);
             sections.forEach(sec => {
                 sec.style.pageBreakInside = '';
                 sec.style.breakInside = '';
             });
-            popup.style.display = originalPopupDisplay;
-            download.style.display = originalDownloadDisplay;
+            popup.style.display = originalPopup;
+            downloadBtn.style.display = originalBtn;
 
             const fullHeight = fullCanvas.height;
             const numPages = Math.ceil(fullHeight / contentH);
 
-            // Crop function for pages
-            const cropCanvas = (sourceCanvas, startY, cropH) => {
+            // Crop function
+            const cropCanvas = (source, startY, h) => {
                 const crop = document.createElement('canvas');
-                crop.width = sourceCanvas.width;
-                crop.height = cropH;
+                crop.width = pageW;
+                crop.height = h;
                 const ctx = crop.getContext('2d');
-                ctx.drawImage(sourceCanvas, 0, startY, pageW, cropH, 0, 0, pageW, cropH);
+                ctx.drawImage(source, 0, startY, pageW, h, 0, 0, pageW, h);
                 return crop;
             };
 
-            // Build PDF pages
+            // Build pages
             for (let i = 0; i < numPages; i++) {
                 if (i > 0) doc.addPage();
 
-                // Full bg
+                // Bg full page
                 doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
                 
-                // Blue header
+                // Header patti
                 doc.setFillColor(0, 48, 135);
                 doc.rect(0, 0, pageW, headerH, 'F');
 
-                // Crop content
+                // Content crop
                 const startY = i * contentH;
-                const remainingH = Math.min(contentH, fullHeight - startY);
-                if (remainingH > 0) {
-                    const pageCanvas = cropCanvas(fullCanvas, startY, remainingH);
-                    doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remainingH);
+                const remH = Math.min(contentH, fullHeight - startY);
+                if (remH > 0) {
+                    const pageSlice = cropCanvas(fullCanvas, startY, remH);
+                    doc.addImage(pageSlice.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remH);
                 }
             }
 
             doc.save('Vikas_Tiwari_Resume.pdf');
         } catch (error) {
-            console.error("PDF error:", error);
-            alert("PDF mein error: " + error.message + ". F12 console check karo.");
+            console.error(error);
+            alert("Error: " + error.message + ". F12 console dekho.");
         }
     });
 
-    // Word download (unchanged, two-column white)
+    // Word (unchanged)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -324,7 +321,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link.click();
         } catch (error) {
             console.error("Word error:", error);
-            alert("Word mein error: " + error.message + ". PDF try karo.");
+            alert("Word error. PDF try karo.");
         }
     });
 });
