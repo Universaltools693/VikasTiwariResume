@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (UPDATED - Custom single-column flow like Ashish's, full natural split)
+    // Download as PDF (FINAL - Tall two-column capture with natural crop, no repeat/cut-off)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const contentTop = headerH + gap;
             const contentH = pageH - contentTop; // ~817pt per page content
 
-            // Load and prepare background image (full cover per page) with fallback
+            // Load background image with fallback
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         canvas.width = pageW;
                         canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
+                        ctx.drawImage(img, 0, 0, pageW, pageH);
                         resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
                     img.onerror = () => reject(new Error("Background image load nahi hui - fallback to white."));
@@ -69,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
                 console.warn("BG Image Error:", imgErr);
-                // Fallback: Create white bg
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW;
                 canvas.height = pageH;
@@ -79,169 +78,59 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // Create custom single-column HTML for PDF (flow like Ashish: profile top, then all sections sequential full width)
-            const profileImg = document.querySelector('.profile img');
-            const canvasImg = document.createElement('canvas');
-            canvasImg.width = profileImg.naturalWidth;
-            canvasImg.height = profileImg.naturalHeight;
-            const ctxImg = canvasImg.getContext('2d');
-            ctxImg.drawImage(profileImg, 0, 0);
-            const imgDataUrl = canvasImg.toDataURL('image/jpeg');
+            // Adjust resume for tall capture (two-column, no fixed height)
+            const resumeContainer = document.querySelector('.resume-container');
+            const originalStyles = {
+                height: resumeContainer.style.height,
+                maxHeight: resumeContainer.style.maxHeight,
+                overflow: resumeContainer.style.overflow,
+                width: resumeContainer.style.width
+            };
+            resumeContainer.style.height = 'auto !important';
+            resumeContainer.style.maxHeight = 'none !important';
+            resumeContainer.style.overflow = 'visible !important';
+            resumeContainer.style.width = `${pageW}px !important`;
+            // Avoid breaks inside sections for better flow
+            const sections = resumeContainer.querySelectorAll('.contact, .personal-details, .core-competencies, .tools, .languages, section');
+            sections.forEach(sec => {
+                sec.style.pageBreakInside = 'avoid !important';
+                sec.style.breakInside = 'avoid !important';
+            });
+            // Hide UI elements
+            const popup = document.getElementById('greeting-popup');
+            const download = document.querySelector('.download-container');
+            const originalPopupDisplay = popup.style.display;
+            const originalDownloadDisplay = download.style.display;
+            popup.style.display = 'none';
+            download.style.display = 'none';
+            await new Promise(resolve => setTimeout(resolve, 600)); // Extra wait for layout
 
-            const customHTML = `
-                <div class="pdf-flow" style="width: ${pageW}px; background: transparent; font-family: Arial, sans-serif; color: #000; line-height: 1.6; padding: 20px; box-sizing: border-box;">
-                    <!-- Profile -->
-                    <div style="text-align: center; margin-bottom: 20px;">
-                        <img src="${imgDataUrl}" alt="Profile" style="width: 150px; height: 150px; border-radius: 50%; border: 4px solid #003087;">
-                        <h1 style="font-size: 24px; text-transform: uppercase; color: #003087; margin: 10px 0;">VIKAS TIWARI</h1>
-                    </div>
-
-                    <!-- Contact -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-address-card" style="margin-right: 8px; color: #003087;"></i> CONTACT
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 20px; background: transparent;">
-                        <p style="margin: 5px 0;"><i class="fas fa-phone" style="margin-right: 10px; color: #003087;"></i> 7974123411</p>
-                        <p style="margin: 5px 0;"><i class="fas fa-envelope" style="margin-right: 10px; color: #003087;"></i> vikastiwari0693@gmail.com</p>
-                        <p style="margin: 5px 0;"><i class="fab fa-linkedin" style="margin-right: 10px; color: #003087;"></i> linkedin.com/in/vikas-tiwari-sales</p>
-                        <p style="margin: 5px 0;"><i class="fas fa-globe" style="margin-right: 10px; color: #003087;"></i> vikastiwari3.netlify.app</p>
-                        <p style="margin: 5px 0;"><i class="fas fa-map-marker-alt" style="margin-right: 10px; color: #003087;"></i> Avni Bihar, New Shastri Nagar, Jabalpur, Madhya Pradesh (482003)</p>
-                    </div>
-
-                    <!-- Personal Details -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-user" style="margin-right: 8px; color: #003087;"></i> PERSONAL DETAILS
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 20px; background: transparent;">
-                        <p style="margin: 5px 0;">DOB: 12/11/1996</p>
-                        <p style="margin: 5px 0;">Nationality: Indian</p>
-                        <p style="margin: 5px 0;">Gender: Male</p>
-                        <p style="margin: 5px 0;">Marital Status: Single</p>
-                    </div>
-
-                    <!-- Core Competencies -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-check-circle" style="margin-right: 8px; color: #003087;"></i> CORE COMPETENCIES
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 20px; background: transparent;">
-                        <ul style="list-style: none; padding-left: 0; margin: 0;">
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Quick Learner</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Time Management</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Negotiation</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Problem-Solving</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Client Handling</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Sales Planning</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Team Handling</li>
-                        </ul>
-                    </div>
-
-                    <!-- Tools & Technologies -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-tools" style="margin-right: 8px; color: #003087;"></i> TOOLS & TECHNOLOGIES
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 20px; background: transparent;">
-                        <ul style="list-style: none; padding-left: 0; margin: 0;">
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• MS Office (MS Excel, MS Word, MS PowerPoint)</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Tally ERP</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• CRM Software Management</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Advanced Photoshop</li>
-                        </ul>
-                    </div>
-
-                    <!-- Languages -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-language" style="margin-right: 8px; color: #003087;"></i> LANGUAGES
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 30px; background: transparent;">
-                        <ul style="list-style: none; padding-left: 0; margin: 0;">
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• Hindi (Native)</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px;">• English (Basic Proficiency)</li>
-                        </ul>
-                    </div>
-
-                    <!-- Professional Summary -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-briefcase" style="margin-right: 8px; color: #003087;"></i> PROFESSIONAL SUMMARY
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 30px; background: transparent;">
-                        <p style="margin: 0; font-size: 14px; color: #000;">I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
-                    </div>
-
-                    <!-- Professional Experience -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-briefcase" style="margin-right: 8px; color: #003087;"></i> PROFESSIONAL EXPERIENCE
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 30px; background: transparent;">
-                        <h3 style="font-size: 16px; margin-bottom: 5px; color: #003087;">Sales Executive (Financial Consultant)</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
-                        <ul style="list-style: none; padding-left: 20px; margin: 0;">
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Found new clients and built relationships through direct sales and client meetings.</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Met sales targets with good negotiation and client interaction skills.</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Created a client list, ensuring business growth through regular follow-ups.</li>
-                        </ul>
-                        <h3 style="font-size: 16px; margin: 20px 0 5px 0; color: #003087;">Customer Service Expert (Customer Service Associate)</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>Magnum Group (Magnum Super Distributors (P) Ltd.)</strong> | Sep 2020 – Jun 2024 (3 years, 9 months)</p>
-                        <ul style="list-style: none; padding-left: 20px; margin: 0;">
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Handled customer queries and resolved issues, achieving a 100% quality score in March 2023 and August 2023.</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Used CRM software to manage complaints and track solutions.</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Received Certificates of Excellence for good performance.</li>
-                            <li style="margin: 8px 0; position: relative; padding-left: 20px; font-size: 14px; color: #000;">• Conducted real-time audits of customer bills, performing detailed analysis to ensure accuracy and compliance with company standards.</li>
-                        </ul>
-                    </div>
-
-                    <!-- Education History -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-graduation-cap" style="margin-right: 8px; color: #003087;"></i> EDUCATION HISTORY
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; margin-bottom: 30px; background: transparent;">
-                        <h3 style="font-size: 16px; margin-bottom: 5px; color: #003087;">Master of Business Administration (M.B.A.) – Marketing and Finance</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Madhya Pradesh</strong> | 2024</p>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;">CGPA: 7.49 | Equivalent Percentage: 74.9% | First Division</p>
-                        <h3 style="font-size: 16px; margin: 20px 0 5px 0; color: #003087;">Bachelor of Computer Applications (B.C.A.)</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>Makhanlal Chaturvedi National University of Journalism and Communication, Bhopal</strong> | 2021</p>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;">Percentage: 59.70% | Second Division</p>
-                        <h3 style="font-size: 16px; margin: 20px 0 5px 0; color: #003087;">Higher Secondary School Certificate (10+2) – Science (PCM)</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2016</p>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;">Percentage: 43.6%</p>
-                        <h3 style="font-size: 16px; margin: 20px 0 5px 0; color: #003087;">High School Certificate (10th)</h3>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2014</p>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;">Percentage: 49% | Second Division</p>
-                    </div>
-
-                    <!-- Certifications -->
-                    <h2 style="font-size: 16px; border-bottom: 2px solid #003087; padding-bottom: 5px; color: #003087; margin-bottom: 10px; display: flex; align-items: center;">
-                        <i class="fas fa-certificate" style="margin-right: 8px; color: #003087;"></i> CERTIFICATIONS
-                    </h2>
-                    <div style="border: 1px solid #000; padding: 10px; background: transparent;">
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;">Certification in MS Office (MS Excel, MS Word, MS PowerPoint), Advanced Photoshop, and Tally ERP</p>
-                        <p style="margin: 5px 0; font-size: 14px; color: #000;"><strong>British Heights Education, Jabalpur</strong> | 2012</p>
-                    </div>
-                </div>
-            `;
-
-            // Create temp element with custom HTML
-            const temp = document.createElement('div');
-            temp.innerHTML = customHTML;
-            temp.style.cssText = `position: absolute; left: -9999px; top: 0; width: ${pageW}px; height: auto; background: transparent;`;
-            document.body.appendChild(temp);
-            await new Promise(resolve => setTimeout(resolve, 300)); // Render wait
-
-            // Capture full tall canvas
-            const fullCanvas = await html2canvasLib(temp, {
+            // Capture full tall canvas (transparent bg)
+            const fullCanvas = await html2canvasLib(resumeContainer, {
                 scale: 1,
                 useCORS: true,
                 allowTaint: true,
                 width: pageW,
+                height: resumeContainer.scrollHeight,
                 backgroundColor: null,
                 logging: false
             });
 
-            document.body.removeChild(temp);
+            // Restore styles and UI
+            Object.keys(originalStyles).forEach(key => {
+                resumeContainer.style[key] = originalStyles[key];
+            });
+            sections.forEach(sec => {
+                sec.style.pageBreakInside = '';
+                sec.style.breakInside = '';
+            });
+            popup.style.display = originalPopupDisplay;
+            download.style.display = originalDownloadDisplay;
 
             const fullHeight = fullCanvas.height;
             const numPages = Math.ceil(fullHeight / contentH);
 
-            // Function to crop canvas
+            // Crop function for pages
             const cropCanvas = (sourceCanvas, startY, cropH) => {
                 const crop = document.createElement('canvas');
                 crop.width = sourceCanvas.width;
@@ -251,33 +140,34 @@ document.addEventListener("DOMContentLoaded", function () {
                 return crop;
             };
 
-            // Add pages
+            // Build PDF pages
             for (let i = 0; i < numPages; i++) {
                 if (i > 0) doc.addPage();
 
                 // Full bg
                 doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
                 
-                // Header
+                // Blue header
                 doc.setFillColor(0, 48, 135);
                 doc.rect(0, 0, pageW, headerH, 'F');
 
                 // Crop content
                 const startY = i * contentH;
                 const remainingH = Math.min(contentH, fullHeight - startY);
-                const pageCanvas = cropCanvas(fullCanvas, startY, remainingH);
-                doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remainingH);
+                if (remainingH > 0) {
+                    const pageCanvas = cropCanvas(fullCanvas, startY, remainingH);
+                    doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remainingH);
+                }
             }
 
-            // Save
             doc.save('Vikas_Tiwari_Resume.pdf');
         } catch (error) {
-            console.error("PDF generation error:", error);
-            alert("PDF download mein error: " + error.message + ". Console (F12) check karo ya page refresh karo.");
+            console.error("PDF error:", error);
+            alert("PDF mein error: " + error.message + ". F12 console check karo.");
         }
     });
 
-    // Download as Word (Unchanged)
+    // Word download (unchanged, two-column white)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -286,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
             canvas.width = profileImg.naturalWidth;
             canvas.height = profileImg.naturalHeight;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(profileImg, 0, 0, canvas.width, canvas.height);
+            ctx.drawImage(profileImg, 0, 0);
             const imgDataUrl = canvas.toDataURL('image/jpeg');
 
             const content = `
@@ -433,8 +323,8 @@ document.addEventListener("DOMContentLoaded", function () {
             link.download = 'Vikas_Tiwari_Resume.docx';
             link.click();
         } catch (error) {
-            console.error("Error generating Word document:", error);
-            alert("Word document generate karne mein error aa gaya hai. Kripya PDF download karne ka prayas karein.");
+            console.error("Word error:", error);
+            alert("Word mein error: " + error.message + ". PDF try karo.");
         }
     });
 });
