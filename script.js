@@ -74,7 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // *** NEW:*** Function to generate canvas with *specific* sections
+            // *** YEH HAI ASLI SOLUTION ***
+            // Function to generate canvas with *specific* sections
             const generatePageCanvas = async (mainSectionClasses, sidebarSectionClasses) => {
                 const temp = document.createElement('div');
                 temp.className = 'pdf-mode';
@@ -165,14 +166,14 @@ document.addEventListener("DOMContentLoaded", function () {
             // FIX: Calculate proportional height
             const canvas2_ScaledHeight = canvas2.height * (pageW / canvas2.width);
 
-            doc.addPage();
+            doc.addPage(); // <-- DOOSRA PAGE YAHAN BANA
             doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // BG
             doc.setFillColor(0, 48, 135); // Header
             doc.rect(0, 0, pageW, headerH, 'F');
             doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, canvas2_ScaledHeight); // Page 2 Content
 
             // Save
-            doc.save('Vikas_Tiwari_Resume_FINAL_FIXED.pdf');
+            doc.save('Vikas_Tiwari_Resume_2_PAGE_FIXED.pdf'); // <-- Maine naam badal diya hai
         } catch (error) {
             console.error("PDF generation error:", error);
             alert("PDF download mein error: " + error.message + ". Console (F12) check karo.");
