@@ -25,34 +25,30 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // --- Download Functionality (Poora Naya aur Fixed Code) ---
-
+    // --- Download Functionality (FIXED - Aapke 2-Page logic ke saath) ---
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FIXED - "Long Screenshot Slicing" Method)
+    // Download as PDF (FIXED)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
-
+        
         if (!html2canvasLib || !jspdfLib) {
             alert("PDF libraries load nahi hui. Page ko refresh kar ke dobara try karo.");
             console.error("Libraries missing:", { html2canvas: !!html2canvasLib, jspdf: !!jspdfLib });
             return;
         }
-
+        
         try {
             const { jsPDF } = jspdfLib;
             const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
+            const headerH = 15; // Thin header height
+            const gap = 10; // Gap below header
+            const contentTop = headerH + gap;
             
-            // Header ki settings
-            const headerH = 15; // Blue header strip ki height
-            const contentTop = 15; // Header ke aage content kahan se start ho (15pt se)
-            // Ek page par kitna content fit hoga
-            const pageContentHeight = pageH - contentTop; 
-
-            // 1. Background Image Load Karo (Aapke code se)
+            // Background image (Aapka original code)
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
@@ -62,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         canvas.width = pageW;
                         canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, pageW, pageH); // Full page par scale
+                        ctx.drawImage(img, 0, 0, pageW, pageH); 
                         resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
                     img.onerror = () => reject(new Error("Background image load nahi hui."));
@@ -71,8 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
-                console.warn("BG Image Error:", imgErr, "White background istemal hoga.");
-                // Fallback: White background
+                console.warn("BG Image Error:", imgErr);
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW; canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
@@ -80,75 +75,107 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // 2. Resume element ko capture ke liye taiyar karo
-            const element = document.querySelector('.resume-container');
-            // CSS class add karo taaki capture transparent ho (jaisa aapne CSS mein define kiya hai)
-            element.classList.add('pdf-mode');
-            element.querySelectorAll('*').forEach(el => el.classList.add('pdf-mode'));
+            // Function to generate canvas (FIXED: Auto-height)
+            const generatePageCanvas = async (sections) => {
+                const temp = document.createElement('div');
+                temp.className = 'pdf-mode';
+                // ***FIX 1:*** Fixed height aur overflow:hidden yahan se hata diya
+                temp.style.cssText = `
+                    width: ${pageW}px; 
+                    display: flex;
+                    background: transparent;
+                    box-sizing: border-box;
+                `;
 
-            // 3. Poore resume ka EK LAMBA screenshot (canvas) lo
-            const canvas = await html2canvasLib(element, {
-                scale: 2, // Quality acchi karne ke liye
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: null // Transparent background ke saath capture
-            });
+                // Sidebar clone (Aapka original logic, bilkul sahi)
+                const side = document.querySelector('.sidebar').cloneNode(true);
+                // ***FIX 2:*** Fixed height 100% aur overflow yahan se hata diya
+                side.style.cssText = `
+                    width: 30%;
+                    flex-shrink: 0;
+                    background: transparent !important;
+                    padding: 20px;
+                    box-sizing: border-box;
+                `;
+                temp.appendChild(side);
 
-            // 4. Capture ke baad CSS class hata do
-            element.classList.remove('pdf-mode');
-            element.querySelectorAll('*').forEach(el => el.classList.remove('pdf-mode'));
+                // Main content div
+                const mainTemp = document.createElement('div');
+                // ***FIX 3:*** Fixed height 100% aur overflow yahan se hata diya
+                mainTemp.style.cssText = `
+                    width: 70%;
+                    padding: 30px;
+                    background: transparent;
+                    box-sizing: border-box;
+                `;
 
-            // 5. Canvas ko PDF ke size ke hisaab se scale karo
-            const canvasWidth = canvas.width;
-            const canvasHeight = canvas.height;
-            const ratio = pageW / canvasWidth;
-            const pdfImgHeight = canvasHeight * ratio; // Canvas ki total height PDF mein kitni hogi
+                sections.forEach(sec => {
+                    if (sec) {
+                        const cloneSec = sec.cloneNode(true);
+                        cloneSec.querySelectorAll('.section-content').forEach(el => {
+                            el.style.backgroundColor = 'transparent';
+                        });
+                        mainTemp.appendChild(cloneSec);
+                    }
+                });
 
-            // 6. PDF mein pages add karo (Slicing logic)
-            let heightProcessed = 0; // Kitni height ka canvas PDF mein add ho chuka hai
-            let pageIndex = 0;
+                temp.appendChild(mainTemp);
+                document.body.appendChild(temp);
+                await new Promise(resolve => setTimeout(resolve, 300)); 
 
-            while (heightProcessed < pdfImgHeight) {
-                if (pageIndex > 0) {
-                    doc.addPage();
-                }
-                
-                // Har naye page par Background Image add karo
-                doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-                
-                // Har naye page par Blue Header add karo
-                doc.setFillColor(0, 48, 135); // #003087
-                doc.rect(0, 0, pageW, headerH, 'F');
+                // Ab canvas content ke hisaab se auto-height ka banega
+                const canvas = await html2canvasLib(temp, {
+                    scale: 1, // Scale 1 rakhein for better proportion calculation
+                    useCORS: true,
+                    allowTaint: true,
+                    width: pageW,
+                    backgroundColor: null 
+                });
 
-                // Canvas (image) ko page par add karo
-                // `contentTop - heightProcessed` magic hai
-                // Page 1: y = 15 - 0 = 15
-                // Page 2: y = 15 - (pageContentHeight) = (image upar shift ho jayegi)
-                doc.addImage(canvas.toDataURL('image/png'), 'PNG', 0, contentTop - heightProcessed, pageW, pdfImgHeight);
+                document.body.removeChild(temp);
+                return canvas;
+            };
 
-                heightProcessed += pageContentHeight; // Agle loop ke liye height badhao
-                pageIndex++;
-            }
+            // Get sections from DOM (Aapka original code)
+            const summary = document.querySelector('.professional-summary');
+            const experience = document.querySelector('.professional-experience');
+            const education = document.querySelector('.education');
+            const certifications = document.querySelector('.certifications');
 
-            // 7. Save karo
+            // --- Page 1: Summary + Experience ---
+            const canvas1 = await generatePageCanvas([summary, experience]);
+            // ***FIX 4:*** Canvas ko squish nahi karenge. Uski proportional height nikalenge.
+            const canvas1_ScaledHeight = canvas1.height * (pageW / canvas1.width);
+            
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
+            doc.setFillColor(0, 48, 135); // #003087
+            doc.rect(0, 0, pageW, headerH, 'F');
+            // ***FIX 5:*** Yahan fixed 'contentH' ki jagah calculated 'canvas1_ScaledHeight' daala
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, canvas1_ScaledHeight);
+
+            // --- Page 2: Education + Certifications ---
+            const canvas2 = await generatePageCanvas([education, certifications]);
+            // ***FIX 6:*** Page 2 ke liye bhi same proportional height calculation
+            const canvas2_ScaledHeight = canvas2.height * (pageW / canvas2.width);
+
+            doc.addPage();
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
+            doc.setFillColor(0, 48, 135); // Header again
+            doc.rect(0, 0, pageW, headerH, 'F');
+            // ***FIX 7:*** Yahan bhi calculated 'canvas2_ScaledHeight' daala
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, canvas2_ScaledHeight);
+
+            // Save
             doc.save('Vikas_Tiwari_Resume_FIXED.pdf');
-
         } catch (error) {
             console.error("PDF generation error:", error);
-            alert("PDF download mein error: " + error.message);
-            // Error ke case mein CSS classes zaroor hata do
-            const element = document.querySelector('.resume-container');
-            element.classList.remove('pdf-mode');
-            element.querySelectorAll('*').forEach(el => el.classList.remove('pdf-mode'));
+            alert("PDF download mein error: " + error.message + ". Console (F12) check karo.");
         }
     });
 
-
-    // --- Download as Word (Aapka original code - Sahi Hai) ---
+    // --- Download as Word (Aapka original code - Bilkul Sahi) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
-        
-        // Zaroori Note... (Aapka comment)
         
         try {
             // Convert profile image to Base64 to embed in Word
