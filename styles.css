@@ -42,7 +42,7 @@ body {
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* --- Download Button Styles (Unchanged) --- */
+/* Download Button Styles (Unchanged) */
 .download-container {
     position: fixed;
     top: 20px;
@@ -84,8 +84,10 @@ body {
     background-color: #f1f1f1;
 }
 
-/* --- Resume Container (Unchanged) --- */
-/* Ye aapki live website ka style hai */
+/* ======================================================= */
+/* ==== AAPKI LIVE WEBSITE KE STYLES (FIXED) ==== */
+/* ======================================================= */
+
 .resume-container {
     display: flex;
     width: 100%;
@@ -100,38 +102,49 @@ body {
     position: relative;
 }
 
-/* --- Sidebar (Unchanged) --- */
-.sidebar {
+/* --- Sidebar (FIXED with '.resume-container >') --- */
+.resume-container > .sidebar {
     width: 30%;
     background: transparent;
     color: #000;
     padding: 20px;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
+    /* Ye fix hai - taaki PDF wale sidebar se conflict na ho */
+    position: relative; 
+    z-index: 1;
 }
 
-.profile {
+.resume-container .profile {
     text-align: center;
     margin-bottom: 20px;
 }
-.profile img {
+.resume-container .profile img {
     width: 150px;
     height: 150px;
     border-radius: 50%;
     margin-bottom: 10px;
     border: 4px solid #003087;
 }
-.profile h1 {
+.resume-container .profile h1 {
     font-size: 24px;
     text-transform: uppercase;
     color: #003087;
     text-shadow: 1px 1px 1px #ffffff;
 }
 
-.contact, .personal-details, .core-competencies, .tools, .languages {
+.resume-container .contact, 
+.resume-container .personal-details, 
+.resume-container .core-competencies, 
+.resume-container .tools, 
+.resume-container .languages {
     margin-bottom: 20px;
 }
 
-.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
+.resume-container .contact h2, 
+.resume-container .personal-details h2, 
+.resume-container .core-competencies h2, 
+.resume-container .tools h2, 
+.resume-container .languages h2 {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
@@ -142,13 +155,17 @@ body {
     text-shadow: 1px 1px 1px #ffffff;
 }
 
-.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
+.resume-container .contact h2 i, 
+.resume-container .personal-details h2 i, 
+.resume-container .core-competencies h2 i, 
+.resume-container .tools h2 i, 
+.resume-container .languages h2 i {
     margin-right: 8px;
     color: #003087;
 }
 
-/* --- Section Content (Unchanged) --- */
-.section-content {
+/* --- Section Content (FIXED with '.resume-container') --- */
+.resume-container .section-content {
     background-color: transparent;
     border: 1px solid #000;
     border-radius: 5px;
@@ -156,30 +173,41 @@ body {
     margin-top: 10px;
 }
 
-.contact p, .personal-details p, 
-.core-competencies ul, .tools ul, .languages ul,
-section p, section ul, section li {
+.resume-container .contact p, 
+.resume-container .personal-details p, 
+.resume-container .core-competencies ul, 
+.resume-container .tools ul, 
+.resume-container .languages ul,
+.resume-container section p, 
+.resume-container section ul, 
+.resume-container section li {
     font-size: 14px;
     line-height: 1.6;
     color: #000000;
     text-shadow: 1px 1px 1px #ffffff;
 }
 
-.contact p i {
+.resume-container .contact p i {
     margin-right: 10px;
     color: #003087;
 }
 
-ul { list-style: none; }
+.resume-container ul { 
+    list-style: none; 
+}
 
-.core-competencies ul li, .tools ul li, .languages ul li {
+.resume-container .core-competencies ul li, 
+.resume-container .tools ul li, 
+.resume-container .languages ul li {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
 }
 
-.core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
-section ul li:before {
+.resume-container .core-competencies ul li:before, 
+.resume-container .tools ul li:before, 
+.resume-container .languages ul li:before,
+.resume-container section ul li:before {
     content: "•";
     color: #003087;
     text-shadow: 1px 1px 1px #ffffff;
@@ -187,40 +215,47 @@ section ul li:before {
     left: 0;
 }
 
-/* --- Main Content (Unchanged) --- */
-.main-content {
+/* --- Main Content (FIXED with '.resume-container >') --- */
+.resume-container > .main-content {
     width: 70%;
     padding: 30px;
     background: transparent;
     color: #000;
+    /* Ye fix hai - taaki PDF wale main-content se conflict na ho */
+    position: relative;
+    z-index: 1;
 }
 
-section { margin-bottom: 30px; }
+.resume-container section { 
+    margin-bottom: 30px; 
+}
 
-section h2 {
+.resume-container section h2 {
     color: #003087;
     border-bottom-color: #003087;
 }
 
-section h2 i {
+.resume-container section h2 i {
     color: #003087;
 }
 
-section h3 {
+.resume-container section h3 {
     font-size: 16px;
     margin-bottom: 5px;
     color: #003087;
     text-shadow: 1px 1px 1px #ffffff;
 }
 
-section ul { margin-left: 20px; }
-section ul li {
+.resume-container section ul { 
+    margin-left: 20px; 
+}
+.resume-container section ul li {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
 }
 
-/* --- Responsive Styles (Unchanged) --- */
+/* --- Responsive Styles (FIXED with scope) --- */
 @media (max-width: 768px) {
     .resume-container {
         flex-direction: column;
@@ -229,35 +264,31 @@ section ul li {
         border-radius: 0;
         box-shadow: none;
     }
-    .sidebar, .main-content {
+    .resume-container > .sidebar, 
+    .resume-container > .main-content {
         width: 100%;
         max-width: 100%;
     }
-    .sidebar {
+    .resume-container > .sidebar {
         border-right: none;
         border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     }
 }
 
-
-/* --- Print Styles (Unchanged) --- */
-/* Ye @media print ab utna zaroori nahi hai, 
-   lekin browser ke (Ctrl+P) ke liye ise rehne dein */
-@media print {
-    body { margin: 0; }
-    .greeting-popup, .download-container { display: none !important; }
-    .resume-container { margin: 0; box-shadow: none; width: 100%; }
-}
+/* Purana @media print hata diya gaya hai kyonki ab uski zaroorat nahi */
 
 
 /* ======================================================= */
-/* ==== NAYA PDF EXPORT STYLE (Yahi hai poora fix) ==== */
+/* ==== NAYA PDF EXPORT STYLE (Ise nahi badla hai) ==== */
 /* ======================================================= */
+/* Ye styles sirf PDF ke liye hain aur ab conflict nahi karenge */
 
 /* 1. Export wale area ko live website par chupao */
 .pdf-export-area {
     display: none; /* Sabse zaroori: Ise hide rakho */
     width: 8.27in; /* A4 width */
+    position: absolute; /* Layout se bahar rakho */
+    left: -9999px;
 }
 
 /* 2. Har PDF page ko style karo */
@@ -280,17 +311,17 @@ section ul li {
 /* 3. PDF Header (jo Ashish ke resume jaisa hai) */
 .pdf-page-header {
     width: 100%;
-    height: 15px; /* Aap iski height badal sakte hain (e.g., 20px) */
-    background-color: #003087; /* Relevant color */
-    flex-shrink: 0; /* Taki ye sikude nahi */
+    height: 15px; 
+    background-color: #003087; 
+    flex-shrink: 0;
 }
 
 /* 4. PDF Page ka content area (Header ke niche) */
 .pdf-page-content {
     display: flex;
-    flex-grow: 1; /* Bachi hui poori jagah le lo */
-    padding: 20px; /* Thoda gap */
-    padding-top: 15px; /* Header ke niche gap */
+    flex-grow: 1; 
+    padding: 20px; 
+    padding-top: 15px; 
 }
 
 /* 5. Page 2 ke liye khaali sidebar */
@@ -302,7 +333,6 @@ section ul li {
 }
 
 /* 6. PDF ke andar sidebar/main-content ko live site jaisa dikhao */
-/* Hum purane styles ko .pdf-page ke andar override kar rahe hain */
 .pdf-page .sidebar {
     width: 30%;
     padding: 20px;
@@ -311,45 +341,91 @@ section ul li {
 .pdf-page .main-content {
     width: 70%;
     padding: 30px;
-    padding-top: 20px; /* Thoda upar */
+    padding-top: 20px; 
 }
 
 /* Ye saare styles copy kiye gaye hain taaki PDF bhi same dikhe */
 .pdf-page .profile img {
     border-color: #003087;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 4px solid #003087;
 }
 .pdf-page .profile h1 {
     color: #003087;
     text-shadow: 1px 1px 1px #ffffff;
+    font-size: 24px;
+    text-transform: uppercase;
 }
-.pdf-page h2 {
+.pdf-page .profile {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.pdf-page .contact, 
+.pdf-page .personal-details, 
+.pdf-page .core-competencies, 
+.pdf-page .tools, 
+.pdf-page .languages {
+    margin-bottom: 20px;
+}
+
+.pdf-page .contact h2, 
+.pdf-page .personal-details h2, 
+.pdf-page .core-competencies h2, 
+.pdf-page .tools h2, 
+.pdf-page .languages h2 {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 2px solid #003087;
     color: #003087;
+    display: flex;
+    align-items: center;
     text-shadow: 1px 1px 1px #ffffff;
 }
-.pdf-page h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
+
+.pdf-page .contact h2 i, 
+.pdf-page .personal-details h2 i, 
+.pdf-page .core-competencies h2 i, 
+.pdf-page .tools h2 i, 
+.pdf-page .languages h2 i {
+    margin-right: 8px;
     color: #003087;
-    text-shadow: 1px 1px 1px #ffffff;
 }
+
 .pdf-page .section-content {
     border: 1px solid #000;
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
 }
+
 .pdf-page p, .pdf-page li {
+    font-size: 14px;
+    line-height: 1.6;
     color: #000000;
     text-shadow: 1px 1px 1px #ffffff;
 }
 .pdf-page .contact p i {
+    margin-right: 10px;
     color: #003087;
 }
-.pdf-page ul { list-style: none; }
+.pdf-page ul { 
+    list-style: none; 
+    padding: 0;
+}
+
+.pdf-page .core-competencies ul li, 
+.pdf-page .tools ul li, 
+.pdf-page .languages ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
+}
+
 .pdf-page .core-competencies ul li:before, 
 .pdf-page .tools ul li:before, 
 .pdf-page .languages ul li:before,
@@ -359,4 +435,34 @@ section ul li {
     text-shadow: 1px 1px 1px #ffffff;
     position: absolute;
     left: 0;
+}
+
+.pdf-page section { 
+    margin-bottom: 30px; 
+}
+
+.pdf-page section h2 {
+    color: #003087;
+    border-bottom-color: #003087;
+}
+
+.pdf-page section h2 i {
+    color: #003087;
+}
+
+.pdf-page section h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+
+.pdf-page section ul { 
+    margin-left: 20px; 
+    padding: 0;
+}
+.pdf-page section ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
 }
