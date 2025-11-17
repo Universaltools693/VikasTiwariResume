@@ -28,33 +28,48 @@ document.addEventListener("DOMContentLoaded", function () {
     // Download Functionality
     const resumeContainer = document.querySelector(".resume-container");
 
-    // Download as PDF
+    // Download as PDF (Unchanged, relies on new CSS fixes)
     document.getElementById("download-pdf").addEventListener("click", function (e) {
         e.preventDefault();
         const opt = {
-            margin: 0.5, // 0.5 inch
+            margin: 0.5, // 0.5 inch (Standard A4 margin)
             filename: 'Vikas_Tiwari_Resume.pdf',
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
+            html2canvas: { scale: 2 }, // High quality render
             jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css'] }
+            pagebreak: { mode: ['avoid-all', 'css'] } // Uses CSS rules like 'page-break-inside: avoid'
         };
         html2pdf().set(opt).from(resumeContainer).save();
     });
 
-    // Download as Word
+    // Download as Word (UPDATED AND FIXED)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
+            // --- NEW FIX: Convert profile image to Base64 data URI ---
+            // Isse image Word file mein 100% embed ho jayegi.
+            const profileImg = document.querySelector('.profile img');
+            const canvas = document.createElement('canvas');
+            canvas.width = profileImg.naturalWidth;
+            canvas.height = profileImg.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(profileImg, 0, 0, canvas.width, canvas.height);
+            // Image ko Base64 string mein convert kiya
+            const imgDataUrl = canvas.toDataURL('image/jpeg');
+            // --- End of new fix ---
+
+            // We use a placeholder '__PROFILE_IMAGE_DATA__' for the src
+            // We also remove all <i ...> tags as they don't work in Word
             const content = `
                 <html>
                 <head>
                     <style>
+                        /* Updated CSS for Word */
                         body {
                             font-family: Arial, sans-serif;
-                            color: #333;
-                            margin: 48px;
-                            width: 794px;
+                            color: #000; /* Updated: Dark black text */
+                            margin: 48px; /* Approx 0.5 inch margin */
+                            width: 794px; /* A4 width */
                         }
                         .resume-container {
                             display: flex;
@@ -98,9 +113,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             align-items: center;
                             color: #003087;
                         }
-                        h2 i {
-                            margin-right: 8px;
-                        }
                         h3 {
                             font-size: 16px;
                             margin-bottom: 5px;
@@ -109,7 +121,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         p, li {
                             font-size: 14px;
                             line-height: 1.6;
-                            color: #444;
+                            color: #000; /* Updated: Dark black text */
                         }
                         .contact p {
                             line-height: 1.8;
@@ -134,14 +146,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             border: 1px solid #000;
                             padding: 10px;
                         }
-                        .contact p i {
-                            margin-right: 10px;
-                            color: #003087;
+                        .contact p {
+                           margin-right: 10px;
+                           color: #003087;
                         }
                         section {
                             margin-bottom: 30px;
                         }
-                        /* Page break for Word */
+                        /* Updated: Page break logic */
+                        .contact, .personal-details, .core-competencies, .tools, .languages,
+                        .professional-summary, .professional-experience, .education, .certifications {
+                            page-break-inside: avoid;
+                        }
                         .page-break {
                             page-break-before: always;
                             height: 0;
@@ -152,21 +168,20 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="resume-container">
                         <div class="sidebar">
                             <div class="profile">
-                                <img src="profile-image.jpg" alt="Profile Image">
-                                <h1>VIKAS TIWARI</h1>
+                                <img src="__PROFILE_IMAGE_DATA__" alt="Profile Image">
                             </div>
                             <div class="contact">
-                                <h2><i class="fas fa-address-card"></i> CONTACT</h2>
+                                <h2> CONTACT</h2>
                                 <div class="section-content">
-                                    <p><i class="fas fa-phone"></i> 7974123411</p>
-                                    <p><i class="fas fa-envelope"></i> vikastiwari0693@gmail.com</p>
-                                    <p><i class="fab fa-linkedin"></i> linkedin.com/in/vikas-tiwari-sales</p>
-                                    <p><i class="fas fa-globe"></i> vikastiwari3.netlify.app</p>
-                                    <p><i class="fas fa-map-marker-alt"></i> Avni Bihar, New Shastri Nagar, Jabalpur, Madhya Pradesh (482003)</p>
+                                    <p> 7974123411</p>
+                                    <p> vikastiwari0693@gmail.com</p>
+                                    <p> linkedin.com/in/vikas-tiwari-sales</p>
+                                    <p> vikastiwari3.netlify.app</p>
+                                    <p> Avni Bihar, New Shastri Nagar, Jabalpur, Madhya Pradesh (482003)</p>
                                 </div>
                             </div>
                             <div class="personal-details">
-                                <h2><i class="fas fa-user"></i> PERSONAL DETAILS</h2>
+                                <h2> PERSONAL DETAILS</h2>
                                 <div class="section-content">
                                     <p>DOB: 12/11/1996</p>
                                     <p>Nationality: Indian</p>
@@ -175,7 +190,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                             </div>
                             <div class="core-competencies">
-                                <h2><i class="fas fa-check-circle"></i> CORE COMPETENCIES</h2>
+                                <h2> CORE COMPETENCIES</h2>
                                 <div class="section-content">
                                     <ul>
                                         <li>Quick Learner</li>
@@ -189,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                             </div>
                             <div class="tools">
-                                <h2><i class="fas fa-tools"></i> TOOLS & TECHNOLOGIES</h2>
+                                <h2> TOOLS & TECHNOLOGIES</h2>
                                 <div class="section-content">
                                     <ul>
                                         <li>MS Office (MS Excel, MS Word, MS PowerPoint)</li>
@@ -200,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                             </div>
                             <div class="languages">
-                                <h2><i class="fas fa-language"></i> LANGUAGES</h2>
+                                <h2> LANGUAGES</h2>
                                 <div class="section-content">
                                     <ul>
                                         <li>Hindi (Native)</li>
@@ -211,13 +226,13 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                         <div class="main-content">
                             <section class="professional-summary">
-                                <h2><i class="fas fa-briefcase"></i> PROFESSIONAL SUMMARY</h2>
+                                <h2> PROFESSIONAL SUMMARY</h2>
                                 <div class="section-content">
                                     <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
                                 </div>
                             </section>
                             <section class="professional-experience">
-                                <h2><i class="fas fa-briefcase"></i> PROFESSIONAL EXPERIENCE</h2>
+                                <h2> PROFESSIONAL EXPERIENCE</h2>
                                 <div class="section-content">
                                     <h3>Sales Executive (Financial Consultant)</h3>
                                     <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
@@ -238,7 +253,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </section>
                             <div class="page-break"></div>
                             <section class="education">
-                                <h2><i class="fas fa-graduation-cap"></i> EDUCATION HISTORY</h2>
+                                <h2> EDUCATION HISTORY</h2>
                                 <div class="section-content">
                                     <h3>Master of Business Administration (M.B.A.) – Marketing and Finance</h3>
                                     <p><strong>Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Madhya Pradesh</strong> | 2024</p>
@@ -255,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </div>
                             </section>
                             <section class="certifications">
-                                <h2><i class="fas fa-certificate"></i> CERTIFICATIONS</h2>
+                                <h2> CERTIFICATIONS</h2>
                                 <div class="section-content">
                                     <p>Certification in MS Office (MS Excel, MS Word, MS PowerPoint), Advanced Photoshop, and Tally ERP</p>
                                     <p><strong>British Heights Education, Jabalpur</strong> | 2012</p>
@@ -266,14 +281,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 </body>
                 </html>
             `;
-            const converted = htmlDocx.asBlob(content);
+            
+            // Placeholder ko actual Base64 image data se replace kiya
+            const finalContent = content.replace('__PROFILE_IMAGE_DATA__', imgDataUrl);
+
+            const converted = htmlDocx.asBlob(finalContent);
             const link = document.createElement('a');
             link.href = URL.createObjectURL(converted);
             link.download = 'Vikas_Tiwari_Resume.docx';
             link.click();
         } catch (error) {
             console.error("Error generating Word document:", error);
-            alert("There was an issue generating the Word document. Please try downloading as PDF instead.");
+            alert("Word document generate karne mein error aa gaya hai. Kripya profile image file 'profile-image.jpg' check karein ki wo available hai ya nahi.");
         }
     });
 });
