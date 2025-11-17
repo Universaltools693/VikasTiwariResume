@@ -6,11 +6,15 @@
 }
 
 body {
-    background: #f4f4f4;
+    /* Updated: Background image added */
+    background-image: url('Dashboard Background Image DBI.webp');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     min-height: 100vh;
 }
 
-/* Pop-up Styles */
+/* Pop-up Styles (Unchanged) */
 .greeting-popup {
     position: fixed;
     top: 0;
@@ -69,7 +73,7 @@ body {
     to { opacity: 0; display: none; }
 }
 
-/* Download Button Styles */
+/* Download Button Styles (Unchanged) */
 .download-container {
     position: fixed;
     top: 20px;
@@ -78,7 +82,7 @@ body {
 }
 
 .download-btn {
-    background-color: #003087; /* Matches your theme */
+    background-color: #003087;
     color: #fff;
     font-weight: bold;
     padding: 10px 20px;
@@ -111,7 +115,7 @@ body {
 }
 
 .dropdown-content a:hover {
-    background-color: #f1f1f1;
+    background-color: #f1f1ff;
 }
 
 /* Resume Container Styles */
@@ -170,8 +174,8 @@ body {
 }
 
 .section-content {
-    border: 1px solid #000; /* Black border around the entire section content */
-    padding: 10px; /* Padding inside the border for better spacing */
+    border: 1px solid #000;
+    padding: 10px;
 }
 
 .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
@@ -227,8 +231,8 @@ section h2 i {
 }
 
 section .section-content {
-    border: 1px solid #000; /* Black border around the entire section content */
-    padding: 10px; /* Padding inside the border for better spacing */
+    border: 1px solid #000;
+    padding: 10px;
 }
 
 section p, section ul {
@@ -260,23 +264,117 @@ section ul li:before {
     left: 0;
 }
 
-/* Print Styles for Downloads */
+/* --- Responsive Styles (NEW) --- */
+@media (max-width: 1024px) {
+    .resume-container {
+        width: 95%; /* Thoda space side mein */
+    }
+}
+
+@media (max-width: 768px) {
+    .resume-container {
+        flex-direction: column; /* Main change: Sidebar upar, content neeche */
+        width: 100%;
+        margin: 0;
+        box-shadow: none;
+    }
+
+    .sidebar, .main-content {
+        width: 100%; /* Dono full width lenge */
+        max-width: 100%;
+    }
+
+    .sidebar {
+        border-right: none;
+        border-bottom: 2px solid #e0e0e0; /* Sidebar ke neeche border */
+    }
+
+    .profile img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .profile h1 {
+        font-size: 22px;
+    }
+    
+    .greeting-content {
+        width: 90%;
+        padding: 30px 20px;
+    }
+    .greeting-content h1 { font-size: 30px; }
+    .greeting-content p { font-size: 20px; }
+}
+
+@media (max-width: 480px) {
+    body {
+        /* Mobile par background image hata denge taaki resume saaf dikhe */
+        background-image: none; 
+        background-color: #f4f4f4;
+    }
+    .main-content {
+        padding: 20px 15px;
+    }
+    .sidebar {
+        padding: 20px 15px;
+    }
+    .download-container {
+        top: 10px;
+        right: 10px;
+    }
+    .download-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+/* Print Styles for Downloads (UPDATED) */
 @media print {
     body {
         margin: 0;
+        background: #ffffff; /* Print mein background hamesha white */
     }
     .greeting-popup, .download-container {
         display: none !important;
     }
     .resume-container {
         margin: 0;
-        padding: 48px;
-        width: 794px;
-        max-width: 794px;
-        height: auto;
+        padding: 0;
+        width: 100%;
+        max-width: 100%;
+        box-shadow: none;
+        border: none;
     }
-    @page {
-        size: A4;
-        margin: 0;
+    
+    /* --- PDF/Print Fixes (NEW) --- */
+    
+    /* 1. Darker Text */
+    p, li, 
+    .contact p, .personal-details p, 
+    .core-competencies ul, .tools ul, .languages ul, 
+    section p, section ul {
+        color: #000 !important; /* Dark black text for printing */
+        font-size: 10pt; /* Standard print font size */
+        line-height: 1.4;
+    }
+
+    h1 { font-size: 18pt !important; }
+    h2 { font-size: 14pt !important; }
+    h3 { font-size: 12pt !important; }
+
+    /* 2. Page Break Logic */
+    .contact, .personal-details, .core-competencies, .tools, .languages,
+    .professional-summary, .professional-experience, .education, .certifications {
+        page-break-inside: avoid; /* Important: Section ko beech se cutne se rokega */
+    }
+
+    .sidebar {
+        width: 30%;
+        background: #f9f9f9 !important; /* Ensure background prints */
+        -webkit-print-color-adjust: exact; /* Chrome/Safari */
+        color-adjust: exact; /* Firefox */
+    }
+    .main-content {
+        width: 70%;
     }
 }
