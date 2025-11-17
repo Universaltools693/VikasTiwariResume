@@ -10,7 +10,7 @@ body {
     min-height: 100vh;
 }
 
-/* Pop-up Styles (Unchanged) */
+/* Pop-up Styles */
 .greeting-popup {
     position: fixed;
     top: 0;
@@ -42,7 +42,7 @@ body {
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* Download Button Styles (Unchanged) */
+/* Download Button Styles */
 .download-container {
     position: fixed;
     top: 20px;
@@ -109,7 +109,6 @@ body {
     color: #000;
     padding: 20px;
     border-right: 1px solid rgba(0, 0, 0, 0.2);
-    /* Ye fix hai - taaki PDF wale sidebar se conflict na ho */
     position: relative; 
     z-index: 1;
 }
@@ -221,7 +220,6 @@ body {
     padding: 30px;
     background: transparent;
     color: #000;
-    /* Ye fix hai - taaki PDF wale main-content se conflict na ho */
     position: relative;
     z-index: 1;
 }
@@ -281,21 +279,15 @@ body {
 /* ======================================================= */
 /* Ye styles sirf PDF ke liye hain aur ab conflict nahi karenge */
 
-/* 1. Export wale area ko live website par chupao (FIXED) */
+/* 1. Export wale area ko live website par chupao (FINAL FIX) */
 .pdf-export-area {
-    /* DISPLAY: NONE; <-- YAHI GALATI THI, ISE HATA DIYA HAI 
-    Ab ye render hoga, taki PDF ban sake.
-    */
-    
-    /* Ise layout se bahar rakho taki live site na bigde */
+    /* अब यह रेंडर होगा, ताकि PDF बन सके। */
     position: absolute;
-    left: -9999px;
+    left: -9999px; /* स्क्रीन से बहुत दूर खिसका दिया */
     top: 0;
     
-    /* Isko ek size do taki library iska screenshot le sake */
     width: 8.27in; 
     
-    /* Ise sabke peeche rakho (just in case) */
     z-index: -10; 
 }
 
@@ -304,7 +296,7 @@ body {
     width: 8.27in; /* A4 width */
     height: 11.69in; /* A4 height */
     
-    /* YAHI HAI FIX: Background image ko har page par lagao */
+    /* FIX: Background image ko har page par lagao */
     background-image: url('Dashboard Background Image DBI.webp');
     background-size: cover;
     background-position: center;
