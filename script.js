@@ -26,19 +26,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 4000);
 
     // Download Functionality
-    const html2canvas = window.html2canvas;
-    const jsPDF = window.jsPDF; // FIXED: Correct access to jsPDF from bundle
+    // UPDATED: Check for separate libraries
+    const html2canvasLib = window.html2canvas;
+    const jspdfLib = window.jspdf;
 
     // Download as PDF (UPDATED - Full background per page, header on each, like Ashish's)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
-        if (!jsPDF || !html2canvas) {
-            alert("PDF library load nahi hui. Page refresh kar ke try karo.");
+        if (!html2canvasLib || !jspdfLib) {
+            alert("PDF libraries load nahi hui. Page ko refresh kar ke dobara try karo. (Console check karo F12 se)");
+            console.error("Libraries missing:", { html2canvas: !!html2canvasLib, jspdf: !!jspdfLib });
             return;
         }
         
         try {
+            const { jsPDF } = jspdfLib;
             const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
@@ -47,21 +50,35 @@ document.addEventListener("DOMContentLoaded", function () {
             const contentTop = headerH + gap;
             const contentH = pageH - contentTop;
 
-            // Load and prepare background image (full cover per page)
-            const bgPromise = new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => {
-                    const canvas = document.createElement('canvas');
-                    canvas.width = pageW;
-                    canvas.height = pageH;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
-                    resolve(canvas.toDataURL('image/jpeg', 0.98));
-                };
-                img.onerror = () => reject(new Error("Background image load nahi hui."));
-                img.src = 'Dashboard Background Image DBI.webp';
-            });
-            const bgDataUrl = await bgPromise;
+            // Load and prepare background image (full cover per page) with fallback
+            let bgDataUrl = null;
+            try {
+                const bgPromise = new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = pageW;
+                        canvas.height = pageH;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
+                        resolve(canvas.toDataURL('image/jpeg', 0.98));
+                    };
+                    img.onerror = () => reject(new Error("Background image load nahi hui - fallback to white."));
+                    img.src = 'Dashboard Background Image DBI.webp';
+                    img.crossOrigin = "anonymous";
+                });
+                bgDataUrl = await bgPromise;
+            } catch (imgErr) {
+                console.warn("BG Image Error:", imgErr);
+                // Fallback: Create white bg
+                const canvas = document.createElement('canvas');
+                canvas.width = pageW;
+                canvas.height = pageH;
+                const ctx = canvas.getContext('2d');
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, pageW, pageH);
+                bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
+            }
 
             // Function to generate canvas for page content (without bg, with styles)
             const generatePageCanvas = async (sections) => {
@@ -116,10 +133,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 // Append to body for rendering
                 document.body.appendChild(temp);
-                await new Promise(resolve => setTimeout(resolve, 200)); // Increased wait for render
+                await new Promise(resolve => setTimeout(resolve, 300)); // Increased wait for render
 
                 // Capture canvas
-                const canvas = await html2canvas(temp, {
+                const canvas = await html2canvasLib(temp, {
                     scale: 1,
                     useCORS: true,
                     allowTaint: true,
@@ -160,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
             doc.save('Vikas_Tiwari_Resume.pdf');
         } catch (error) {
             console.error("PDF generation error:", error);
-            alert("PDF download mein error: " + error.message + ". Console check karo ya page refresh karo.");
+            alert("PDF download mein error: " + error.message + ". Console (F12) check karo ya page refresh karo.");
         }
     });
 
