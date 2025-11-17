@@ -35,14 +35,14 @@ body {
     animation: scaleUp 0.5s ease-in-out forwards;
     border: 2px solid #ffffff;
 }
-.greeting-content h1 { font-size: 40px; color: #ffffff; ... }
-.greeting-content p { font-size: 24px; color: #e0e0e0; ... }
+.greeting-content h1 { font-size: 40px; color: #ffffff; margin-bottom: 15px; }
+.greeting-content p { font-size: 24px; color: #e0e0e0; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* Download Button Styles (Unchanged) */
+/* --- Download Button Styles (FIXED) --- */
 .download-container {
     position: fixed;
     top: 20px;
@@ -59,35 +59,53 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
-.download-container:hover .dropdown-content { display: block; }
-.dropdown-content { ... }
-.dropdown-content a { ... }
-.dropdown-content a:hover { ... }
+/* Dropdown content ko hover par dikhaye */
+.download-container:hover .dropdown-content {
+    display: block;
+}
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+    border-radius: 5px; /* Added radius */
+    overflow: hidden; /* Added overflow */
+}
+.dropdown-content a {
+    color: #000;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
 
-
-/* --- Resume Container Styles (UPDATED) --- */
+/* --- Resume Container (Background Image) --- */
 .resume-container {
     display: flex;
     width: 100%;
-    max-width: 1000px; /* A4-like width on desktop */
-    margin: 20px auto; /* Center on desktop */
-    
-    /* Background image seedhe container par */
+    max-width: 1000px;
+    margin: 20px auto;
     background-image: url('Dashboard Background Image DBI.webp');
     background-size: cover;
     background-position: center;
-    
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     overflow: hidden;
 }
 
+/* --- Sidebar (New Colors) --- */
 .sidebar {
     width: 30%;
-    background: transparent; /* No sidebar background */
-    color: #ffffff;
+    background: transparent;
+    color: #000; /* Default color black */
     padding: 20px;
-    border-right: 1px solid rgba(255, 255, 255, 0.3); /* Light border */
+    border-right: 1px solid rgba(0, 0, 0, 0.2); /* Darker border */
 }
 
 .profile {
@@ -99,42 +117,39 @@ body {
     height: 150px;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 4px solid #ffffff;
+    border: 4px solid #003087; /* Dark blue border */
 }
 .profile h1 {
     font-size: 24px;
     text-transform: uppercase;
-    color: #ffffff;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    color: #003087; /* Dark Blue */
+    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
 }
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
     margin-bottom: 20px;
 }
 
-.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2,
-section h2 {
+.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #ffffff;
-    color: #ffffff;
+    border-bottom: 2px solid #003087; /* Dark Blue */
+    color: #003087; /* Dark Blue */
     display: flex;
     align-items: center;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
 }
 
-.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i,
-section h2 i {
+.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
     margin-right: 8px;
-    color: #ffffff; /* White icons */
+    color: #003087; /* Dark Blue */
 }
 
-/* --- VISIBILITY FIX --- */
+/* --- Section Content (Transparent Background) --- */
 .section-content {
-    /* Halka dark transparent background text readability ke liye */
-    background-color: rgba(0, 0, 0, 0.5); 
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background-color: transparent; /* REMOVED black background */
+    border: 1px solid #000; /* Black border */
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
@@ -145,13 +160,13 @@ section h2 i {
 section p, section ul, section li {
     font-size: 14px;
     line-height: 1.6;
-    color: #ffffff;
-    text-shadow: none; /* No shadow needed, background box provides contrast */
+    color: #000000; /* PURE BLACK text */
+    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
 }
 
 .contact p i {
     margin-right: 10px;
-    color: #ffffff;
+    color: #003087; /* Dark Blue */
 }
 
 ul { list-style: none; }
@@ -165,26 +180,36 @@ ul { list-style: none; }
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
 section ul li:before {
     content: "•";
-    color: #ffffff;
-    text-shadow: none;
+    color: #003087; /* Dark Blue bullets */
+    text-shadow: 1px 1px 1px #ffffff;
     position: absolute;
     left: 0;
 }
 
+/* --- Main Content (New Colors) --- */
 .main-content {
     width: 70%;
     padding: 30px;
-    background: transparent; /* No main content background */
-    color: #ffffff;
+    background: transparent;
+    color: #000; /* Default color black */
 }
 
 section { margin-bottom: 30px; }
 
+section h2 {
+    color: #003087; /* Dark Blue */
+    border-bottom-color: #003087; /* Dark Blue */
+}
+
+section h2 i {
+    color: #003087; /* Dark Blue */
+}
+
 section h3 {
     font-size: 16px;
     margin-bottom: 5px;
-    color: #ffffff;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    color: #003087; /* Dark Blue */
+    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
 }
 
 section ul { margin-left: 20px; }
@@ -194,28 +219,26 @@ section ul li {
     padding-left: 20px;
 }
 
-/* --- Responsive Styles (Fixing the layout) --- */
+/* --- Responsive Styles (Unchanged) --- */
 @media (max-width: 768px) {
     .resume-container {
-        flex-direction: column; /* Stack layout on mobile */
+        flex-direction: column;
         width: 100%;
         margin: 0;
         border-radius: 0;
         box-shadow: none;
     }
-
     .sidebar, .main-content {
-        width: 100%; /* Full width on mobile */
+        width: 100%;
         max-width: 100%;
     }
-
     .sidebar {
         border-right: none;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     }
 }
 
-/* --- Print Styles (Forcing Background Image in PDF) --- */
+/* --- Print Styles (Forcing Background Image & NEW Dark Colors) --- */
 @media print {
     body {
         margin: 0;
@@ -243,34 +266,45 @@ section ul li {
         color-adjust: exact;
     }
     
-    /* Force page break logic (taki section na kate) */
     .contact, .personal-details, .core-competencies, .tools, .languages,
     .professional-summary, .professional-experience, .education, .certifications {
         page-break-inside: avoid;
     }
 
-    /* Force text colors, section backgrounds, etc. to print */
+    /* Force section content to be transparent */
     .section-content {
-        background-color: rgba(0, 0, 0, 0.5) !important;
-        border-color: rgba(255, 255, 255, 0.3) !important;
+        background-color: transparent !important;
+        border-color: #000 !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
 
-    p, li, h1, h2, h3, .contact p i, 
-    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
-    section ul li:before {
-        color: #ffffff !important;
-        text-shadow: none !important;
+    /* Force NEW dark text colors */
+    p, li, section p, section ul, section li, 
+    .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
+        color: #000000 !important;
+        text-shadow: 1px 1px 1px #ffffff !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
     
-    h1, h2, h3 {
-        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9) !important;
+    /* Force NEW dark heading/icon colors */
+    h1, h2, h3, .contact p i, .profile h1, .contact h2, 
+    .personal-details h2, .core-competencies h2, .tools h2, 
+    .languages h2, section h2, section h3,
+    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
+    section ul li:before {
+        color: #003087 !important;
+        border-bottom-color: #003087 !important;
+        text-shadow: 1px 1px 1px #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
 
     .sidebar {
-        border-color: rgba(255, 255, 255, 0.3) !important;
+        border-color: rgba(0, 0, 0, 0.2) !important;
+    }
+    .profile img {
+        border-color: #003087 !important;
     }
 }
