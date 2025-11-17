@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (UPDATED - Full background per page, header on each, like Ashish's)
+    // Download as PDF (UPDATED - Full continuous capture + crop for natural flow, like Ashish's)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
@@ -43,12 +43,12 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const { jsPDF } = jspdfLib;
             const doc = new jsPDF('p', 'pt', 'a4');
-            const pageW = doc.internal.pageSize.getWidth();
-            const pageH = doc.internal.pageSize.getHeight();
+            const pageW = doc.internal.pageSize.getWidth(); // ~595pt
+            const pageH = doc.internal.pageSize.getHeight(); // ~842pt
             const headerH = 15; // Thin header height
             const gap = 10; // Gap below header
             const contentTop = headerH + gap;
-            const contentH = pageH - contentTop;
+            const contentH = pageH - contentTop; // ~817pt per page content
 
             // Load and prepare background image (full cover per page) with fallback
             let bgDataUrl = null;
@@ -80,98 +80,65 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // Function to generate canvas for page content (without bg, with styles)
-            const generatePageCanvas = async (sections) => {
-                const temp = document.createElement('div');
-                temp.className = 'pdf-mode'; // Apply PDF styles
-                temp.style.cssText = `
-                    width: ${pageW}px;
-                    height: ${contentH}px;
-                    display: flex;
-                    background: transparent;
-                    overflow: hidden;
-                    box-sizing: border-box;
-                `;
+            // Temporarily adjust resume for full capture (height auto, no overflow)
+            const resumeContainer = document.querySelector('.resume-container');
+            const originalStyles = {
+                height: resumeContainer.style.height,
+                maxHeight: resumeContainer.style.maxHeight,
+                overflow: resumeContainer.style.overflow
+            };
+            resumeContainer.style.height = 'auto';
+            resumeContainer.style.maxHeight = 'none';
+            resumeContainer.style.overflow = 'visible';
+            resumeContainer.style.width = `${pageW}px`; // Match page width
+            await new Promise(resolve => setTimeout(resolve, 100)); // Settle layout
 
-                // Clone sidebar for left (full height for each page)
-                const side = document.querySelector('.sidebar').cloneNode(true);
-                side.style.cssText = `
-                    width: 30%;
-                    flex-shrink: 0;
-                    background: transparent !important;
-                    padding: 20px;
-                    box-sizing: border-box;
-                    height: 100%;
-                    overflow-y: auto;
-                `;
-                temp.appendChild(side);
+            // Capture full tall canvas of entire resume
+            const fullCanvas = await html2canvasLib(resumeContainer, {
+                scale: 1, // 1px ≈ 1pt
+                useCORS: true,
+                allowTaint: true,
+                width: pageW,
+                backgroundColor: null, // Transparent for overlay on bg
+                logging: false
+            });
 
-                // Main content div for right
-                const mainTemp = document.createElement('div');
-                mainTemp.style.cssText = `
-                    width: 70%;
-                    padding: 30px;
-                    background: transparent;
-                    height: 100%;
-                    overflow-y: auto;
-                    box-sizing: border-box;
-                `;
+            // Restore original styles
+            resumeContainer.style.height = originalStyles.height;
+            resumeContainer.style.maxHeight = originalStyles.maxHeight;
+            resumeContainer.style.overflow = originalStyles.overflow;
+            resumeContainer.style.width = ''; // Reset
 
-                // Add selected sections to main
-                sections.forEach(sec => {
-                    if (sec) {
-                        const cloneSec = sec.cloneNode(true);
-                        // Ensure transparent sections
-                        cloneSec.querySelectorAll('.section-content').forEach(el => {
-                            el.style.backgroundColor = 'transparent';
-                        });
-                        mainTemp.appendChild(cloneSec);
-                    }
-                });
+            const fullHeight = fullCanvas.height;
+            const numPages = Math.ceil(fullHeight / contentH);
 
-                temp.appendChild(mainTemp);
-
-                // Append to body for rendering
-                document.body.appendChild(temp);
-                await new Promise(resolve => setTimeout(resolve, 300)); // Increased wait for render
-
-                // Capture canvas
-                const canvas = await html2canvasLib(temp, {
-                    scale: 1,
-                    useCORS: true,
-                    allowTaint: true,
-                    width: pageW,
-                    height: contentH,
-                    backgroundColor: null // Transparent bg
-                });
-
-                // Remove temp
-                document.body.removeChild(temp);
-                return canvas;
+            // Function to crop canvas to specific y-range
+            const cropCanvas = (sourceCanvas, startY, cropH) => {
+                const crop = document.createElement('canvas');
+                crop.width = sourceCanvas.width;
+                crop.height = cropH;
+                const ctx = crop.getContext('2d');
+                ctx.drawImage(sourceCanvas, 0, startY, pageW, cropH, 0, 0, pageW, cropH);
+                return crop;
             };
 
-            // Get sections from DOM
-            const summary = document.querySelector('.professional-summary');
-            const experience = document.querySelector('.professional-experience');
-            const education = document.querySelector('.education');
-            const certifications = document.querySelector('.certifications');
+            // Add pages
+            for (let i = 0; i < numPages; i++) {
+                if (i > 0) doc.addPage();
 
-            // Page 1: Summary + Experience
-            const canvas1 = await generatePageCanvas([summary, experience]);
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
-            // Add thin header (empty blue strip)
-            doc.setFillColor(0, 48, 135); // #003087
-            doc.rect(0, 0, pageW, headerH, 'F');
-            // Add content
-            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+                // Full bg per page
+                doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
+                
+                // Thin header (empty blue strip)
+                doc.setFillColor(0, 48, 135); // #003087
+                doc.rect(0, 0, pageW, headerH, 'F');
 
-            // Page 2: Education + Certifications
-            const canvas2 = await generatePageCanvas([education, certifications]);
-            doc.addPage();
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
-            doc.setFillColor(0, 48, 135); // Header again
-            doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
+                // Crop and add content slice
+                const startY = i * contentH;
+                const remainingH = Math.min(contentH, fullHeight - startY);
+                const pageCanvas = cropCanvas(fullCanvas, startY, remainingH);
+                doc.addImage(pageCanvas.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remainingH);
+            }
 
             // Save
             doc.save('Vikas_Tiwari_Resume.pdf');
