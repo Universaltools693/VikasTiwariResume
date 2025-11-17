@@ -29,12 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FIXED - Tall two-column natural flow, no repeat/cut, full bg/header)
+    // Download as PDF (OPTIMIZED - Tall two-column fit in 2 pages, no repeat/cut, full flow)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries load nahi hui. Page refresh (Ctrl+F5) kar ke try karo.");
+            alert("PDF libraries load nahi hui. Ctrl+F5 refresh kar ke try karo.");
             return;
         }
         
@@ -44,11 +44,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const pageW = doc.internal.pageSize.getWidth(); // 595.28pt
             const pageH = doc.internal.pageSize.getHeight(); // 841.89pt
             const headerH = 15; // Thin header
-            const gap = 10; // Gap below header
+            const gap = 10; // Gap
             const contentTop = headerH + gap;
             const contentH = pageH - contentTop;
 
-            // Background image per page (full cover)
+            // Bg per page
             let bgDataUrl;
             try {
                 bgDataUrl = await new Promise((resolve, reject) => {
@@ -65,7 +65,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     img.src = 'Dashboard Background Image DBI.webp';
                 });
             } catch {
-                // Fallback white bg
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW;
                 canvas.height = pageH;
@@ -75,23 +74,26 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1);
             }
 
-            // Prepare container for tall capture (two-column, no cut-off)
+            // Prepare tall container
             const resumeContainer = document.querySelector('.resume-container');
             const original = {
                 height: resumeContainer.style.height,
                 maxHeight: resumeContainer.style.maxHeight,
                 overflow: resumeContainer.style.overflow,
-                width: resumeContainer.style.width
+                width: resumeContainer.style.width,
+                flexWrap: resumeContainer.style.flexWrap
             };
             resumeContainer.style.height = 'auto !important';
             resumeContainer.style.maxHeight = 'none !important';
             resumeContainer.style.overflow = 'visible !important';
             resumeContainer.style.width = `${pageW}px !important`;
+            resumeContainer.style.flexWrap = 'nowrap !important'; // Prevent wrap
             // Avoid breaks
             const sections = resumeContainer.querySelectorAll('.contact, .personal-details, .core-competencies, .tools, .languages, section');
             sections.forEach(sec => {
                 sec.style.pageBreakInside = 'avoid !important';
                 sec.style.breakInside = 'avoid !important';
+                sec.style.float = 'none !important'; // Prevent float issues
             });
             // Hide UI
             const popup = document.getElementById('greeting-popup');
@@ -100,13 +102,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const originalBtn = downloadBtn.style.display;
             popup.style.display = 'none';
             downloadBtn.style.display = 'none';
-            // Force reflow
-            resumeContainer.offsetHeight; // Trigger layout
-            await new Promise(r => setTimeout(r, 800)); // Wait for full render
+            // Multiple reflow forces
+            resumeContainer.offsetHeight;
+            document.body.offsetHeight;
+            await new Promise(r => setTimeout(r, 1000)); // 1s wait for full layout
 
-            // Capture tall canvas (transparent for overlay)
+            // Capture tall canvas
             const fullCanvas = await html2canvasLib(resumeContainer, {
-                scale: 1,
+                scale: 0.95, // Slight scale to fit content better in 2 pages
                 useCORS: true,
                 allowTaint: true,
                 width: pageW,
@@ -120,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
             sections.forEach(sec => {
                 sec.style.pageBreakInside = '';
                 sec.style.breakInside = '';
+                sec.style.float = '';
             });
             popup.style.display = originalPopup;
             downloadBtn.style.display = originalBtn;
@@ -137,18 +141,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 return crop;
             };
 
-            // Build pages
+            // Pages
             for (let i = 0; i < numPages; i++) {
                 if (i > 0) doc.addPage();
 
-                // Bg full page
                 doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
                 
-                // Header patti
                 doc.setFillColor(0, 48, 135);
                 doc.rect(0, 0, pageW, headerH, 'F');
 
-                // Content crop
                 const startY = i * contentH;
                 const remH = Math.min(contentH, fullHeight - startY);
                 if (remH > 0) {
