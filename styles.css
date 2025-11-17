@@ -85,6 +85,7 @@ body {
 }
 
 /* --- Resume Container (Unchanged) --- */
+/* Ye aapki live website ka style hai */
 .resume-container {
     display: flex;
     width: 100%;
@@ -96,13 +97,7 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     overflow: hidden;
-    position: relative; /* Added for header context */
-}
-
-/* --- PDF Header (Naya style) --- */
-/* Ye header live website par nahi dikhega */
-.pdf-page-header {
-    display: none;
+    position: relative;
 }
 
 /* --- Sidebar (Unchanged) --- */
@@ -245,95 +240,123 @@ section ul li {
 }
 
 
-/* --- YAHAN SABKUCH FIX KIYA GAYA HAI --- */
-/* --- Print Styles (Forcing Background Image & NEW Dark Colors) --- */
+/* --- Print Styles (Unchanged) --- */
+/* Ye @media print ab utna zaroori nahi hai, 
+   lekin browser ke (Ctrl+P) ke liye ise rehne dein */
 @media print {
+    body { margin: 0; }
+    .greeting-popup, .download-container { display: none !important; }
+    .resume-container { margin: 0; box-shadow: none; width: 100%; }
+}
+
+
+/* ======================================================= */
+/* ==== NAYA PDF EXPORT STYLE (Yahi hai poora fix) ==== */
+/* ======================================================= */
+
+/* 1. Export wale area ko live website par chupao */
+.pdf-export-area {
+    display: none; /* Sabse zaroori: Ise hide rakho */
+    width: 8.27in; /* A4 width */
+}
+
+/* 2. Har PDF page ko style karo */
+.pdf-page {
+    width: 8.27in; /* A4 width */
+    height: 11.69in; /* A4 height */
     
-    /* 1. Background ko BODY par lagao */
-    body {
-        margin: 0;
-        padding: 0;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-        
-        /* --- YAHI HAI ASLI FIX --- */
-        background-image: url('Dashboard Background Image DBI.webp') !important;
-        background-size: cover !important;
-        background-position: center !important;
-        background-repeat: no-repeat !important; /* Taki image repeat na ho */
-    }
-
-    .greeting-popup, .download-container {
-        display: none !important;
-    }
-
-    /* 2. Header ko dikhao, fix karo (taki har page par repeat ho) */
-    .pdf-page-header {
-        display: block !important;
-        position: fixed !important; /* Ye har page par repeat karega */
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 15px; /* Patli patti (height) */
-        background-color: #003087 !important; /* Relevant color */
-        z-index: 10000;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
-
-    /* 3. Resume container ko transparent karo aur header ke niche gap do */
-    .resume-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        padding-top: 30px !important; /* 15px header + 15px gap */
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        
-        /* --- YAHI HAI ASLI FIX --- */
-        background: transparent !important; /* Container ko transparent karo */
-        border: none !important;
-    }
+    /* YAHI HAI FIX: Background image ko har page par lagao */
+    background-image: url('Dashboard Background Image DBI.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     
-    .sidebar {
-        border-color: rgba(0, 0, 0, 0.2) !important;
-    }
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
 
-    .contact, .personal-details, .core-competencies, .tools, .languages,
-    .professional-summary, .professional-experience, .education, .certifications {
-        page-break-inside: avoid; /* Section ko page ke beech me cutne se roko */
-    }
+/* 3. PDF Header (jo Ashish ke resume jaisa hai) */
+.pdf-page-header {
+    width: 100%;
+    height: 15px; /* Aap iski height badal sakte hain (e.g., 20px) */
+    background-color: #003087; /* Relevant color */
+    flex-shrink: 0; /* Taki ye sikude nahi */
+}
 
-    /* Section content ko transparent rakho */
-    .section-content {
-        background-color: transparent !important;
-        border-color: #000 !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
+/* 4. PDF Page ka content area (Header ke niche) */
+.pdf-page-content {
+    display: flex;
+    flex-grow: 1; /* Bachi hui poori jagah le lo */
+    padding: 20px; /* Thoda gap */
+    padding-top: 15px; /* Header ke niche gap */
+}
 
-    /* Baki sab text/colors ko force karo taki background par dikhe */
-    p, li, section p, section ul, section li, 
-    .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
-        color: #000000 !important;
-        text-shadow: 1px 1px 1px #ffffff !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
-    
-    h1, h2, h3, .contact p i, .profile h1, .contact h2, 
-    .personal-details h2, .core-competencies h2, .tools h2, 
-    .languages h2, section h2, section h3,
-    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
-    section ul li:before {
-        color: #003087 !important;
-        border-bottom-color: #003087 !important;
-        text-shadow: 1px 1px 1px #ffffff !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
+/* 5. Page 2 ke liye khaali sidebar */
+.sidebar-placeholder {
+    width: 30%;
+    padding: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+}
 
-    .profile img {
-        border-color: #003087 !important;
-    }
+/* 6. PDF ke andar sidebar/main-content ko live site jaisa dikhao */
+/* Hum purane styles ko .pdf-page ke andar override kar rahe hain */
+.pdf-page .sidebar {
+    width: 30%;
+    padding: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
+}
+.pdf-page .main-content {
+    width: 70%;
+    padding: 30px;
+    padding-top: 20px; /* Thoda upar */
+}
+
+/* Ye saare styles copy kiye gaye hain taaki PDF bhi same dikhe */
+.pdf-page .profile img {
+    border-color: #003087;
+}
+.pdf-page .profile h1 {
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+.pdf-page h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #003087;
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+.pdf-page h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+.pdf-page .section-content {
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+}
+.pdf-page p, .pdf-page li {
+    color: #000000;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+.pdf-page .contact p i {
+    color: #003087;
+}
+.pdf-page ul { list-style: none; }
+.pdf-page .core-competencies ul li:before, 
+.pdf-page .tools ul li:before, 
+.pdf-page .languages ul li:before,
+.pdf-page section ul li:before {
+    content: "•";
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+    position: absolute;
+    left: 0;
 }
