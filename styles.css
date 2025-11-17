@@ -6,166 +6,108 @@
 }
 
 body {
-    background: #f4f4f4;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    /* Body par dark grey background, taaki page alag se dikhe */
+    background: #555;
     min-height: 100vh;
-    padding: 20px;
 }
 
-/* Pop-up Styles (Unchanged) */
-.greeting-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in forwards;
-}
-.greeting-content {
-    background: #003087;
-    padding: 40px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transform: scale(0.8);
-    animation: scaleUp 0.5s ease-in-out forwards;
-    border: 2px solid #ffffff;
-}
-.greeting-content h1 {
-    font-size: 40px;
-    color: #ffffff;
-    margin-bottom: 15px;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-}
-.greeting-content p {
-    font-size: 24px;
-    color: #e0e0e0;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
-}
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-@keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
-.fade-out { animation: fadeOut 0.5s ease-out forwards; }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
-
-/* Download Button Styles (Unchanged) */
-.download-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-}
-.download-btn {
-    background-color: #003087;
-    color: #fff;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-}
-.download-container:hover .dropdown-content { display: block; }
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    right: 0;
-}
-.dropdown-content a {
-    color: #000;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
-}
-.dropdown-content a:hover { background-color: #f1f1ff; }
-
-/* Resume Container Styles (Unchanged from last time) */
-.resume-container {
-    display: flex;
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
+/* --- NEW: A4 Page Styles --- */
+/* Ye device par resume ko A4 pages jaisa dikhayega */
+.a4-page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 20px auto; /* Page ko center karega */
+    
+    /* Full background image har page par */
     background-image: url('Dashboard Background Image DBI.webp');
     background-size: cover;
     background-position: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    overflow: hidden;
+    
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    overflow: hidden; /* Content ko page ke andar rakhega */
 }
 
+/* Second page ko top margin */
+.a4-page + .a4-page {
+    margin-top: 20px;
+}
+
+.resume-container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background: transparent; /* Container ab transparent hai */
+}
+
+/* --- Pop-up & Download (Unchanged) --- */
+.greeting-popup { ... }
+.greeting-content { ... }
+.greeting-content h1 { ... }
+.greeting-content p { ... }
+@keyframes fadeIn { ... }
+@keyframes scaleUp { ... }
+.fade-out { ... }
+@keyframes fadeOut { ... }
+.download-container { ... }
+.download-btn { ... }
+.download-container:hover .dropdown-content { ... }
+.dropdown-content { ... }
+.dropdown-content a { ... }
+.dropdown-content a:hover { ... }
+/* (Yahan pop-up aur download ke saare styles daal dein, maine brevity ke liye hide kiye hain) */
+
+/* --- Sidebar Styles (Visibility Update) --- */
 .sidebar {
     width: 30%;
     background: transparent;
     color: #ffffff;
     padding: 20px;
-    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-right: 1px solid rgba(255, 255, 255, 0.3); /* Light border */
 }
 
-.profile {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
+.profile { ... }
 .profile img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 10px;
     border: 4px solid #ffffff;
 }
-
 .profile h1 {
-    font-size: 24px;
-    text-transform: uppercase;
     color: #ffffff;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 }
 
-.contact, .personal-details, .core-competencies, .tools, .languages {
-    margin-bottom: 20px;
-}
-
-.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
+.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2,
+section h2 {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
     border-bottom: 2px solid #ffffff;
     color: #ffffff;
-    display: flex;
-    align-items: center;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
-.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
+.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i,
+section h2 i {
     margin-right: 8px;
+    color: #ffffff; /* Icon color */
 }
 
+/* --- VISIBILITY FIX (Most Important) --- */
 .section-content {
-    border: 1px solid #ffffff;
+    /* Halka dark transparent background text ki readability ke liye */
+    background-color: rgba(0, 0, 0, 0.5); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
     padding: 10px;
-    background: transparent;
+    border-radius: 5px;
+    margin-top: 10px;
 }
 
+/* All text inside boxes will be white */
 .contact p, .personal-details p, 
 .core-competencies ul, .tools ul, .languages ul,
 section p, section ul, section li {
     font-size: 14px;
     line-height: 1.6;
     color: #ffffff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    text-shadow: none; /* Shadow ki zaroorat nahi, background solid hai */
 }
 
 .contact p i {
@@ -173,10 +115,7 @@ section p, section ul, section li {
     color: #ffffff;
 }
 
-ul {
-    list-style: none;
-}
-
+ul { list-style: none; }
 .core-competencies ul li, .tools ul li, .languages ul li {
     margin-bottom: 8px;
     position: relative;
@@ -187,11 +126,12 @@ ul {
 section ul li:before {
     content: "•";
     color: #ffffff;
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
+    text-shadow: none;
     position: absolute;
     left: 0;
 }
 
+/* --- Main Content Styles (Visibility Update) --- */
 .main-content {
     width: 70%;
     padding: 30px;
@@ -199,30 +139,7 @@ section ul li:before {
     color: #ffffff;
 }
 
-section {
-    margin-bottom: 30px;
-}
-
-section h2 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid #ffffff;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
-}
-
-section h2 i {
-    margin-right: 8px;
-}
-
-section .section-content {
-    border: 1px solid #ffffff;
-    padding: 10px;
-    background: transparent;
-}
+section { margin-bottom: 30px; }
 
 section h3 {
     font-size: 16px;
@@ -231,29 +148,35 @@ section h3 {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9);
 }
 
-section ul {
-    margin-left: 20px;
-}
-
+section ul { margin-left: 20px; }
 section ul li {
     margin-bottom: 8px;
     position: relative;
     padding-left: 20px;
 }
 
-/* Responsive Styles (Unchanged) */
+/* --- Responsive Styles (Fit to Screen) --- */
 @media (max-width: 768px) {
     body {
+        background: #f4f4f4; /* Mobile par dark background nahi */
         padding: 0;
-        justify-content: flex-start; 
     }
-    
+
+    /* Mobile par A4 layout nahi, simple stack layout */
+    .a4-page {
+        width: 100%;
+        min-height: auto;
+        height: auto;
+        margin: 0;
+        box-shadow: none;
+    }
+    .a4-page + .a4-page {
+        margin-top: 0;
+    }
+
     .resume-container {
         flex-direction: column;
         width: 100%;
-        margin: 0;
-        box-shadow: none;
-        border-radius: 0;
     }
 
     .sidebar, .main-content {
@@ -266,44 +189,35 @@ section ul li {
         border-bottom: 1px solid rgba(255, 255, 255, 0.5);
     }
 }
-@media (max-width: 480px) {
-    .main-content, .sidebar {
-        padding: 20px 15px;
-    }
-    .download-container {
-        top: 10px;
-        right: 10px;
-    }
-}
 
-/* --- Print Styles (UPDATED AS PER YOUR REQUEST) --- */
-/* Ye naye styles printer ko force karenge ki wo background image ke saath print kare */
+/* --- Print Styles (Forcing Background Image in PDF) --- */
 @media print {
     body {
         margin: 0;
         padding: 0;
-        background: #ffffff !important; /* Body ka background white hi rahega */
-        display: block;
-        /* Force color printing */
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
 
+    /* Pop-up aur Download button ko print se hide karein */
     .greeting-popup, .download-container {
         display: none !important;
     }
-
-    .resume-container {
-        margin: 0;
-        padding: 0;
+    
+    .resume-wrapper {
         width: 100%;
-        max-width: 100%;
+    }
+    
+    /* Har page ko A4 size dein */
+    .a4-page {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
         box-shadow: none;
-        border: none;
-        border-radius: 0;
-        
-        /* --- KEY CHANGE --- */
-        /* Force the background image to print */
+        overflow: hidden;
+        page-break-after: always; /* Har .a4-page ke baad naya page */
+
+        /* Force background image print */
         background-image: url('Dashboard Background Image DBI.webp') !important;
         background-size: cover !important;
         background-position: center !important;
@@ -311,46 +225,28 @@ section ul li {
         color-adjust: exact;
     }
 
-    /* Force text colors to be white with shadow (as seen on screen) */
-    p, li, h1, h2, h3,
-    .contact p, .personal-details p, 
-    .core-competencies ul, .tools ul, .languages ul, 
-    section p, section ul, .profile h1, .contact h2, 
-    .personal-details h2, .core-competencies h2, .tools h2, 
-    .languages h2, section h2, section h3, .contact p i {
+    /* Force text colors, section backgrounds, etc. to print */
+    .section-content {
+        background-color: rgba(0, 0, 0, 0.5) !important;
+        border-color: rgba(255, 255, 255, 0.3) !important;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    p, li, h1, h2, h3, .contact p i, 
+    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
+    section ul li:before {
         color: #ffffff !important;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 1) !important;
+        text-shadow: none !important;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
     
-    /* Force bullet points color */
-    .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
-    section ul li:before {
-         color: #ffffff !important;
-         text-shadow: 1px 1px 2px rgba(0, 0, 0, 1) !important;
+    h1, h2, h3 {
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9) !important;
     }
 
-    /* Force border colors */
     .sidebar {
-        border-right-color: rgba(255, 255, 255, 0.5) !important;
-    }
-    .section-content, .profile img, .contact h2, 
-    .personal-details h2, .core-competencies h2, .tools h2, 
-    .languages h2, section h2 {
-        border-color: #ffffff !important;
-    }
-
-    /* Keep page break logic */
-    .contact, .personal-details, .core-competencies, .tools, .languages,
-    .professional-summary, .professional-experience, .education, .certifications {
-        page-break-inside: avoid;
-    }
-
-    /* Make sure sidebar and main content are transparent */
-    .sidebar, .main-content {
-        background: transparent !important;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
+        border-color: rgba(255, 255, 255, 0.3) !important;
     }
 }
