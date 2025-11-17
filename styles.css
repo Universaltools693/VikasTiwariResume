@@ -6,12 +6,19 @@
 }
 
 body {
-    /* Updated: Background image added */
+    /* Updated: Background image */
     background-image: url('Dashboard Background Image DBI.webp');
     background-size: cover;
     background-position: center;
-    background-attachment: fixed;
-    min-height: 100vh;
+    background-attachment: fixed; /* Image ko fix rakhega */
+    
+    /* NEW: Resume ko screen ke beech mein laane ke liye */
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Vertically center */
+    align-items: center;    /* Horizontally center */
+    min-height: 100vh;      /* Poori screen ki height lega */
+    padding: 20px;          /* Thoda spacing */
 }
 
 /* Pop-up Styles (Unchanged) */
@@ -118,19 +125,25 @@ body {
     background-color: #f1f1ff;
 }
 
-/* Resume Container Styles */
+/* Resume Container Styles (UPDATED) */
 .resume-container {
     display: flex;
     width: 100%;
-    max-width: 1200px;
-    margin: 20px auto;
-    background: #ffffff;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    max-width: 1000px; /* Standard document width */
+    margin: 0; /* Updated: Flexbox ab center karega */
+    
+    /* NEW: Solid white ki jagah semi-transparent background */
+    background: rgba(255, 255, 255, 0.9); /* 90% opaque white */
+    
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-radius: 5px; /* Thoda rounded corner */
+    overflow: hidden; /* Rounded corners ke liye */
 }
 
 .sidebar {
     width: 30%;
-    background: #f9f9f9;
+    /* UPDATED: Background transparent taaki container ka background dikhe */
+    background: transparent; 
     color: #333;
     padding: 20px;
     border-right: 1px solid #e0e0e0;
@@ -176,6 +189,8 @@ body {
 .section-content {
     border: 1px solid #000;
     padding: 10px;
+    /* NEW: Text readability ke liye halka background */
+    background: rgba(255, 255, 255, 0.5); 
 }
 
 .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
@@ -209,7 +224,8 @@ ul {
 .main-content {
     width: 70%;
     padding: 30px;
-    background: #ffffff;
+    /* UPDATED: Background transparent taaki container ka background dikhe */
+    background: transparent;
 }
 
 section {
@@ -233,6 +249,8 @@ section h2 i {
 section .section-content {
     border: 1px solid #000;
     padding: 10px;
+    /* NEW: Text readability ke liye halka background */
+    background: rgba(255, 255, 255, 0.5);
 }
 
 section p, section ul {
@@ -264,29 +282,38 @@ section ul li:before {
     left: 0;
 }
 
-/* --- Responsive Styles (NEW) --- */
+/* --- Responsive Styles (UPDATED) --- */
 @media (max-width: 1024px) {
     .resume-container {
         width: 95%; /* Thoda space side mein */
+        max-width: 95%;
     }
 }
 
 @media (max-width: 768px) {
+    body {
+        /* Mobile par centering ki jagah top se start karenge */
+        justify-content: flex-start; 
+        padding: 10px;
+    }
+    
     .resume-container {
         flex-direction: column; /* Main change: Sidebar upar, content neeche */
         width: 100%;
         margin: 0;
         box-shadow: none;
+        /* Mobile par readability ke liye zyada solid background */
+        background: rgba(255, 255, 255, 0.95);
     }
 
     .sidebar, .main-content {
-        width: 100%; /* Dono full width lenge */
+        width: 100%; 
         max-width: 100%;
     }
 
     .sidebar {
         border-right: none;
-        border-bottom: 2px solid #e0e0e0; /* Sidebar ke neeche border */
+        border-bottom: 2px solid #e0e0e0;
     }
 
     .profile img {
@@ -308,10 +335,14 @@ section ul li:before {
 
 @media (max-width: 480px) {
     body {
-        /* Mobile par background image hata denge taaki resume saaf dikhe */
-        background-image: none; 
-        background-color: #f4f4f4;
+        padding: 0;
     }
+    
+    .resume-container {
+        width: 100%;
+        border-radius: 0;
+    }
+
     .main-content {
         padding: 20px 15px;
     }
@@ -328,11 +359,14 @@ section ul li:before {
     }
 }
 
-/* Print Styles for Downloads (UPDATED) */
+/* Print Styles for Downloads (Unchanged & Correct) */
+/* Ye styles tabhi kaam karte hain jab aap 'Download' ya 'Print' karte hain */
 @media print {
     body {
         margin: 0;
-        background: #ffffff; /* Print mein background hamesha white */
+        padding: 0;
+        background: #ffffff !important; /* Print mein background hamesha white */
+        display: block; /* Flexbox settings hat jayengi */
     }
     .greeting-popup, .download-container {
         display: none !important;
@@ -344,37 +378,41 @@ section ul li:before {
         max-width: 100%;
         box-shadow: none;
         border: none;
+        background: #ffffff !important; /* Print mein background white */
     }
     
-    /* --- PDF/Print Fixes (NEW) --- */
-    
-    /* 1. Darker Text */
+    /* PDF/Print Fixes */
     p, li, 
     .contact p, .personal-details p, 
     .core-competencies ul, .tools ul, .languages ul, 
     section p, section ul {
         color: #000 !important; /* Dark black text for printing */
-        font-size: 10pt; /* Standard print font size */
+        font-size: 10pt;
         line-height: 1.4;
+        background: transparent !important; /* Section ka background print nahi hoga */
+    }
+    .section-content {
+        background: transparent !important;
     }
 
     h1 { font-size: 18pt !important; }
     h2 { font-size: 14pt !important; }
     h3 { font-size: 12pt !important; }
 
-    /* 2. Page Break Logic */
+    /* Page Break Logic */
     .contact, .personal-details, .core-competencies, .tools, .languages,
     .professional-summary, .professional-experience, .education, .certifications {
-        page-break-inside: avoid; /* Important: Section ko beech se cutne se rokega */
+        page-break-inside: avoid; /* Section ko beech se cutne se rokega */
     }
 
     .sidebar {
         width: 30%;
-        background: #f9f9f9 !important; /* Ensure background prints */
-        -webkit-print-color-adjust: exact; /* Chrome/Safari */
-        color-adjust: exact; /* Firefox */
+        background: #f9f9f9 !important; /* Sidebar ko print mein halka grey background dega */
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
     }
     .main-content {
         width: 70%;
+        background: #ffffff !important;
     }
 }
