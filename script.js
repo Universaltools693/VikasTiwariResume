@@ -26,15 +26,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 4000);
 
     // Download Functionality
+    // UPDATED: Check for separate libraries
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (UPDATED - PDF mode for fit, no cuts, full boxes)
+    // Download as PDF (UPDATED - Full background per page, header on each, like Ashish's)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries load nahi hui. Page refresh kar ke try karo.");
+            alert("PDF libraries load nahi hui. Page ko refresh kar ke dobara try karo. (Console check karo F12 se)");
+            console.error("Libraries missing:", { html2canvas: !!html2canvasLib, jspdf: !!jspdfLib });
             return;
         }
         
@@ -43,142 +45,166 @@ document.addEventListener("DOMContentLoaded", function () {
             const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
-            const headerH = 15;
-            const gap = 10;
+            const headerH = 15; // Thin header height
+            const gap = 10; // Gap below header
             const contentTop = headerH + gap;
             const contentH = pageH - contentTop;
 
-            // Bg
-            let bgDataUrl;
+            // Load and prepare background image (full cover per page) with fallback
+            let bgDataUrl = null;
             try {
-                bgDataUrl = await new Promise((resolve, reject) => {
+                const bgPromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
                         canvas.width = pageW;
                         canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, pageW, pageH);
+                        ctx.drawImage(img, 0, 0, pageW, pageH); // Scale to full page
                         resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
-                    img.onerror = reject;
+                    img.onerror = () => reject(new Error("Background image load nahi hui - fallback to white."));
                     img.src = 'Dashboard Background Image DBI.webp';
+                    img.crossOrigin = "anonymous";
                 });
-            } catch {
+                bgDataUrl = await bgPromise;
+            } catch (imgErr) {
+                console.warn("BG Image Error:", imgErr);
+                // Fallback: Create white bg
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW;
                 canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = '#ffffff';
                 ctx.fillRect(0, 0, pageW, pageH);
-                bgDataUrl = canvas.toDataURL('image/jpeg', 1);
+                bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // Prepare for capture
-            const resumeContainer = document.querySelector('.resume-container');
-            const original = {
-                height: resumeContainer.style.height,
-                maxHeight: resumeContainer.style.maxHeight,
-                overflow: resumeContainer.style.overflow,
-                width: resumeContainer.style.width
+            // Function to generate canvas for page content (without bg, with styles)
+            const generatePageCanvas = async (sections) => {
+                const temp = document.createElement('div');
+                temp.className = 'pdf-mode'; // Apply PDF styles
+                temp.style.cssText = `
+                    width: ${pageW}px;
+                    height: ${contentH}px;
+                    display: flex;
+                    background: transparent;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                `;
+
+                // Clone sidebar for left (full height for each page)
+                const side = document.querySelector('.sidebar').cloneNode(true);
+                side.style.cssText = `
+                    width: 30%;
+                    flex-shrink: 0;
+                    background: transparent !important;
+                    padding: 20px;
+                    box-sizing: border-box;
+                    height: 100%;
+                    overflow-y: auto;
+                `;
+                temp.appendChild(side);
+
+                // Main content div for right
+                const mainTemp = document.createElement('div');
+                mainTemp.style.cssText = `
+                    width: 70%;
+                    padding: 30px;
+                    background: transparent;
+                    height: 100%;
+                    overflow-y: auto;
+                    box-sizing: border-box;
+                `;
+
+                // Add selected sections to main
+                sections.forEach(sec => {
+                    if (sec) {
+                        const cloneSec = sec.cloneNode(true);
+                        // Ensure transparent sections
+                        cloneSec.querySelectorAll('.section-content').forEach(el => {
+                            el.style.backgroundColor = 'transparent';
+                        });
+                        mainTemp.appendChild(cloneSec);
+                    }
+                });
+
+                temp.appendChild(mainTemp);
+
+                // Append to body for rendering
+                document.body.appendChild(temp);
+                await new Promise(resolve => setTimeout(resolve, 300)); // Increased wait for render
+
+                // Capture canvas
+                const canvas = await html2canvasLib(temp, {
+                    scale: 1,
+                    useCORS: true,
+                    allowTaint: true,
+                    width: pageW,
+                    height: contentH,
+                    backgroundColor: null // Transparent bg
+                });
+
+                // Remove temp
+                document.body.removeChild(temp);
+                return canvas;
             };
-            resumeContainer.style.height = 'auto !important';
-            resumeContainer.style.maxHeight = 'none !important';
-            resumeContainer.style.overflow = 'visible !important';
-            resumeContainer.style.width = `${pageW}px !important`;
-            // Add PDF mode class for reduced spacing/fit
-            resumeContainer.classList.add('pdf-mode');
-            // Avoid breaks
-            const sections = resumeContainer.querySelectorAll('.contact, .personal-details, .core-competencies, .tools, .languages, section');
-            sections.forEach(sec => {
-                sec.style.pageBreakInside = 'avoid !important';
-                sec.style.breakInside = 'avoid !important';
-            });
-            // Hide UI
-            const popup = document.getElementById('greeting-popup');
-            const downloadBtn = document.querySelector('.download-container');
-            const originalPopup = popup.style.display;
-            const originalBtn = downloadBtn.style.display;
-            popup.style.display = 'none';
-            downloadBtn.style.display = 'none';
-            // Reflow
-            resumeContainer.offsetHeight;
-            await new Promise(r => setTimeout(r, 1200)); // 1.2s wait
 
-            // Capture
-            const fullCanvas = await html2canvasLib(resumeContainer, {
-                scale: 0.98, // Sharp fit
-                useCORS: true,
-                allowTaint: true,
-                width: pageW,
-                height: resumeContainer.scrollHeight,
-                backgroundColor: null,
-                logging: false
-            });
+            // Get sections from DOM
+            const summary = document.querySelector('.professional-summary');
+            const experience = document.querySelector('.professional-experience');
+            const education = document.querySelector('.education');
+            const certifications = document.querySelector('.certifications');
 
-            // Restore
-            Object.assign(resumeContainer.style, original);
-            resumeContainer.classList.remove('pdf-mode');
-            sections.forEach(sec => {
-                sec.style.pageBreakInside = '';
-                sec.style.breakInside = '';
-            });
-            popup.style.display = originalPopup;
-            downloadBtn.style.display = originalBtn;
+            // Page 1: Summary + Experience
+            const canvas1 = await generatePageCanvas([summary, experience]);
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg
+            // Add thin header (empty blue strip)
+            doc.setFillColor(0, 48, 135); // #003087
+            doc.rect(0, 0, pageW, headerH, 'F');
+            // Add content
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
 
-            const fullHeight = fullCanvas.height;
-            const numPages = Math.ceil(fullHeight / contentH);
+            // Page 2: Education + Certifications
+            const canvas2 = await generatePageCanvas([education, certifications]);
+            doc.addPage();
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Full bg again
+            doc.setFillColor(0, 48, 135); // Header again
+            doc.rect(0, 0, pageW, headerH, 'F');
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, contentH);
 
-            // Crop
-            const cropCanvas = (source, startY, h) => {
-                const crop = document.createElement('canvas');
-                crop.width = pageW;
-                crop.height = h;
-                const ctx = crop.getContext('2d');
-                ctx.drawImage(source, 0, startY, pageW, h, 0, 0, pageW, h);
-                return crop;
-            };
-
-            // Pages
-            for (let i = 0; i < numPages; i++) {
-                if (i > 0) doc.addPage();
-
-                doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-                
-                doc.setFillColor(0, 48, 135);
-                doc.rect(0, 0, pageW, headerH, 'F');
-
-                const startY = i * contentH;
-                const remH = Math.min(contentH, fullHeight - startY);
-                if (remH > 0) {
-                    const pageSlice = cropCanvas(fullCanvas, startY, remH);
-                    doc.addImage(pageSlice.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, remH);
-                }
-            }
-
+            // Save
             doc.save('Vikas_Tiwari_Resume.pdf');
         } catch (error) {
-            console.error(error);
-            alert("Error: " + error.message + ". F12 console dekho.");
+            console.error("PDF generation error:", error);
+            alert("PDF download mein error: " + error.message + ". Console (F12) check karo ya page refresh karo.");
         }
     });
 
-    // Word (unchanged)
+    // Download as Word (Unchanged - already full content)
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
+        
+        // Zaroori Note: MS Word download library (html-docx-js) background images ko support NAHI KARTI hai.
+        // Isliye, Word file hamesha white background ke saath hi download hogi.
+        // Ye is library ki limitation hai. Sirf PDF hi background ke saath aayega.
+        
         try {
+            // Convert profile image to Base64 to embed in Word
             const profileImg = document.querySelector('.profile img');
             const canvas = document.createElement('canvas');
             canvas.width = profileImg.naturalWidth;
             canvas.height = profileImg.naturalHeight;
             const ctx = canvas.getContext('2d');
-            ctx.drawImage(profileImg, 0, 0);
+            ctx.drawImage(profileImg, 0, 0, canvas.width, canvas.height);
             const imgDataUrl = canvas.toDataURL('image/jpeg');
 
+            // Full content HTML for Word (white bg, no bg image)
             const content = `
                 <html>
                 <head>
                     <style>
+                        /* Standard Word/Print styles */
                         body { font-family: Arial, sans-serif; color: #333; margin: 48px; width: 794px; }
                         .resume-container { display: flex; width: 100%; background: #ffffff; }
                         .sidebar { width: 30%; background: #f9f9f9; padding: 20px; border-right: 1px solid #e0e0e0; }
