@@ -42,7 +42,7 @@ body {
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* --- Download Button Styles (FIXED) --- */
+/* --- Download Button Styles (Unchanged) --- */
 .download-container {
     position: fixed;
     top: 20px;
@@ -59,7 +59,6 @@ body {
     cursor: pointer;
     font-size: 16px;
 }
-/* Dropdown content ko hover par dikhaye */
 .download-container:hover .dropdown-content {
     display: block;
 }
@@ -71,8 +70,8 @@ body {
     box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
     right: 0;
-    border-radius: 5px; /* Added radius */
-    overflow: hidden; /* Added overflow */
+    border-radius: 5px;
+    overflow: hidden;
 }
 .dropdown-content a {
     color: #000;
@@ -85,7 +84,7 @@ body {
     background-color: #f1f1f1;
 }
 
-/* --- Resume Container (Background Image) --- */
+/* --- Resume Container (Unchanged) --- */
 .resume-container {
     display: flex;
     width: 100%;
@@ -97,15 +96,22 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border-radius: 8px;
     overflow: hidden;
+    position: relative; /* Added for header context */
 }
 
-/* --- Sidebar (New Colors) --- */
+/* --- PDF Header (Naya style) --- */
+/* Ye header live website par nahi dikhega */
+.pdf-page-header {
+    display: none;
+}
+
+/* --- Sidebar (Unchanged) --- */
 .sidebar {
     width: 30%;
     background: transparent;
-    color: #000; /* Default color black */
+    color: #000;
     padding: 20px;
-    border-right: 1px solid rgba(0, 0, 0, 0.2); /* Darker border */
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
 
 .profile {
@@ -117,13 +123,13 @@ body {
     height: 150px;
     border-radius: 50%;
     margin-bottom: 10px;
-    border: 4px solid #003087; /* Dark blue border */
+    border: 4px solid #003087;
 }
 .profile h1 {
     font-size: 24px;
     text-transform: uppercase;
-    color: #003087; /* Dark Blue */
-    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
 .contact, .personal-details, .core-competencies, .tools, .languages {
@@ -134,22 +140,22 @@ body {
     font-size: 16px;
     margin-bottom: 10px;
     padding-bottom: 5px;
-    border-bottom: 2px solid #003087; /* Dark Blue */
-    color: #003087; /* Dark Blue */
+    border-bottom: 2px solid #003087;
+    color: #003087;
     display: flex;
     align-items: center;
-    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
 .contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
     margin-right: 8px;
-    color: #003087; /* Dark Blue */
+    color: #003087;
 }
 
-/* --- Section Content (Transparent Background) --- */
+/* --- Section Content (Unchanged) --- */
 .section-content {
-    background-color: transparent; /* REMOVED black background */
-    border: 1px solid #000; /* Black border */
+    background-color: transparent;
+    border: 1px solid #000;
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
@@ -160,13 +166,13 @@ body {
 section p, section ul, section li {
     font-size: 14px;
     line-height: 1.6;
-    color: #000000; /* PURE BLACK text */
-    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
+    color: #000000;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
 .contact p i {
     margin-right: 10px;
-    color: #003087; /* Dark Blue */
+    color: #003087;
 }
 
 ul { list-style: none; }
@@ -180,36 +186,36 @@ ul { list-style: none; }
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
 section ul li:before {
     content: "•";
-    color: #003087; /* Dark Blue bullets */
+    color: #003087;
     text-shadow: 1px 1px 1px #ffffff;
     position: absolute;
     left: 0;
 }
 
-/* --- Main Content (New Colors) --- */
+/* --- Main Content (Unchanged) --- */
 .main-content {
     width: 70%;
     padding: 30px;
     background: transparent;
-    color: #000; /* Default color black */
+    color: #000;
 }
 
 section { margin-bottom: 30px; }
 
 section h2 {
-    color: #003087; /* Dark Blue */
-    border-bottom-color: #003087; /* Dark Blue */
+    color: #003087;
+    border-bottom-color: #003087;
 }
 
 section h2 i {
-    color: #003087; /* Dark Blue */
+    color: #003087;
 }
 
 section h3 {
     font-size: 16px;
     margin-bottom: 5px;
-    color: #003087; /* Dark Blue */
-    text-shadow: 1px 1px 1px #ffffff; /* Readability shadow */
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
 section ul { margin-left: 20px; }
@@ -238,40 +244,67 @@ section ul li {
     }
 }
 
+
+/* --- YAHAN SABKUCH FIX KIYA GAYA HAI --- */
 /* --- Print Styles (Forcing Background Image & NEW Dark Colors) --- */
 @media print {
+    
+    /* 1. Background ko BODY par lagao */
     body {
         margin: 0;
         padding: 0;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
+        
+        /* --- YAHI HAI ASLI FIX --- */
+        background-image: url('Dashboard Background Image DBI.webp') !important;
+        background-size: cover !important;
+        background-position: center !important;
+        background-repeat: no-repeat !important; /* Taki image repeat na ho */
     }
 
     .greeting-popup, .download-container {
         display: none !important;
     }
 
-    .resume-container {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
-        
-        /* Force background image print */
-        background-image: url('Dashboard Background Image DBI.webp') !important;
-        background-size: cover !important;
-        background-position: center !important;
+    /* 2. Header ko dikhao, fix karo (taki har page par repeat ho) */
+    .pdf-page-header {
+        display: block !important;
+        position: fixed !important; /* Ye har page par repeat karega */
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 15px; /* Patli patti (height) */
+        background-color: #003087 !important; /* Relevant color */
+        z-index: 10000;
         -webkit-print-color-adjust: exact;
         color-adjust: exact;
     }
+
+    /* 3. Resume container ko transparent karo aur header ke niche gap do */
+    .resume-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding-top: 30px !important; /* 15px header + 15px gap */
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        
+        /* --- YAHI HAI ASLI FIX --- */
+        background: transparent !important; /* Container ko transparent karo */
+        border: none !important;
+    }
     
-    .contact, .personal-details, .core-competencies, .tools, .languages,
-    .professional-summary, .professional-experience, .education, .certifications {
-        page-break-inside: avoid;
+    .sidebar {
+        border-color: rgba(0, 0, 0, 0.2) !important;
     }
 
-    /* Force section content to be transparent */
+    .contact, .personal-details, .core-competencies, .tools, .languages,
+    .professional-summary, .professional-experience, .education, .certifications {
+        page-break-inside: avoid; /* Section ko page ke beech me cutne se roko */
+    }
+
+    /* Section content ko transparent rakho */
     .section-content {
         background-color: transparent !important;
         border-color: #000 !important;
@@ -279,7 +312,7 @@ section ul li {
         color-adjust: exact;
     }
 
-    /* Force NEW dark text colors */
+    /* Baki sab text/colors ko force karo taki background par dikhe */
     p, li, section p, section ul, section li, 
     .contact p, .personal-details p, .core-competencies ul, .tools ul, .languages ul {
         color: #000000 !important;
@@ -288,7 +321,6 @@ section ul li {
         color-adjust: exact;
     }
     
-    /* Force NEW dark heading/icon colors */
     h1, h2, h3, .contact p i, .profile h1, .contact h2, 
     .personal-details h2, .core-competencies h2, .tools h2, 
     .languages h2, section h2, section h3,
@@ -301,9 +333,6 @@ section ul li {
         color-adjust: exact;
     }
 
-    .sidebar {
-        border-color: rgba(0, 0, 0, 0.2) !important;
-    }
     .profile img {
         border-color: #003087 !important;
     }
