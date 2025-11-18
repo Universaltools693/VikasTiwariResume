@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // --- Greeting Pop-up Logic ---
+    // --- Greeting Pop-up Logic (Unchanged) ---
     const now = new Date();
     const hours = now.getHours();
     let greeting;
@@ -25,11 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // --- Download Functionality ---
+    // --- Download Functionality (FINAL - HIGH QUALITY OUTPUT) ---
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FIXED: Padding + Sidebar Wrap)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
@@ -40,32 +39,32 @@ document.addEventListener("DOMContentLoaded", function () {
         
         try {
             const { jsPDF } = jspdfLib;
-            const doc = new jsPDF('p', 'pt', 'a4');
-            const pageW = doc.internal.pageSize.getWidth();
-            const pageH = doc.internal.pageSize.getHeight();
-            const headerH = 15;
-            const contentTop = headerH + 10; // 25pt top margin
-            // Available height for content on PDF page
-            const maxContentH = pageH - contentTop - 20; // 20pt bottom buffer
-
-            // Load Background
+            const doc = new jsPDF('p', 'pt', 'a4'); // Standard A4
+            const pageW = doc.internal.pageSize.getWidth(); // A4 width in pts
+            const pageH = doc.internal.pageSize.getHeight(); // A4 height in pts
+            const headerH = 15; // Blue header strip height in pts
+            const contentTop = headerH + 10; // Content start position (10pt gap below header)
+            
+            // --- Background Image Loading ---
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        canvas.width = pageW; canvas.height = pageH;
+                        canvas.width = pageW;
+                        canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, pageW, pageH); 
-                        resolve(canvas.toDataURL('image/jpeg', 0.98));
+                        resolve(canvas.toDataURL('image/jpeg', 1.0)); // Higher quality for BG image
                     };
-                    img.onerror = () => reject(new Error("BG Error"));
+                    img.onerror = () => reject(new Error("Background image load nahi hui."));
                     img.src = 'Dashboard Background Image DBI.webp';
                     img.crossOrigin = "anonymous";
                 });
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
+                console.warn("BG Image Error:", imgErr, "White background istemal hoga.");
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW; canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
@@ -73,23 +72,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // *** Canvas Generation Function (With Padding Fix) ***
-            const generatePageCanvas = async (mainSectionClasses, sidebarSectionClasses) => {
-                const temp = document.createElement('div');
-                temp.className = 'pdf-mode';
-                // FIX: Added padding-bottom to ensure bottom border isn't cut off
-                temp.style.cssText = `
-                    width: ${pageW}px; 
+            // --- Canvas Generation Function (HIGH SCALE FOR QUALITY) ---
+            const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
+                const tempContainer = document.createElement('div');
+                tempContainer.className = 'pdf-mode';
+                tempContainer.style.cssText = `
+                    width: ${pageW}px; /* PDF page width */
                     display: flex;
                     background: transparent;
                     box-sizing: border-box;
-                    padding-bottom: 40px; 
+                    padding-bottom: 40px; /* Extra padding for bottom border of sections */
                 `;
 
-                // Sidebar Construction
-                const side = document.createElement('div');
-                side.className = 'sidebar pdf-mode';
-                side.style.cssText = `
+                // Sidebar construction
+                const sideDiv = document.createElement('div');
+                sideDiv.className = 'sidebar pdf-mode';
+                sideDiv.style.cssText = `
                     width: 30%;
                     flex-shrink: 0;
                     background: transparent !important;
@@ -98,88 +96,92 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-right: 1px solid rgba(0, 0, 0, 0.2);
                 `;
                 
-                sidebarSectionClasses.forEach(selector => {
+                sidebarSectionSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) side.appendChild(originalSection.cloneNode(true));
+                    if (originalSection) {
+                        sideDiv.appendChild(originalSection.cloneNode(true));
+                    }
                 });
-                temp.appendChild(side);
+                tempContainer.appendChild(sideDiv);
 
-                // Main Content Construction
-                const mainTemp = document.createElement('div');
-                mainTemp.className = 'main-content pdf-mode';
-                mainTemp.style.cssText = `
+                // Main content construction
+                const mainDiv = document.createElement('div');
+                mainDiv.className = 'main-content pdf-mode';
+                mainDiv.style.cssText = `
                     width: 70%;
                     padding: 30px;
                     background: transparent;
                     box-sizing: border-box;
                 `;
 
-                mainSectionClasses.forEach(selector => {
+                mainSectionSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
+                    if (originalSection) {
+                        mainDiv.appendChild(originalSection.cloneNode(true));
+                    }
                 });
-                
-                temp.appendChild(mainTemp);
-                document.body.appendChild(temp);
-                await new Promise(resolve => setTimeout(resolve, 300)); 
+                tempContainer.appendChild(mainDiv);
 
-                const canvas = await html2canvasLib(temp, {
-                    scale: 2, // Better quality
+                document.body.appendChild(tempContainer);
+                await new Promise(resolve => setTimeout(resolve, 300)); // Render delay
+
+                // *** CRITICAL CHANGE FOR QUALITY: Increased scale ***
+                const canvas = await html2canvasLib(tempContainer, {
+                    scale: 4, // Higher scale for better resolution (try 3 or 4, more can crash browser)
                     useCORS: true,
                     allowTaint: true,
-                    width: pageW,
-                    backgroundColor: null 
+                    width: pageW, // Capture at PDF width for better mapping
+                    backgroundColor: null, // Capture with transparent background
+                    // imageTimeout: 15000 // If images are slow to load
                 });
 
-                document.body.removeChild(temp);
+                document.body.removeChild(tempContainer);
                 return canvas;
             };
 
-            // --- Page 1 Generation ---
-            const canvas1 = await generatePageCanvas(
-                ['.professional-summary', '.professional-experience'], 
-                ['.profile', '.contact', '.personal-details']
-            );
+            // --- Page 1 Rendering ---
+            const main1_selectors = ['.professional-summary', '.professional-experience'];
+            const sidebar1_selectors = ['.profile', '.contact', '.personal-details']; 
             
-            // Calculate logic to fit page
-            let imgH1 = canvas1.height * (pageW / canvas1.width);
-            // Agar content page se bada ho raha hai, to scale down karo (Prevention)
-            if (imgH1 > maxContentH) {
-                imgH1 = maxContentH; 
-            }
-
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            doc.setFillColor(0, 48, 135);
-            doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1);
-
-            // --- Page 2 Generation ---
-            const canvas2 = await generatePageCanvas(
-                ['.education', '.certifications'], 
-                ['.core-competencies', '.tools', '.languages']
-            );
+            const canvas1 = await generatePageCanvas(main1_selectors, sidebar1_selectors);
+            const imgData1 = canvas1.toDataURL('image/png', 1.0); // PNG for transparency, 1.0 quality
             
-            let imgH2 = canvas2.height * (pageW / canvas2.width);
-            if (imgH2 > maxContentH) {
-                imgH2 = maxContentH;
-            }
+            // Calculate proportional height of the captured image on PDF
+            const imgWidth1 = pageW;
+            const imgHeight1 = canvas1.height * (imgWidth1 / canvas1.width);
 
-            doc.addPage();
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            doc.setFillColor(0, 48, 135);
-            doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2);
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Background
+            doc.setFillColor(0, 48, 135); // Blue header color
+            doc.rect(0, 0, pageW, headerH, 'F'); // Blue header strip
+            doc.addImage(imgData1, 'PNG', 0, contentTop, imgWidth1, imgHeight1); // Content image
 
-            doc.save('Vikas_Tiwari_Resume_Fixed.pdf');
+            // --- Page 2 Rendering ---
+            const main2_selectors = ['.education', '.certifications'];
+            const sidebar2_selectors = ['.core-competencies', '.tools', '.languages'];
+            
+            const canvas2 = await generatePageCanvas(main2_selectors, sidebar2_selectors);
+            const imgData2 = canvas2.toDataURL('image/png', 1.0); // PNG for transparency, 1.0 quality
+
+            const imgWidth2 = pageW;
+            const imgHeight2 = canvas2.height * (imgWidth2 / canvas2.width);
+
+            doc.addPage(); // Add a new page
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // Background
+            doc.setFillColor(0, 48, 135); // Blue header color
+            doc.rect(0, 0, pageW, headerH, 'F'); // Blue header strip
+            doc.addImage(imgData2, 'PNG', 0, contentTop, imgWidth2, imgHeight2); // Content image
+
+            doc.save('Vikas_Tiwari_Resume_HighQuality.pdf'); // New filename
         } catch (error) {
-            console.error(error);
-            alert("Error: " + error.message);
+            console.error("PDF generation error:", error);
+            alert("PDF download mein error: " + error.message + ". Console (F12) check karein.");
         }
     });
 
     // --- Download as Word (Unchanged) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
+        
         try {
             const profileImg = document.querySelector('.profile img');
             const canvas = document.createElement('canvas');
@@ -266,58 +268,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                         <li>Hindi (Native)</li>
                                         <li>English (Basic Proficiency)</li>
                                     </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="main-content">
-                            <section class="professional-summary">
-                                <h2> PROFESSIONAL SUMMARY</h2>
-                                <div class="section-content">
-                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
-                                </div>
-                            </section>
-                            <section class="professional-experience">
-                                <h2> PROFESSIONAL EXPERIENCE</h2>
-                                <div class="section-content">
-                                    <h3>Sales Executive (Financial Consultant)</h3>
-                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
-                                    <ul>
-                                        <li>Found new clients and built relationships through direct sales and client meetings.</li>
-                                        <li>Met sales targets with good negotiation and client interaction skills.</li>
-                                        <li>Created a client list, ensuring business growth through regular follow-ups.</li>
-                                    </ul>
-                                    <h3>Customer Service Expert (Customer Service Associate)</h3>
-                                    <p><strong>Magnum Group (Magnum Super Distributors (P) Ltd.)</strong> | Sep 2020 – Jun 2024 (3 years, 9 months)</p>
-                                    <ul>
-                                        <li>Handled customer queries and resolved issues, achieving a 100% quality score in March 2023 and August 2023.</li>
-                                        <li>Used CRM software to manage complaints and track solutions.</li>
-                                        <li>Received Certificates of Excellence for good performance.</li>
-                                        <li>Conducted real-time audits of customer bills, performing detailed analysis to ensure accuracy and compliance with company standards.</li>
-                                    </ul>
-                                </div>
-                            </section>
-                            <section class="education">
-                                <h2> EDUCATION HISTORY</h2>
-                                <div class="section-content">
-                                    <h3>Master of Business Administration (M.B.A.) – Marketing and Finance</h3>
-                                    <p><strong>Maharishi Mahesh Yogi Vedic Vishwavidyalaya, Madhya Pradesh</strong> | 2024</p>
-                                    <p>CGPA: 7.49 | Equivalent Percentage: 74.9% | First Division</p>
-                                    <h3>Bachelor of Computer Applications (B.C.A.)</h3>
-                                    <p><strong>Makhanlal Chaturvedi National University of Journalism and Communication, Bhopal</strong> | 2021</p>
-                                    <p>Percentage: 59.70% | Second Division</p>
-                                    <h3>Higher Secondary School Certificate (10+2) – Science (PCM)</h3>
-                                    <p><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2016</p>
-                                    <p>Percentage: 43.6%</p>
-                                    <h3>High School Certificate (10th)</h3>
-                                    <p><strong>Board of Secondary Education, Madhya Pradesh, Bhopal</strong> | 2014</p>
-                                    <p>Percentage: 49% | Second Division</p>
-                                </div>
-                            </section>
-                            <section class="certifications">
-                                <h2> CERTIFICATIONS</h2>
-                                <div class="section-content">
-                                    <p>Certification in MS Office (MS Excel, MS Word, MS PowerPoint), Advanced Photoshop, and Tally ERP</p>
-                                    <p><strong>British Heights Education, Jabalpur</strong> | 2012</p>
                                 </div>
                             </section>
                         </div>
