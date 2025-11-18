@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // --- Greeting Pop-up Logic (Aapka original code - Bilkul Sahi) ---
+    // --- Greeting Pop-up Logic ---
     const now = new Date();
     const hours = now.getHours();
     let greeting;
@@ -25,30 +25,30 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // --- Download Functionality (FINAL - SIDEBAR SPLIT LOGIC) ---
+    // --- Download Functionality ---
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FIXED - Sidebar Split + Content Cut-off)
+    // Download as PDF (FIXED: Padding + Sidebar Wrap)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries load nahi hui. Page ko refresh kar ke dobara try karo.");
-            console.error("Libraries missing:", { html2canvas: !!html2canvasLib, jspdf: !!jspdfLib });
+            alert("PDF libraries load nahi hui. Refresh karein.");
             return;
         }
         
         try {
             const { jsPDF } = jspdfLib;
-            const doc = new jsPDF('p', 'pt', 'a4'); // Standard A4
+            const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
-            const headerH = 15; // Thin header
-            const gap = 10; // Gap
-            const contentTop = headerH + gap;
-            
-            // Background image (Aapka original code)
+            const headerH = 15;
+            const contentTop = headerH + 10; // 25pt top margin
+            // Available height for content on PDF page
+            const maxContentH = pageH - contentTop - 20; // 20pt bottom buffer
+
+            // Load Background
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
@@ -60,13 +60,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         ctx.drawImage(img, 0, 0, pageW, pageH); 
                         resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
-                    img.onerror = () => reject(new Error("BG image load nahi hui."));
+                    img.onerror = () => reject(new Error("BG Error"));
                     img.src = 'Dashboard Background Image DBI.webp';
                     img.crossOrigin = "anonymous";
                 });
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
-                console.warn("BG Image Error:", imgErr);
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW; canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
@@ -74,23 +73,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // *** YEH HAI ASLI SOLUTION ***
-            // Function to generate canvas with *specific* sections
+            // *** Canvas Generation Function (With Padding Fix) ***
             const generatePageCanvas = async (mainSectionClasses, sidebarSectionClasses) => {
                 const temp = document.createElement('div');
                 temp.className = 'pdf-mode';
-                // FIX: Auto-height, no overflow
+                // FIX: Added padding-bottom to ensure bottom border isn't cut off
                 temp.style.cssText = `
                     width: ${pageW}px; 
                     display: flex;
                     background: transparent;
                     box-sizing: border-box;
+                    padding-bottom: 40px; 
                 `;
 
-                // *** NEW:*** Manually build the sidebar for this page
+                // Sidebar Construction
                 const side = document.createElement('div');
-                side.className = 'sidebar pdf-mode'; // Add original class for styles
-                // FIX: Auto-height
+                side.className = 'sidebar pdf-mode';
                 side.style.cssText = `
                     width: 30%;
                     flex-shrink: 0;
@@ -100,19 +98,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-right: 1px solid rgba(0, 0, 0, 0.2);
                 `;
                 
-                // Add only the sections we want for this page's sidebar
                 sidebarSectionClasses.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) {
-                        side.appendChild(originalSection.cloneNode(true));
-                    }
+                    if (originalSection) side.appendChild(originalSection.cloneNode(true));
                 });
                 temp.appendChild(side);
 
-                // --- Manually build the main content for this page ---
+                // Main Content Construction
                 const mainTemp = document.createElement('div');
-                mainTemp.className = 'main-content pdf-mode'; // Add original class
-                // FIX: Auto-height
+                mainTemp.className = 'main-content pdf-mode';
                 mainTemp.style.cssText = `
                     width: 70%;
                     padding: 30px;
@@ -120,21 +114,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     box-sizing: border-box;
                 `;
 
-                // Add only the sections we want for this page's main content
                 mainSectionClasses.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) {
-                        mainTemp.appendChild(originalSection.cloneNode(true));
-                    }
+                    if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
                 });
                 
                 temp.appendChild(mainTemp);
                 document.body.appendChild(temp);
                 await new Promise(resolve => setTimeout(resolve, 300)); 
 
-                // Capture canvas with auto-height
                 const canvas = await html2canvasLib(temp, {
-                    scale: 1,
+                    scale: 2, // Better quality
                     useCORS: true,
                     allowTaint: true,
                     width: pageW,
@@ -145,45 +135,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 return canvas;
             };
 
-            // --- Page 1: Define sections ---
-            const main1_sections = ['.professional-summary', '.professional-experience'];
-            const sidebar1_sections = ['.profile', '.contact', '.personal-details']; // <-- UPAR KA HISSA
+            // --- Page 1 Generation ---
+            const canvas1 = await generatePageCanvas(
+                ['.professional-summary', '.professional-experience'], 
+                ['.profile', '.contact', '.personal-details']
+            );
             
-            const canvas1 = await generatePageCanvas(main1_sections, sidebar1_sections);
-            // FIX: Calculate proportional height to prevent squishing/cutting
-            const canvas1_ScaledHeight = canvas1.height * (pageW / canvas1.width);
-            
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // BG
-            doc.setFillColor(0, 48, 135); // Header
+            // Calculate logic to fit page
+            let imgH1 = canvas1.height * (pageW / canvas1.width);
+            // Agar content page se bada ho raha hai, to scale down karo (Prevention)
+            if (imgH1 > maxContentH) {
+                imgH1 = maxContentH; 
+            }
+
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
+            doc.setFillColor(0, 48, 135);
             doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, canvas1_ScaledHeight); // Page 1 Content
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1);
 
-            // --- Page 2: Define sections ---
-            const main2_sections = ['.education', '.certifications'];
-            const sidebar2_sections = ['.core-competencies', '.tools', '.languages']; // <-- NEECHE KA HISSA
+            // --- Page 2 Generation ---
+            const canvas2 = await generatePageCanvas(
+                ['.education', '.certifications'], 
+                ['.core-competencies', '.tools', '.languages']
+            );
             
-            const canvas2 = await generatePageCanvas(main2_sections, sidebar2_sections);
-            // FIX: Calculate proportional height
-            const canvas2_ScaledHeight = canvas2.height * (pageW / canvas2.width);
+            let imgH2 = canvas2.height * (pageW / canvas2.width);
+            if (imgH2 > maxContentH) {
+                imgH2 = maxContentH;
+            }
 
-            doc.addPage(); // <-- DOOSRA PAGE YAHAN BANA
-            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH); // BG
-            doc.setFillColor(0, 48, 135); // Header
+            doc.addPage();
+            doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
+            doc.setFillColor(0, 48, 135);
             doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, canvas2_ScaledHeight); // Page 2 Content
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2);
 
-            // Save
-            doc.save('Vikas_Tiwari_Resume_2_PAGE_FIXED.pdf'); // <-- Maine naam badal diya hai
+            doc.save('Vikas_Tiwari_Resume_Fixed.pdf');
         } catch (error) {
-            console.error("PDF generation error:", error);
-            alert("PDF download mein error: " + error.message + ". Console (F12) check karo.");
+            console.error(error);
+            alert("Error: " + error.message);
         }
     });
 
-    // --- Download as Word (Aapka original code - Bilkul Sahi) ---
+    // --- Download as Word (Unchanged) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
-        
         try {
             const profileImg = document.querySelector('.profile img');
             const canvas = document.createElement('canvas');
@@ -193,12 +189,10 @@ document.addEventListener("DOMContentLoaded", function () {
             ctx.drawImage(profileImg, 0, 0, canvas.width, canvas.height);
             const imgDataUrl = canvas.toDataURL('image/jpeg');
 
-            // Full content HTML for Word (Aapka original code)
             const content = `
                 <html>
                 <head>
                     <style>
-                        /* Standard Word/Print styles */
                         body { font-family: Arial, sans-serif; color: #333; margin: 48px; width: 794px; }
                         .resume-container { display: flex; width: 100%; background: #ffffff; }
                         .sidebar { width: 30%; background: #f9f9f9; padding: 20px; border-right: 1px solid #e0e0e0; }
@@ -212,7 +206,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         ul { list-style: none; margin-left: 20px; padding: 0; }
                         li:before { content: "•"; color: #003087; position: absolute; left: 0; }
                         .section-content { border: 1px solid #000; padding: 10px; }
-                        section { page-break-inside: avoid; }
                     </style>
                 </head>
                 <body>
@@ -232,7 +225,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <p> Avni Bihar, New Shastri Nagar, Jabalpur, Madhya Pradesh (482003)</p>
                                 </div>
                             </div>
-                            <div class="personal-details">
+                             <div class="personal-details">
                                 <h2> PERSONAL DETAILS</h2>
                                 <div class="section-content">
                                     <p>DOB: 12/11/1996</p>
@@ -339,8 +332,7 @@ document.addEventListener("DOMContentLoaded", function () {
             link.download = 'Vikas_Tiwari_Resume.docx';
             link.click();
         } catch (error) {
-            console.error("Error generating Word document:", error);
-            alert("Word document generate karne mein error aa gaya hai.");
+            alert("Error: " + error.message);
         }
     });
 });
