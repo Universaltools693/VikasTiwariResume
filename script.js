@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // --- Download Functionality (OPTIMIZED FOR QUALITY & SIZE) ---
+    // --- Download Functionality (FINAL FIXED: CLEAR TEXT + TRANSPARENT BG) ---
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
@@ -39,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
         
         try {
             const { jsPDF } = jspdfLib;
-            // COMPRESS: TRUE (File size kam karne ke liye zaroori hai)
+            // Compress: true zaroori hai file size kam rakhne ke liye
             const doc = new jsPDF({
                 orientation: 'p',
                 unit: 'pt',
@@ -47,12 +47,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 compress: true 
             });
 
-            const pageW = doc.internal.pageSize.getWidth(); 
-            const pageH = doc.internal.pageSize.getHeight(); 
-            const headerH = 15; 
-            const contentTop = headerH + 10; 
+            const pageW = doc.internal.pageSize.getWidth();
+            const pageH = doc.internal.pageSize.getHeight();
+            const headerH = 15;
+            const contentTop = headerH + 10;
             
-            // --- Background Image Loading ---
+            // 1. Background Image (JPEG for Size)
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
@@ -63,7 +63,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, pageW, pageH); 
-                        // JPEG 0.8 = Good Quality + Low Size
+                        // Background ko JPEG rakha hai size kam karne ke liye
                         resolve(canvas.toDataURL('image/jpeg', 0.8)); 
                     };
                     img.onerror = () => reject(new Error("BG Error"));
@@ -72,6 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
+                // Fallback
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW; canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
@@ -79,21 +80,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 0.8);
             }
 
-            // --- Canvas Generation Function (Balanced Scale) ---
+            // 2. Content Capture Function (PNG for Transparency)
             const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
                 const tempContainer = document.createElement('div');
                 tempContainer.className = 'pdf-mode';
                 
-                // TEXT SHARPENING CSS:
-                // Yeh CSS text ko sharp dikhane mein madad karegi
+                // CSS to ensure sharpness and transparent background
                 tempContainer.style.cssText = `
                     width: ${pageW}px; 
                     display: flex;
-                    background: transparent;
+                    background: transparent; /* Important! */
                     box-sizing: border-box;
                     padding-bottom: 40px;
                     -webkit-font-smoothing: antialiased;
-                    -moz-osx-font-smoothing: grayscale;
                     text-rendering: optimizeLegibility;
                 `;
 
@@ -113,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) {
                         const clone = originalSection.cloneNode(true);
-                        // Force black text for sharpness
+                        // Ensure text is black for sharpness
                         clone.style.color = "#000000"; 
                         sideDiv.appendChild(clone);
                     }
@@ -143,53 +142,54 @@ document.addEventListener("DOMContentLoaded", function () {
                 document.body.appendChild(tempContainer);
                 await new Promise(resolve => setTimeout(resolve, 300)); 
 
-                // *** SCALE OPTIMIZATION ***
-                // Scale 2.5 is the sweet spot. 
-                // Scale 4 was 17MB. Scale 2.5 will be around 2-3MB but still very sharp.
+                // *** SCALE 2: Sharp Text, Reasonable Size ***
                 const canvas = await html2canvasLib(tempContainer, {
-                    scale: 2.5, 
+                    scale: 2, // Scale 2 is sharp enough for print. Scale 4 is too big.
                     useCORS: true,
                     allowTaint: true,
                     width: pageW,
-                    backgroundColor: null 
+                    backgroundColor: null // Transparent background capture
                 });
 
                 document.body.removeChild(tempContainer);
                 return canvas;
             };
 
-            // --- Page 1 ---
+            // --- Page 1 Generation ---
             const canvas1 = await generatePageCanvas(
                 ['.professional-summary', '.professional-experience'], 
                 ['.profile', '.contact', '.personal-details']
             );
             
-            // USE JPEG HERE TOO (Critical for file size)
-            // 0.9 Quality is visually nearly perfect but saves huge space vs PNG
-            const imgData1 = canvas1.toDataURL('image/jpeg', 0.9); 
+            // *** CRITICAL FIX: USE PNG FOR CONTENT LAYER ***
+            // JPEG turns transparent pixels black. PNG keeps them transparent.
+            const imgData1 = canvas1.toDataURL('image/png'); 
             const imgHeight1 = canvas1.height * (pageW / canvas1.width);
 
+            // Add Background (JPEG)
             doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
+            // Add Header Strip
             doc.setFillColor(0, 48, 135); 
             doc.rect(0, 0, pageW, headerH, 'F'); 
-            doc.addImage(imgData1, 'JPEG', 0, contentTop, pageW, imgHeight1);
+            // Add Text Content (PNG - Transparent)
+            doc.addImage(imgData1, 'PNG', 0, contentTop, pageW, imgHeight1);
 
-            // --- Page 2 ---
+            // --- Page 2 Generation ---
             const canvas2 = await generatePageCanvas(
                 ['.education', '.certifications'], 
                 ['.core-competencies', '.tools', '.languages']
             );
             
-            const imgData2 = canvas2.toDataURL('image/jpeg', 0.9);
+            const imgData2 = canvas2.toDataURL('image/png');
             const imgHeight2 = canvas2.height * (pageW / canvas2.width);
 
             doc.addPage(); 
             doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
             doc.setFillColor(0, 48, 135); 
             doc.rect(0, 0, pageW, headerH, 'F'); 
-            doc.addImage(imgData2, 'JPEG', 0, contentTop, pageW, imgHeight2);
+            doc.addImage(imgData2, 'PNG', 0, contentTop, pageW, imgHeight2);
 
-            doc.save('Vikas_Tiwari_Resume_Final_Optimized.pdf'); 
+            doc.save('Vikas_Tiwari_Resume_CrystalClear.pdf'); 
         } catch (error) {
             console.error("Error:", error);
             alert("Error: " + error.message);
