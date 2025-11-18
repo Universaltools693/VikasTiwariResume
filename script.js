@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // --- Greeting Pop-up Logic (Unchanged) ---
+    // --- Greeting Pop-up Logic ---
     const now = new Date();
     const hours = now.getHours();
     let greeting;
@@ -25,10 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
         greetingPopup.classList.add("fade-out");
     }, 4000);
 
-    // --- Download Functionality (FINAL FIXED: CLEAR TEXT + TRANSPARENT BG) ---
+    // --- Download Functionality ---
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
+    // Download as PDF (FIXED: Padding + Sidebar Wrap)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
@@ -39,32 +40,25 @@ document.addEventListener("DOMContentLoaded", function () {
         
         try {
             const { jsPDF } = jspdfLib;
-            // Compress: true zaroori hai file size kam rakhne ke liye
-            const doc = new jsPDF({
-                orientation: 'p',
-                unit: 'pt',
-                format: 'a4',
-                compress: true 
-            });
-
+            const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
             const headerH = 15;
-            const contentTop = headerH + 10;
-            
-            // 1. Background Image (JPEG for Size)
+            const contentTop = headerH + 10; // 25pt top margin
+            // Available height for content on PDF page
+            const maxContentH = pageH - contentTop - 20; // 20pt bottom buffer
+
+            // Load Background
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        canvas.width = pageW;
-                        canvas.height = pageH;
+                        canvas.width = pageW; canvas.height = pageH;
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, pageW, pageH); 
-                        // Background ko JPEG rakha hai size kam karne ke liye
-                        resolve(canvas.toDataURL('image/jpeg', 0.8)); 
+                        resolve(canvas.toDataURL('image/jpeg', 0.98));
                     };
                     img.onerror = () => reject(new Error("BG Error"));
                     img.src = 'Dashboard Background Image DBI.webp';
@@ -72,34 +66,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 bgDataUrl = await bgPromise;
             } catch (imgErr) {
-                // Fallback
                 const canvas = document.createElement('canvas');
                 canvas.width = pageW; canvas.height = pageH;
                 const ctx = canvas.getContext('2d');
                 ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, pageW, pageH);
-                bgDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // 2. Content Capture Function (PNG for Transparency)
-            const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
-                const tempContainer = document.createElement('div');
-                tempContainer.className = 'pdf-mode';
-                
-                // CSS to ensure sharpness and transparent background
-                tempContainer.style.cssText = `
+            // *** Canvas Generation Function (With Padding Fix) ***
+            const generatePageCanvas = async (mainSectionClasses, sidebarSectionClasses) => {
+                const temp = document.createElement('div');
+                temp.className = 'pdf-mode';
+                // FIX: Added padding-bottom to ensure bottom border isn't cut off
+                temp.style.cssText = `
                     width: ${pageW}px; 
                     display: flex;
-                    background: transparent; /* Important! */
+                    background: transparent;
                     box-sizing: border-box;
-                    padding-bottom: 40px;
-                    -webkit-font-smoothing: antialiased;
-                    text-rendering: optimizeLegibility;
+                    padding-bottom: 40px; 
                 `;
 
-                // Sidebar
-                const sideDiv = document.createElement('div');
-                sideDiv.className = 'sidebar pdf-mode';
-                sideDiv.style.cssText = `
+                // Sidebar Construction
+                const side = document.createElement('div');
+                side.className = 'sidebar pdf-mode';
+                side.style.cssText = `
                     width: 30%;
                     flex-shrink: 0;
                     background: transparent !important;
@@ -108,50 +98,40 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-right: 1px solid rgba(0, 0, 0, 0.2);
                 `;
                 
-                sidebarSectionSelectors.forEach(selector => {
+                sidebarSectionClasses.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) {
-                        const clone = originalSection.cloneNode(true);
-                        // Ensure text is black for sharpness
-                        clone.style.color = "#000000"; 
-                        sideDiv.appendChild(clone);
-                    }
+                    if (originalSection) side.appendChild(originalSection.cloneNode(true));
                 });
-                tempContainer.appendChild(sideDiv);
+                temp.appendChild(side);
 
-                // Main Content
-                const mainDiv = document.createElement('div');
-                mainDiv.className = 'main-content pdf-mode';
-                mainDiv.style.cssText = `
+                // Main Content Construction
+                const mainTemp = document.createElement('div');
+                mainTemp.className = 'main-content pdf-mode';
+                mainTemp.style.cssText = `
                     width: 70%;
                     padding: 30px;
                     background: transparent;
                     box-sizing: border-box;
                 `;
 
-                mainSectionSelectors.forEach(selector => {
+                mainSectionClasses.forEach(selector => {
                     const originalSection = document.querySelector(selector);
-                    if (originalSection) {
-                        const clone = originalSection.cloneNode(true);
-                        clone.style.color = "#000000";
-                        mainDiv.appendChild(clone);
-                    }
+                    if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
                 });
-                tempContainer.appendChild(mainDiv);
-
-                document.body.appendChild(tempContainer);
+                
+                temp.appendChild(mainTemp);
+                document.body.appendChild(temp);
                 await new Promise(resolve => setTimeout(resolve, 300)); 
 
-                // *** SCALE 2: Sharp Text, Reasonable Size ***
-                const canvas = await html2canvasLib(tempContainer, {
-                    scale: 2, // Scale 2 is sharp enough for print. Scale 4 is too big.
+                const canvas = await html2canvasLib(temp, {
+                    scale: 2, // Better quality
                     useCORS: true,
                     allowTaint: true,
                     width: pageW,
-                    backgroundColor: null // Transparent background capture
+                    backgroundColor: null 
                 });
 
-                document.body.removeChild(tempContainer);
+                document.body.removeChild(temp);
                 return canvas;
             };
 
@@ -161,18 +141,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 ['.profile', '.contact', '.personal-details']
             );
             
-            // *** CRITICAL FIX: USE PNG FOR CONTENT LAYER ***
-            // JPEG turns transparent pixels black. PNG keeps them transparent.
-            const imgData1 = canvas1.toDataURL('image/png'); 
-            const imgHeight1 = canvas1.height * (pageW / canvas1.width);
+            // Calculate logic to fit page
+            let imgH1 = canvas1.height * (pageW / canvas1.width);
+            // Agar content page se bada ho raha hai, to scale down karo (Prevention)
+            if (imgH1 > maxContentH) {
+                imgH1 = maxContentH; 
+            }
 
-            // Add Background (JPEG)
             doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            // Add Header Strip
-            doc.setFillColor(0, 48, 135); 
-            doc.rect(0, 0, pageW, headerH, 'F'); 
-            // Add Text Content (PNG - Transparent)
-            doc.addImage(imgData1, 'PNG', 0, contentTop, pageW, imgHeight1);
+            doc.setFillColor(0, 48, 135);
+            doc.rect(0, 0, pageW, headerH, 'F');
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1);
 
             // --- Page 2 Generation ---
             const canvas2 = await generatePageCanvas(
@@ -180,18 +159,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 ['.core-competencies', '.tools', '.languages']
             );
             
-            const imgData2 = canvas2.toDataURL('image/png');
-            const imgHeight2 = canvas2.height * (pageW / canvas2.width);
+            let imgH2 = canvas2.height * (pageW / canvas2.width);
+            if (imgH2 > maxContentH) {
+                imgH2 = maxContentH;
+            }
 
-            doc.addPage(); 
+            doc.addPage();
             doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            doc.setFillColor(0, 48, 135); 
-            doc.rect(0, 0, pageW, headerH, 'F'); 
-            doc.addImage(imgData2, 'PNG', 0, contentTop, pageW, imgHeight2);
+            doc.setFillColor(0, 48, 135);
+            doc.rect(0, 0, pageW, headerH, 'F');
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2);
 
-            doc.save('Vikas_Tiwari_Resume_CrystalClear.pdf'); 
+            doc.save('Vikas_Tiwari_Resume_Fixed.pdf');
         } catch (error) {
-            console.error("Error:", error);
+            console.error(error);
             alert("Error: " + error.message);
         }
     });
