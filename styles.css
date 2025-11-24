@@ -2,124 +2,286 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-family: Arial, sans-serif;
 }
 
 body {
     background: #f4f4f4;
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 /* Pop-up Styles */
 .greeting-popup {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex; justify-content: center; align-items: center;
-    z-index: 2000; opacity: 0; animation: fadeIn 0.5s ease-in forwards;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-in forwards;
 }
 .greeting-content {
-    background: #002366; padding: 40px; border-radius: 15px; text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    transform: scale(0.8); animation: scaleUp 0.5s ease-in-out forwards;
-    border: 3px solid #ffffff;
+    background: #003087;
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    transform: scale(0.8);
+    animation: scaleUp 0.5s ease-in-out forwards;
+    border: 2px solid #ffffff;
 }
-.greeting-content h1 { font-size: 40px; color: #ffffff; margin-bottom: 15px; font-weight: 700; }
-.greeting-content p { font-size: 24px; color: #f0f0f0; font-weight: 500; }
+.greeting-content h1 { font-size: 40px; color: #ffffff; margin-bottom: 15px; }
+.greeting-content p { font-size: 24px; color: #e0e0e0; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
+@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* Download Button - Simple & Professional */
-.download-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
+/* --- Download Button Styles --- */
+.download-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
 .download-btn {
-    background-color: #002366; color: #fff; font-weight: 700;
-    padding: 12px 24px; border: 2px solid #fff; border-radius: 5px;
-    cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    background-color: #003087;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
 }
-.download-container:hover .dropdown-content { display: block; }
+.download-container:hover .dropdown-content {
+    display: block;
+}
 .dropdown-content {
-    display: none; position: absolute; background-color: #fff;
-    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
-    z-index: 1; right: 0; border-radius: 5px; border: 1px solid #ccc;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+    right: 0;
+    border-radius: 5px;
+    overflow: hidden;
 }
-.dropdown-content a { color: #000; padding: 12px 16px; text-decoration: none; display: block; }
-.dropdown-content a:hover { background-color: #f1f1f1; }
+.dropdown-content a {
+    color: #000;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
+}
+.dropdown-content a:hover {
+    background-color: #f1f1f1;
+}
 
-/* Resume Container */
+/* --- Resume Container --- */
 .resume-container {
     display: flex;
-    width: 210mm; max-width: 100%;
-    min-height: 297mm;
-    margin: 30px auto;
+    width: 100%;
+    max-width: 1000px;
+    margin: 20px auto;
     background-image: url('Dashboard Background Image DBI.webp');
-    background-size: cover; background-position: center;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    background-size: cover;
+    background-position: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
     overflow: hidden;
 }
 
-/* Sidebar */
+/* --- Sidebar --- */
 .sidebar {
-    width: 30%; background: rgba(255, 255, 255, 0.1);
-    color: #000; padding: 25px;
-    border-right: 2px solid rgba(0, 0, 0, 0.4);
-    height: 100%; /* Ensure full height */
+    width: 30%;
+    background: transparent;
+    color: #000;
+    padding: 20px;
+    border-right: 1px solid rgba(0, 0, 0, 0.2);
 }
-.profile { text-align: center; margin-bottom: 25px; }
+
+.profile {
+    text-align: center;
+    margin-bottom: 20px;
+}
 .profile img {
-    width: 160px; height: 160px; border-radius: 50%; margin-bottom: 15px;
-    border: 5px solid #002366; object-fit: cover;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    border: 4px solid #003087;
 }
 .profile h1 {
-    font-size: 26px; text-transform: uppercase; color: #002366; font-weight: 800; letter-spacing: 1px;
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
 }
 
-/* Sections */
-.contact, .personal-details, .core-competencies, .tools, .languages { margin-bottom: 30px; }
-
-h2 {
-    font-size: 18px; margin-bottom: 15px; padding-bottom: 5px;
-    border-bottom: 3px solid #002366; color: #002366; font-weight: 700;
+.contact, .personal-details, .core-competencies, .tools, .languages {
+    margin-bottom: 20px;
 }
-h2 i { margin-right: 10px; color: #002366; }
 
+.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #003087;
+    color: #003087;
+    display: flex;
+    align-items: center;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+
+.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
+    margin-right: 8px;
+    color: #003087;
+}
+
+/* --- Section Content --- */
 .section-content {
     background-color: transparent;
-    border: 1px solid #000000;
-    border-radius: 4px; padding: 12px; margin-top: 10px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 10px;
+    /* FIX: Text Wrapping for Email/Websites */
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word; 
 }
 
-/* Typography */
-p, li {
-    font-size: 14px; line-height: 1.6;
-    color: #000000; font-weight: 500; margin-bottom: 6px;
+.contact p, .personal-details p, 
+.core-competencies ul, .tools ul, .languages ul,
+section p, section ul, section li {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #000000;
+    text-shadow: 1px 1px 1px #ffffff;
 }
+
+.contact p i {
+    margin-right: 10px;
+    color: #003087;
+}
+
 ul { list-style: none; }
-li { padding-left: 20px; position: relative; }
-li:before { content: "•"; color: #002366; font-size: 18px; position: absolute; left: 0; top: 1px; }
 
-/* Main Content */
-.main-content { width: 70%; padding: 40px 35px; background: transparent; color: #000; height: 100%; }
-section { margin-bottom: 40px; }
-section h3 { font-size: 17px; margin-bottom: 8px; color: #002366; font-weight: 800; }
-
-/* --- MAGIC FIX FOR PDF SPACING --- */
-/* Ye code sirf PDF generate hote waqt chalega aur space bhar dega */
-.page-1-spacing section {
-    margin-bottom: 60px !important; /* Spacing between Summary and Experience */
-}
-.page-1-spacing .job-block {
-    margin-bottom: 50px !important; /* Spacing between Job 1 and Job 2 */
-}
-.page-1-spacing p, .page-1-spacing li {
-    line-height: 1.8 !important; /* Text thoda khul ke aayega */
+.core-competencies ul li, .tools ul li, .languages ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
 }
 
-/* Mobile Responsive */
+.core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
+section ul li:before {
+    content: "•";
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+    position: absolute;
+    left: 0;
+}
+
+/* --- Main Content --- */
+.main-content {
+    width: 70%;
+    padding: 30px;
+    background: transparent;
+    color: #000;
+}
+
+section { margin-bottom: 30px; }
+
+section h2 {
+    color: #003087;
+    border-bottom-color: #003087;
+}
+
+section h2 i {
+    color: #003087;
+}
+
+section h3 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #003087;
+    text-shadow: 1px 1px 1px #ffffff;
+}
+
+section ul { margin-left: 20px; }
+section ul li {
+    margin-bottom: 8px;
+    position: relative;
+    padding-left: 20px;
+}
+
+/* --- Responsive Styles --- */
 @media (max-width: 768px) {
-    .resume-container { width: 100%; flex-direction: column; height: auto; }
-    .sidebar, .main-content { width: 100%; border: none; }
+    .resume-container {
+        flex-direction: column;
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    .sidebar, .main-content {
+        width: 100%;
+        max-width: 100%;
+    }
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* --- Print & PDF Mode Styles --- */
+@media print, .pdf-mode {
+    body {
+        margin: 0;
+        padding: 0;
+        -webkit-print-color-adjust: exact;
+        color-adjust: exact;
+    }
+
+    .greeting-popup, .download-container {
+        display: none !important;
+    }
+
+    .resume-container, .pdf-mode .resume-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        background-image: url('Dashboard Background Image DBI.webp') !important;
+        background-size: cover !important;
+        background-position: center !important;
+    }
+
+    /* Text Color Forces for PDF/Print */
+    p, li, h1, h2, h3, i, span, div {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    .section-content {
+        background-color: transparent !important;
+        border-color: #000 !important;
+    }
+}
+
+/* PDF Mode Specifics */
+.pdf-mode .sidebar {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    background: transparent !important;
+}
+.pdf-mode .main-content {
+    background: transparent !important;
 }
