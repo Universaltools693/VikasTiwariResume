@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const welcomeText = document.getElementById("welcome-text");
     const greetingPopup = document.getElementById("greeting-popup");
 
-    if(greetingText && welcomeText && greetingPopup) {
+    if (greetingText && welcomeText && greetingPopup) {
         greetingText.textContent = greeting;
         welcomeText.textContent = "Welcome to my resume";
         setTimeout(() => {
@@ -32,91 +32,89 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
-        
+
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF libraries loading... Please wait and try again.");
+            alert("PDF system initializing... Please try again in 2 seconds.");
             return;
         }
-        
+
         try {
             const { jsPDF } = jspdfLib;
-            // A4 Size in Points: 595.28 x 841.89
+            // Standard A4 Size (Points)
             const doc = new jsPDF('p', 'pt', 'a4');
-            const pageW = 595.28; 
+            const pageW = 595.28;
             const pageH = 841.89;
             const headerH = 20;
-            const contentTop = headerH + 10; 
-            const maxContentH = pageH - contentTop - 20; 
+            const contentTop = headerH + 15;
 
-            // Load Background (High Res Handling)
+            // Load Background (High Res 8K Handling)
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        // Use Scale 2 for Background to keep it crisp
-                        canvas.width = pageW * 2; 
-                        canvas.height = pageH * 2;
+                        // Super High Res Canvas for BG
+                        canvas.width = pageW * 4;
+                        canvas.height = pageH * 4;
                         const ctx = canvas.getContext('2d');
-                        ctx.scale(2, 2);
-                        ctx.drawImage(img, 0, 0, pageW, pageH); 
-                        // High Quality JPEG
-                        resolve(canvas.toDataURL('image/jpeg', 1.0));
+                        ctx.scale(4, 4);
+                        ctx.drawImage(img, 0, 0, pageW, pageH);
+                        resolve(canvas.toDataURL('image/jpeg', 1.0)); // Max Quality JPEG
                     };
-                    img.onerror = () => {
-                        // Fallback if image not found
-                        resolve(null);
-                    };
+                    img.onerror = () => resolve(null);
                     img.src = 'Dashboard Background Image DBI.webp';
                     img.crossOrigin = "anonymous";
                 });
                 bgDataUrl = await bgPromise;
             } catch (err) {
-                console.log("Bg load fail, using white");
+                console.log("BG not found, using white");
             }
 
-            // *** Ultra HD Canvas Generation Function ***
+            // *** 8K RESOLUTION GENERATOR FUNCTION ***
             const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
                 const temp = document.createElement('div');
                 temp.className = 'pdf-mode';
-                // Enforce A4 Width in Pixels for Rendering (approx 300PPI logic)
+                // Strict A4 Width in Pixels for Rendering
                 temp.style.cssText = `
                     width: 794px; 
                     min-height: 1123px;
                     display: flex;
                     background: transparent;
                     box-sizing: border-box;
-                    padding-bottom: 40px; 
+                    padding-bottom: 0px; 
                     position: absolute; 
                     left: -9999px;
                     top: 0;
                 `;
 
-                // Sidebar
+                // Sidebar Logic
                 const side = document.createElement('div');
                 side.className = 'sidebar pdf-mode';
                 side.style.cssText = `
                     width: 30%;
                     flex-shrink: 0;
                     background: transparent !important;
-                    padding: 20px;
+                    padding: 25px;
                     box-sizing: border-box;
                     border-right: 1px solid rgba(0, 0, 0, 0.4);
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
                 `;
-                
+
                 sidebarSectionSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) side.appendChild(originalSection.cloneNode(true));
                 });
                 temp.appendChild(side);
 
-                // Main Content
+                // Main Content Logic
                 const mainTemp = document.createElement('div');
                 mainTemp.className = 'main-content pdf-mode';
                 mainTemp.style.cssText = `
                     width: 70%;
-                    padding: 30px;
+                    padding: 35px;
                     background: transparent;
                     box-sizing: border-box;
                 `;
@@ -125,74 +123,81 @@ document.addEventListener("DOMContentLoaded", function () {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
                 });
-                
+
                 temp.appendChild(mainTemp);
                 document.body.appendChild(temp);
-                
-                // Wait for render
-                await new Promise(resolve => setTimeout(resolve, 100)); 
 
-                // *** CRITICAL: SCALE 4 FOR ULTRA SHARP TEXT ***
+                // Wait for styles to settle
+                await new Promise(resolve => setTimeout(resolve, 200));
+
+                // *** MAGIC: SCALE 5 FOR 8K QUALITY (NO PIXELATION) ***
                 const canvas = await html2canvasLib(temp, {
-                    scale: 4, 
+                    scale: 5, // 5x Resolution (Approx 4000px wide)
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: null,
-                    logging: false
+                    logging: false,
+                    imageTimeout: 0,
+                    onclone: (clonedDoc) => {
+                        // Enhance Font Rendering
+                        clonedDoc.body.style.fontSmoothing = "antialiased";
+                        clonedDoc.body.style.webkitFontSmoothing = "antialiased";
+                    }
                 });
 
                 document.body.removeChild(temp);
                 return canvas;
             };
 
-            // --- Page 1 ---
+            // --- PAGE 1 GENERATION (THE FIX) ---
+            // Included '#exp-2' (Magnum) here to fill the gap!
             const canvas1 = await generatePageCanvas(
-                ['.professional-summary', '#exp-1'], 
+                ['.professional-summary', '#exp-1', '#exp-2'],
                 ['.profile', '.contact', '.personal-details']
             );
-            
-            // Calculate Aspect Ratio to fit PDF perfectly
+
             let imgH1 = (canvas1.height * pageW) / canvas1.width;
-            
-            // Add Background if exists
-            if(bgDataUrl) {
+
+            if (bgDataUrl) {
                 doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
             } else {
                 doc.setFillColor(255, 255, 255);
-                doc.rect(0,0,pageW, pageH, 'F');
+                doc.rect(0, 0, pageW, pageH, 'F');
             }
 
             // Top Blue Bar
-            doc.setFillColor(0, 35, 102); // Darker Blue
+            doc.setFillColor(0, 35, 102);
             doc.rect(0, 0, pageW, headerH, 'F');
-            
-            // Add Content Image (High Quality)
+
+            // Add Image with 'FAST' compression (actually means less compression in jsPDF logic sometimes)
+            // or 'NONE' if supported, but here we rely on the high-res input.
             doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1, undefined, 'FAST');
 
-            // --- Page 2 ---
+            // --- PAGE 2 GENERATION ---
+            // Removed '#exp-2' from here since it's on Page 1 now
             const canvas2 = await generatePageCanvas(
-                ['#exp-2', '.education', '.certifications'], 
+                ['.education', '.certifications'],
                 ['.core-competencies', '.tools', '.languages']
             );
-            
+
             let imgH2 = (canvas2.height * pageW) / canvas2.width;
 
             doc.addPage();
-            if(bgDataUrl) {
+            if (bgDataUrl) {
                 doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
             }
             doc.setFillColor(0, 35, 102);
             doc.rect(0, 0, pageW, headerH, 'F');
             doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2, undefined, 'FAST');
 
-            doc.save('Vikas_Tiwari_Resume_HD.pdf');
+            doc.save('Vikas_Tiwari_Resume_8K_Fixed.pdf');
         } catch (error) {
             console.error(error);
             alert("Error generating PDF: " + error.message);
         }
     });
 
-    // --- Download as Word (Updated for Dark Text) ---
+    // --- Download as Word (Unchanged) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -240,14 +245,13 @@ document.addEventListener("DOMContentLoaded", function () {
                                     <p>Avni Bihar, New Shastri Nagar, Jabalpur, MP (482003)</p>
                                 </div>
                             </div>
-                            </div>
+                        </div>
                         <div class="main-content">
-                            </div>
+                             </div>
                     </div>
                 </body>
                 </html>
             `;
-            
             const converted = htmlDocx.asBlob(content);
             const link = document.createElement('a');
             link.href = URL.createObjectURL(converted);
