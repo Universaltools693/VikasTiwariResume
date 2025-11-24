@@ -152,6 +152,7 @@ body {
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
+    /* FIX: Text Wrapping for Email/Websites */
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word; 
@@ -264,6 +265,7 @@ section ul li {
         background-position: center !important;
     }
 
+    /* Text Color Forces for PDF/Print */
     p, li, h1, h2, h3, i, span, div {
         -webkit-print-color-adjust: exact !important;
         color-adjust: exact !important;
