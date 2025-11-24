@@ -273,25 +273,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             <section class="professional-summary">
                                 <h2> PROFESSIONAL SUMMARY</h2>
                                 <div class="section-content">
-                                    <p>I am a dynamic Sales and Marketing professional with experience in commercial vehicle sales at Geedee Trucking, financial consulting at HDFC Life, and customer service at Magnum Group. Skilled in lead generation, client management, and target achievement. With an M.B.A. in Marketing and Finance, I am poised for growth in sales roles.</p>
+                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
                                 </div>
                             </section>
                             <section class="professional-experience">
                                 <h2> PROFESSIONAL EXPERIENCE</h2>
                                 <div class="section-content">
                                     <h3>Sales Executive (Financial Consultant)</h3>
-                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – April 2025</p>
+                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
                                     <ul>
                                         <li>Found new clients and built relationships through direct sales and client meetings.</li>
                                         <li>Met sales targets with good negotiation and client interaction skills.</li>
                                         <li>Created a client list, ensuring business growth through regular follow-ups.</li>
-                                    </ul>
-                                    <h3>Sales Executive</h3>
-                                    <p><strong>Geedee Trucking Pvt. Ltd. (Authorised Dealer of Eicher Trucks and Buses)</strong> | Jun 2025 – Sep 2025</p>
-                                    <ul>
-                                        <li>Managed commercial vehicle sales, generating leads and handling enquiries through field visits and effective communication.</li>
-                                        <li>Promoted Eicher Trucks & Buses, enhancing customer engagement and supporting dealership operations.</li>
-                                        <li>Achieved monthly targets by ensuring timely follow-ups and resolving customer requirements.</li>
                                     </ul>
                                     <h3>Customer Service Expert (Customer Service Associate)</h3>
                                     <p><strong>Magnum Group (Magnum Super Distributors (P) Ltd.)</strong> | Sep 2020 – Jun 2024 (3 years, 9 months)</p>
