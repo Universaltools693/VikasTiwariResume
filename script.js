@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // --- Download as Word (Unchanged) ---
+    // --- Download as Word (Unchanged logic, sirf HTML content update) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -273,14 +273,22 @@ document.addEventListener("DOMContentLoaded", function () {
                             <section class="professional-summary">
                                 <h2> PROFESSIONAL SUMMARY</h2>
                                 <div class="section-content">
-                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
+                                    <p>As a Marketing and Sales professional, I have experience in insurance sales, commercial vehicle sales, and customer service. At Geedee Trucking Pvt. Ltd. (Authorised Dealer of Eicher Trucks and Buses), I managed commercial vehicle sales, client requirements, and follow-ups. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow further in this field.</p>
                                 </div>
                             </section>
                             <section class="professional-experience">
                                 <h2> PROFESSIONAL EXPERIENCE</h2>
                                 <div class="section-content">
+                                    <h3>Sales Executive</h3>
+                                    <p><strong>Geedee Trucking Pvt. Ltd. (Authorised Dealer of Eicher Trucks and Buses)</strong> | Jun 2025 – Sep 2025</p>
+                                    <ul>
+                                        <li>Managed commercial vehicle sales for Eicher Trucks & Buses and handled customer requirements.</li>
+                                        <li>Generated leads, conducted field visits, and ensured regular follow-ups with prospects.</li>
+                                        <li>Supported dealership operations and contributed to achieving monthly sales targets.</li>
+                                    </ul>
+
                                     <h3>Sales Executive (Financial Consultant)</h3>
-                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
+                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – April 2025</p>
                                     <ul>
                                         <li>Found new clients and built relationships through direct sales and client meetings.</li>
                                         <li>Met sales targets with good negotiation and client interaction skills.</li>
