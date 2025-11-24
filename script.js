@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const html2canvasLib = window.html2canvas;
     const jspdfLib = window.jspdf;
 
-    // Download as PDF (FIXED: Padding + Sidebar Wrap)
+    // Download as PDF (FIXED: Split Experience to prevent Squashing)
     document.getElementById("download-pdf").addEventListener("click", async function (e) {
         e.preventDefault();
         
@@ -44,9 +44,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const pageW = doc.internal.pageSize.getWidth();
             const pageH = doc.internal.pageSize.getHeight();
             const headerH = 15;
-            const contentTop = headerH + 10; // 25pt top margin
-            // Available height for content on PDF page
-            const maxContentH = pageH - contentTop - 20; // 20pt bottom buffer
+            const contentTop = headerH + 10; 
+            const maxContentH = pageH - contentTop - 20; 
 
             // Load Background
             let bgDataUrl = null;
@@ -73,11 +72,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 bgDataUrl = canvas.toDataURL('image/jpeg', 1.0);
             }
 
-            // *** Canvas Generation Function (With Padding Fix) ***
-            const generatePageCanvas = async (mainSectionClasses, sidebarSectionClasses) => {
+            // *** Canvas Generation Function ***
+            const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
                 const temp = document.createElement('div');
                 temp.className = 'pdf-mode';
-                // FIX: Added padding-bottom to ensure bottom border isn't cut off
                 temp.style.cssText = `
                     width: ${pageW}px; 
                     display: flex;
@@ -98,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-right: 1px solid rgba(0, 0, 0, 0.2);
                 `;
                 
-                sidebarSectionClasses.forEach(selector => {
+                sidebarSectionSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) side.appendChild(originalSection.cloneNode(true));
                 });
@@ -114,7 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     box-sizing: border-box;
                 `;
 
-                mainSectionClasses.forEach(selector => {
+                mainSectionSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
                 });
@@ -124,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 await new Promise(resolve => setTimeout(resolve, 300)); 
 
                 const canvas = await html2canvasLib(temp, {
-                    scale: 2, // Better quality
+                    scale: 2, 
                     useCORS: true,
                     allowTaint: true,
                     width: pageW,
@@ -136,14 +134,13 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             // --- Page 1 Generation ---
+            // FIXED: Only including #exp-1 (Geedee + HDFC) to save space
             const canvas1 = await generatePageCanvas(
-                ['.professional-summary', '.professional-experience'], 
+                ['.professional-summary', '#exp-1'], 
                 ['.profile', '.contact', '.personal-details']
             );
             
-            // Calculate logic to fit page
             let imgH1 = canvas1.height * (pageW / canvas1.width);
-            // Agar content page se bada ho raha hai, to scale down karo (Prevention)
             if (imgH1 > maxContentH) {
                 imgH1 = maxContentH; 
             }
@@ -154,8 +151,9 @@ document.addEventListener("DOMContentLoaded", function () {
             doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1);
 
             // --- Page 2 Generation ---
+            // FIXED: Moved #exp-2 (Magnum) here
             const canvas2 = await generatePageCanvas(
-                ['.education', '.certifications'], 
+                ['#exp-2', '.education', '.certifications'], 
                 ['.core-competencies', '.tools', '.languages']
             );
             
@@ -170,14 +168,14 @@ document.addEventListener("DOMContentLoaded", function () {
             doc.rect(0, 0, pageW, headerH, 'F');
             doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2);
 
-            doc.save('Vikas_Tiwari_Resume_Fixed.pdf');
+            doc.save('Vikas_Tiwari_Resume_Updated.pdf');
         } catch (error) {
             console.error(error);
             alert("Error: " + error.message);
         }
     });
 
-    // --- Download as Word (Unchanged) ---
+    // --- Download as Word (Updated with New Content) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -273,14 +271,21 @@ document.addEventListener("DOMContentLoaded", function () {
                             <section class="professional-summary">
                                 <h2> PROFESSIONAL SUMMARY</h2>
                                 <div class="section-content">
-                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
+                                    <p>I am an entry-level Marketing and Sales professional with experience in sales execution and customer handling. At Geedee Trucking Pvt. Ltd. (Authorised Dealer of Eicher Trucks and Buses), I managed commercial vehicle sales, generated leads, handled customer requirements, and achieved monthly targets through field visits and effective communication. At HDFC Life, I worked on sales and marketing activities, meeting targets and coordinating sales tasks. At Magnum Group, I handled customer queries and resolved issues. With an M.B.A. in Marketing and Finance, I am ready to grow in this field.</p>
                                 </div>
                             </section>
                             <section class="professional-experience">
                                 <h2> PROFESSIONAL EXPERIENCE</h2>
                                 <div class="section-content">
+                                    <h3>Sales Executive (Dealer Sales Executive)</h3>
+                                    <p><strong>Geedee Trucking Pvt. Ltd. (Authorised Dealer of Eicher Trucks and Buses)</strong> | Jun 2025 – Sep 2025</p>
+                                    <ul>
+                                        <li>Generated leads and built client relationships through field visits, direct sales, and enquiry handling for commercial vehicles.</li>
+                                        <li>Achieved monthly sales targets with strong negotiation and customer engagement skills.</li>
+                                        <li>Maintained client database, ensuring business growth through timely follow-ups and issue resolution.</li>
+                                    </ul>
                                     <h3>Sales Executive (Financial Consultant)</h3>
-                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – Present</p>
+                                    <p><strong>HDFC Life Insurance Company Ltd.</strong> | June 2024 – April 2025</p>
                                     <ul>
                                         <li>Found new clients and built relationships through direct sales and client meetings.</li>
                                         <li>Met sales targets with good negotiation and client interaction skills.</li>
