@@ -117,6 +117,7 @@ body {
     border-radius: 50%;
     margin-bottom: 10px;
     border: 4px solid #003087;
+    object-fit: cover; /* FIX: Added to keep image round and not squashed */
 }
 .profile h1 {
     font-size: 24px;
@@ -152,7 +153,6 @@ body {
     border-radius: 5px;
     padding: 10px;
     margin-top: 10px;
-    /* FIX: Text Wrapping for Email/Websites */
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: break-word; 
