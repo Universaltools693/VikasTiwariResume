@@ -2,286 +2,191 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif; /* Cleaner font */
+    -webkit-font-smoothing: antialiased; /* Sharper text on Mac/iOS */
+    -moz-osx-font-smoothing: grayscale;
 }
 
 body {
     background: #f4f4f4;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-/* Pop-up Styles */
+/* Pop-up Styles (Unchanged) */
 .greeting-popup {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    animation: fadeIn 0.5s ease-in forwards;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex; justify-content: center; align-items: center;
+    z-index: 2000; opacity: 0; animation: fadeIn 0.5s ease-in forwards;
 }
 .greeting-content {
-    background: #003087;
-    padding: 40px;
-    border-radius: 15px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    transform: scale(0.8);
-    animation: scaleUp 0.5s ease-in-out forwards;
-    border: 2px solid #ffffff;
+    background: #002366; /* Deep Blue */
+    padding: 40px; border-radius: 15px; text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: scale(0.8); animation: scaleUp 0.5s ease-in-out forwards;
+    border: 3px solid #ffffff;
 }
-.greeting-content h1 { font-size: 40px; color: #ffffff; margin-bottom: 15px; }
-.greeting-content p { font-size: 24px; color: #e0e0e0; }
+.greeting-content h1 { font-size: 40px; color: #ffffff; margin-bottom: 15px; font-weight: 700; }
+.greeting-content p { font-size: 24px; color: #f0f0f0; font-weight: 500; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
 @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* --- Download Button Styles --- */
+/* --- Download Button --- */
 .download-container {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
+    position: fixed; top: 20px; right: 20px; z-index: 1000;
 }
 .download-btn {
-    background-color: #003087;
-    color: #fff;
-    font-weight: bold;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
+    background-color: #002366; color: #fff; font-weight: 700;
+    padding: 12px 24px; border: 2px solid #fff; border-radius: 5px;
+    cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
-.download-container:hover .dropdown-content {
-    display: block;
-}
+.download-container:hover .dropdown-content { display: block; }
 .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    z-index: 1;
-    right: 0;
-    border-radius: 5px;
-    overflow: hidden;
+    display: none; position: absolute; background-color: #fff;
+    min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
+    z-index: 1; right: 0; border-radius: 5px; border: 1px solid #ccc;
 }
 .dropdown-content a {
-    color: #000;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-    font-size: 14px;
+    color: #000; padding: 12px 16px; text-decoration: none;
+    display: block; font-size: 14px; font-weight: 600;
 }
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
+.dropdown-content a:hover { background-color: #f1f1f1; }
 
-/* --- Resume Container --- */
+/* --- Resume Container (A4 Optimized) --- */
 .resume-container {
     display: flex;
-    width: 100%;
-    max-width: 1000px;
-    margin: 20px auto;
+    /* Strict A4 Width approximation for screen (210mm) */
+    width: 210mm; 
+    max-width: 100%;
+    min-height: 297mm; /* A4 Height */
+    margin: 30px auto;
     background-image: url('Dashboard Background Image DBI.webp');
     background-size: cover;
     background-position: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    border-radius: 8px;
+    background-repeat: no-repeat;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    border-radius: 0; /* Professional look usually square corners or slight radius */
     overflow: hidden;
 }
 
 /* --- Sidebar --- */
 .sidebar {
     width: 30%;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.1); /* Slight white tint for readability if needed */
     color: #000;
-    padding: 20px;
-    border-right: 1px solid rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-right: 2px solid rgba(0, 0, 0, 0.4); /* Darker border */
 }
 
-.profile {
-    text-align: center;
-    margin-bottom: 20px;
-}
+.profile { text-align: center; margin-bottom: 25px; }
 .profile img {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    margin-bottom: 10px;
-    border: 4px solid #003087;
+    width: 160px; height: 160px;
+    border-radius: 50%; margin-bottom: 15px;
+    border: 5px solid #002366; /* Deep Blue Border */
+    object-fit: cover;
 }
 .profile h1 {
-    font-size: 24px;
-    text-transform: uppercase;
-    color: #003087;
-    text-shadow: 1px 1px 1px #ffffff;
+    font-size: 26px; text-transform: uppercase;
+    color: #002366; font-weight: 800; /* Extra Bold */
+    text-shadow: none; /* Removed blur shadow for sharpness */
+    letter-spacing: 1px;
 }
 
-.contact, .personal-details, .core-competencies, .tools, .languages {
-    margin-bottom: 20px;
-}
+.contact, .personal-details, .core-competencies, .tools, .languages { margin-bottom: 25px; }
 
-.contact h2, .personal-details h2, .core-competencies h2, .tools h2, .languages h2 {
-    font-size: 16px;
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 2px solid #003087;
-    color: #003087;
-    display: flex;
-    align-items: center;
-    text-shadow: 1px 1px 1px #ffffff;
+/* Headers */
+h2 {
+    font-size: 18px; margin-bottom: 12px; padding-bottom: 5px;
+    border-bottom: 3px solid #002366; /* Thicker line */
+    color: #002366; display: flex; align-items: center;
+    font-weight: 700; letter-spacing: 0.5px;
 }
+h2 i { margin-right: 10px; color: #002366; font-size: 20px; }
 
-.contact h2 i, .personal-details h2 i, .core-competencies h2 i, .tools h2 i, .languages h2 i {
-    margin-right: 8px;
-    color: #003087;
-}
-
-/* --- Section Content --- */
+/* --- Section Content (Box) --- */
 .section-content {
     background-color: transparent;
-    border: 1px solid #000;
-    border-radius: 5px;
-    padding: 10px;
-    margin-top: 10px;
-    /* FIX: Text Wrapping for Email/Websites */
+    border: 1px solid #000000; /* Pure Black Border */
+    border-radius: 4px;
+    padding: 12px;
+    margin-top: 8px;
     word-wrap: break-word;
-    overflow-wrap: break-word;
-    word-break: break-word; 
 }
 
+/* --- Typography (Dark & Sharp) --- */
 .contact p, .personal-details p, 
 .core-competencies ul, .tools ul, .languages ul,
 section p, section ul, section li {
-    font-size: 14px;
-    line-height: 1.6;
-    color: #000000;
-    text-shadow: 1px 1px 1px #ffffff;
+    font-size: 14px; /* Standard readable size */
+    line-height: 1.5;
+    color: #000000; /* PURE BLACK for sharpness */
+    font-weight: 500; /* Medium Weight (Not thin) */
+    margin-bottom: 4px;
 }
 
-.contact p i {
-    margin-right: 10px;
-    color: #003087;
-}
+.contact p i { margin-right: 10px; color: #002366; font-weight: bold; }
 
 ul { list-style: none; }
-
 .core-competencies ul li, .tools ul li, .languages ul li {
-    margin-bottom: 8px;
-    position: relative;
-    padding-left: 20px;
+    margin-bottom: 6px; position: relative; padding-left: 20px;
+    font-weight: 600; /* Bolder list items */
 }
 
 .core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
 section ul li:before {
-    content: "•";
-    color: #003087;
-    text-shadow: 1px 1px 1px #ffffff;
-    position: absolute;
-    left: 0;
+    content: "•"; color: #002366;
+    font-size: 18px; line-height: 14px;
+    position: absolute; left: 0; top: 2px;
 }
 
 /* --- Main Content --- */
 .main-content {
-    width: 70%;
-    padding: 30px;
-    background: transparent;
-    color: #000;
+    width: 70%; padding: 35px;
+    background: transparent; color: #000;
 }
 
-section { margin-bottom: 30px; }
-
-section h2 {
-    color: #003087;
-    border-bottom-color: #003087;
-}
-
-section h2 i {
-    color: #003087;
-}
+section { margin-bottom: 35px; }
 
 section h3 {
-    font-size: 16px;
-    margin-bottom: 5px;
-    color: #003087;
-    text-shadow: 1px 1px 1px #ffffff;
+    font-size: 17px; margin-bottom: 6px;
+    color: #002366; font-weight: 800; /* Extra Bold Titles */
+}
+section p strong {
+    color: #000000; font-weight: 700;
 }
 
-section ul { margin-left: 20px; }
+section ul { margin-left: 10px; }
 section ul li {
-    margin-bottom: 8px;
-    position: relative;
-    padding-left: 20px;
+    margin-bottom: 6px; position: relative; padding-left: 15px;
+    text-align: justify; /* Cleaner text block */
 }
 
-/* --- Responsive Styles --- */
+/* --- PDF Mode Override (For Perfect Output) --- */
+.pdf-mode {
+    background-image: none !important; /* Managed by JS for high res */
+}
+.pdf-mode .sidebar {
+    border-color: rgba(0, 0, 0, 0.5) !important;
+}
+.pdf-mode p, .pdf-mode li, .pdf-mode h1, .pdf-mode h2, .pdf-mode h3 {
+    color: #000000 !important;
+    text-shadow: none !important;
+}
+.pdf-mode h1, .pdf-mode h2, .pdf-mode h3, .pdf-mode i {
+    color: #002366 !important;
+}
+
+/* Mobile Responsive */
 @media (max-width: 768px) {
     .resume-container {
-        flex-direction: column;
-        width: 100%;
-        margin: 0;
-        border-radius: 0;
-        box-shadow: none;
+        width: 100%; flex-direction: column;
+        height: auto;
     }
-    .sidebar, .main-content {
-        width: 100%;
-        max-width: 100%;
-    }
-    .sidebar {
-        border-right: none;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-    }
-}
-
-/* --- Print & PDF Mode Styles --- */
-@media print, .pdf-mode {
-    body {
-        margin: 0;
-        padding: 0;
-        -webkit-print-color-adjust: exact;
-        color-adjust: exact;
-    }
-
-    .greeting-popup, .download-container {
-        display: none !important;
-    }
-
-    .resume-container, .pdf-mode .resume-container {
-        width: 100% !important;
-        max-width: 100% !important;
-        margin: 0 !important;
-        border-radius: 0 !important;
-        box-shadow: none !important;
-        background-image: url('Dashboard Background Image DBI.webp') !important;
-        background-size: cover !important;
-        background-position: center !important;
-    }
-
-    /* Text Color Forces for PDF/Print */
-    p, li, h1, h2, h3, i, span, div {
-        -webkit-print-color-adjust: exact !important;
-        color-adjust: exact !important;
-    }
-    
-    .section-content {
-        background-color: transparent !important;
-        border-color: #000 !important;
-    }
-}
-
-/* PDF Mode Specifics */
-.pdf-mode .sidebar {
-    border-color: rgba(0, 0, 0, 0.2) !important;
-    background: transparent !important;
-}
-.pdf-mode .main-content {
-    background: transparent !important;
+    .sidebar, .main-content { width: 100%; border: none; }
 }
