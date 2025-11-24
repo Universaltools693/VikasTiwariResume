@@ -2,9 +2,8 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Arial, sans-serif; /* Cleaner font */
-    -webkit-font-smoothing: antialiased; /* Sharper text on Mac/iOS */
-    -moz-osx-font-smoothing: grayscale;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 body {
@@ -15,17 +14,15 @@ body {
     align-items: center;
 }
 
-/* Pop-up Styles (Unchanged) */
+/* Pop-up Styles */
 .greeting-popup {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
     background: rgba(0, 0, 0, 0.6);
     display: flex; justify-content: center; align-items: center;
     z-index: 2000; opacity: 0; animation: fadeIn 0.5s ease-in forwards;
 }
 .greeting-content {
-    background: #002366; /* Deep Blue */
-    padding: 40px; border-radius: 15px; text-align: center;
+    background: #002366; padding: 40px; border-radius: 15px; text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     transform: scale(0.8); animation: scaleUp 0.5s ease-in-out forwards;
     border: 3px solid #ffffff;
@@ -35,12 +32,9 @@ body {
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 @keyframes scaleUp { from { transform: scale(0.8); } to { transform: scale(1); } }
 .fade-out { animation: fadeOut 0.5s ease-out forwards; }
-@keyframes fadeOut { from { opacity: 1; } to { opacity: 0; display: none; } }
 
-/* --- Download Button --- */
-.download-container {
-    position: fixed; top: 20px; right: 20px; z-index: 1000;
-}
+/* Download Button */
+.download-container { position: fixed; top: 20px; right: 20px; z-index: 1000; }
 .download-btn {
     background-color: #002366; color: #fff; font-weight: 700;
     padding: 12px 24px; border: 2px solid #fff; border-radius: 5px;
@@ -52,141 +46,72 @@ body {
     min-width: 200px; box-shadow: 0px 8px 16px rgba(0,0,0,0.3);
     z-index: 1; right: 0; border-radius: 5px; border: 1px solid #ccc;
 }
-.dropdown-content a {
-    color: #000; padding: 12px 16px; text-decoration: none;
-    display: block; font-size: 14px; font-weight: 600;
-}
+.dropdown-content a { color: #000; padding: 12px 16px; text-decoration: none; display: block; }
 .dropdown-content a:hover { background-color: #f1f1f1; }
 
-/* --- Resume Container (A4 Optimized) --- */
+/* Resume Container (A4 Proportions) */
 .resume-container {
     display: flex;
-    /* Strict A4 Width approximation for screen (210mm) */
-    width: 210mm; 
-    max-width: 100%;
-    min-height: 297mm; /* A4 Height */
+    width: 210mm; max-width: 100%;
+    min-height: 297mm;
     margin: 30px auto;
     background-image: url('Dashboard Background Image DBI.webp');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
+    background-size: cover; background-position: center;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-    border-radius: 0; /* Professional look usually square corners or slight radius */
     overflow: hidden;
 }
 
-/* --- Sidebar --- */
+/* Sidebar */
 .sidebar {
-    width: 30%;
-    background: rgba(255, 255, 255, 0.1); /* Slight white tint for readability if needed */
-    color: #000;
-    padding: 25px;
-    border-right: 2px solid rgba(0, 0, 0, 0.4); /* Darker border */
+    width: 30%; background: rgba(255, 255, 255, 0.1);
+    color: #000; padding: 25px;
+    border-right: 2px solid rgba(0, 0, 0, 0.4);
 }
-
 .profile { text-align: center; margin-bottom: 25px; }
 .profile img {
-    width: 160px; height: 160px;
-    border-radius: 50%; margin-bottom: 15px;
-    border: 5px solid #002366; /* Deep Blue Border */
-    object-fit: cover;
+    width: 160px; height: 160px; border-radius: 50%; margin-bottom: 15px;
+    border: 5px solid #002366; object-fit: cover;
 }
 .profile h1 {
-    font-size: 26px; text-transform: uppercase;
-    color: #002366; font-weight: 800; /* Extra Bold */
-    text-shadow: none; /* Removed blur shadow for sharpness */
-    letter-spacing: 1px;
+    font-size: 26px; text-transform: uppercase; color: #002366; font-weight: 800; letter-spacing: 1px;
 }
 
-.contact, .personal-details, .core-competencies, .tools, .languages { margin-bottom: 25px; }
+/* Sections */
+.contact, .personal-details, .core-competencies, .tools, .languages { margin-bottom: 30px; }
 
-/* Headers */
 h2 {
-    font-size: 18px; margin-bottom: 12px; padding-bottom: 5px;
-    border-bottom: 3px solid #002366; /* Thicker line */
-    color: #002366; display: flex; align-items: center;
-    font-weight: 700; letter-spacing: 0.5px;
+    font-size: 18px; margin-bottom: 15px; padding-bottom: 5px;
+    border-bottom: 3px solid #002366; color: #002366; font-weight: 700;
 }
-h2 i { margin-right: 10px; color: #002366; font-size: 20px; }
+h2 i { margin-right: 10px; color: #002366; }
 
-/* --- Section Content (Box) --- */
+/* Content Box */
 .section-content {
     background-color: transparent;
-    border: 1px solid #000000; /* Pure Black Border */
-    border-radius: 4px;
-    padding: 12px;
-    margin-top: 8px;
-    word-wrap: break-word;
+    border: 1px solid #000000;
+    border-radius: 4px; padding: 12px; margin-top: 10px;
 }
 
-/* --- Typography (Dark & Sharp) --- */
-.contact p, .personal-details p, 
-.core-competencies ul, .tools ul, .languages ul,
-section p, section ul, section li {
-    font-size: 14px; /* Standard readable size */
-    line-height: 1.5;
-    color: #000000; /* PURE BLACK for sharpness */
-    font-weight: 500; /* Medium Weight (Not thin) */
-    margin-bottom: 4px;
+/* Typography */
+p, li {
+    font-size: 14px; line-height: 1.6; /* Increased line-height for better fill */
+    color: #000000; font-weight: 500; margin-bottom: 6px;
 }
-
-.contact p i { margin-right: 10px; color: #002366; font-weight: bold; }
-
 ul { list-style: none; }
-.core-competencies ul li, .tools ul li, .languages ul li {
-    margin-bottom: 6px; position: relative; padding-left: 20px;
-    font-weight: 600; /* Bolder list items */
-}
+li { padding-left: 20px; position: relative; }
+li:before { content: "•"; color: #002366; font-size: 18px; position: absolute; left: 0; top: 1px; }
 
-.core-competencies ul li:before, .tools ul li:before, .languages ul li:before,
-section ul li:before {
-    content: "•"; color: #002366;
-    font-size: 18px; line-height: 14px;
-    position: absolute; left: 0; top: 2px;
-}
+/* Main Content */
+.main-content { width: 70%; padding: 40px 35px; background: transparent; color: #000; }
+section { margin-bottom: 40px; } /* Increased margin to fill page */
+section h3 { font-size: 17px; margin-bottom: 8px; color: #002366; font-weight: 800; }
 
-/* --- Main Content --- */
-.main-content {
-    width: 70%; padding: 35px;
-    background: transparent; color: #000;
-}
+/* PDF Mode Overrides */
+.pdf-mode .sidebar { border-color: rgba(0, 0, 0, 0.5) !important; }
+.pdf-mode p, .pdf-mode li, .pdf-mode h1, .pdf-mode h2, .pdf-mode h3 { color: #000000 !important; }
+.pdf-mode h1, .pdf-mode h2, .pdf-mode h3, .pdf-mode i { color: #002366 !important; }
 
-section { margin-bottom: 35px; }
-
-section h3 {
-    font-size: 17px; margin-bottom: 6px;
-    color: #002366; font-weight: 800; /* Extra Bold Titles */
-}
-section p strong {
-    color: #000000; font-weight: 700;
-}
-
-section ul { margin-left: 10px; }
-section ul li {
-    margin-bottom: 6px; position: relative; padding-left: 15px;
-    text-align: justify; /* Cleaner text block */
-}
-
-/* --- PDF Mode Override (For Perfect Output) --- */
-.pdf-mode {
-    background-image: none !important; /* Managed by JS for high res */
-}
-.pdf-mode .sidebar {
-    border-color: rgba(0, 0, 0, 0.5) !important;
-}
-.pdf-mode p, .pdf-mode li, .pdf-mode h1, .pdf-mode h2, .pdf-mode h3 {
-    color: #000000 !important;
-    text-shadow: none !important;
-}
-.pdf-mode h1, .pdf-mode h2, .pdf-mode h3, .pdf-mode i {
-    color: #002366 !important;
-}
-
-/* Mobile Responsive */
 @media (max-width: 768px) {
-    .resume-container {
-        width: 100%; flex-direction: column;
-        height: auto;
-    }
+    .resume-container { width: 100%; flex-direction: column; height: auto; }
     .sidebar, .main-content { width: 100%; border: none; }
 }
