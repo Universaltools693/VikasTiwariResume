@@ -34,33 +34,31 @@ document.addEventListener("DOMContentLoaded", function () {
         e.preventDefault();
 
         if (!html2canvasLib || !jspdfLib) {
-            alert("PDF system initializing... Please try again in 2 seconds.");
+            alert("Please wait, system is loading...");
             return;
         }
 
         try {
             const { jsPDF } = jspdfLib;
-            // Standard A4 Size (Points)
             const doc = new jsPDF('p', 'pt', 'a4');
             const pageW = 595.28;
             const pageH = 841.89;
             const headerH = 20;
             const contentTop = headerH + 15;
 
-            // Load Background (High Res 8K Handling)
+            // Load Background
             let bgDataUrl = null;
             try {
                 const bgPromise = new Promise((resolve, reject) => {
                     const img = new Image();
                     img.onload = () => {
                         const canvas = document.createElement('canvas');
-                        // Super High Res Canvas for BG
                         canvas.width = pageW * 4;
                         canvas.height = pageH * 4;
                         const ctx = canvas.getContext('2d');
                         ctx.scale(4, 4);
                         ctx.drawImage(img, 0, 0, pageW, pageH);
-                        resolve(canvas.toDataURL('image/jpeg', 1.0)); // Max Quality JPEG
+                        resolve(canvas.toDataURL('image/jpeg', 1.0));
                     };
                     img.onerror = () => resolve(null);
                     img.src = 'Dashboard Background Image DBI.webp';
@@ -68,14 +66,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 });
                 bgDataUrl = await bgPromise;
             } catch (err) {
-                console.log("BG not found, using white");
+                console.log("BG error");
             }
 
-            // *** 8K RESOLUTION GENERATOR FUNCTION ***
-            const generatePageCanvas = async (mainSectionSelectors, sidebarSectionSelectors) => {
+            // *** Generator Function ***
+            // Maine "spacerClass" add kiya hai taaki Page 1 par gap bhar sake
+            const generatePageCanvas = async (mainSelectors, sidebarSelectors, isPage1) => {
                 const temp = document.createElement('div');
                 temp.className = 'pdf-mode';
-                // Strict A4 Width in Pixels for Rendering
+                // Strict A4
                 temp.style.cssText = `
                     width: 794px; 
                     min-height: 1123px;
@@ -88,7 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     top: 0;
                 `;
 
-                // Sidebar Logic
+                // Add spacing class if it's page 1
+                if(isPage1) {
+                    temp.classList.add('page-1-spacing');
+                }
+
+                // Sidebar
                 const side = document.createElement('div');
                 side.className = 'sidebar pdf-mode';
                 side.style.cssText = `
@@ -100,16 +104,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     border-right: 1px solid rgba(0, 0, 0, 0.4);
                     display: flex;
                     flex-direction: column;
-                    justify-content: flex-start;
                 `;
-
-                sidebarSectionSelectors.forEach(selector => {
+                
+                sidebarSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) side.appendChild(originalSection.cloneNode(true));
                 });
                 temp.appendChild(side);
 
-                // Main Content Logic
+                // Main Content
                 const mainTemp = document.createElement('div');
                 mainTemp.className = 'main-content pdf-mode';
                 mainTemp.style.cssText = `
@@ -117,9 +120,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     padding: 35px;
                     background: transparent;
                     box-sizing: border-box;
-                `;
+                    display: flex;
+                    flex-direction: column;
+                    ${isPage1 ? 'justify-content: space-between;' : ''} 
+                `; 
+                // Upar wali line se content automatically fail jayega
 
-                mainSectionSelectors.forEach(selector => {
+                mainSelectors.forEach(selector => {
                     const originalSection = document.querySelector(selector);
                     if (originalSection) mainTemp.appendChild(originalSection.cloneNode(true));
                 });
@@ -127,77 +134,57 @@ document.addEventListener("DOMContentLoaded", function () {
                 temp.appendChild(mainTemp);
                 document.body.appendChild(temp);
 
-                // Wait for styles to settle
                 await new Promise(resolve => setTimeout(resolve, 200));
 
-                // *** MAGIC: SCALE 5 FOR 8K QUALITY (NO PIXELATION) ***
                 const canvas = await html2canvasLib(temp, {
-                    scale: 5, // 5x Resolution (Approx 4000px wide)
+                    scale: 4, // High Quality internal
                     useCORS: true,
                     allowTaint: true,
                     backgroundColor: null,
-                    logging: false,
-                    imageTimeout: 0,
-                    onclone: (clonedDoc) => {
-                        // Enhance Font Rendering
-                        clonedDoc.body.style.fontSmoothing = "antialiased";
-                        clonedDoc.body.style.webkitFontSmoothing = "antialiased";
-                    }
+                    logging: false
                 });
 
                 document.body.removeChild(temp);
                 return canvas;
             };
 
-            // --- PAGE 1 GENERATION (THE FIX) ---
-            // Included '#exp-2' (Magnum) here to fill the gap!
+            // --- PAGE 1 ---
+            // Summary + Geedee + HDFC
             const canvas1 = await generatePageCanvas(
-                ['.professional-summary', '#exp-1', '#exp-2'],
-                ['.profile', '.contact', '.personal-details']
+                ['.professional-summary', '#exp-page-1'], 
+                ['.profile', '.contact', '.personal-details'],
+                true // Is Page 1 (Activates Spacing)
             );
 
-            let imgH1 = (canvas1.height * pageW) / canvas1.width;
+            if (bgDataUrl) doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
+            else { doc.setFillColor(255,255,255); doc.rect(0,0,pageW,pageH,'F'); }
 
-            if (bgDataUrl) {
-                doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            } else {
-                doc.setFillColor(255, 255, 255);
-                doc.rect(0, 0, pageW, pageH, 'F');
-            }
-
-            // Top Blue Bar
             doc.setFillColor(0, 35, 102);
             doc.rect(0, 0, pageW, headerH, 'F');
+            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, (canvas1.height * pageW) / canvas1.width, undefined, 'FAST');
 
-            // Add Image with 'FAST' compression (actually means less compression in jsPDF logic sometimes)
-            // or 'NONE' if supported, but here we rely on the high-res input.
-            doc.addImage(canvas1.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH1, undefined, 'FAST');
-
-            // --- PAGE 2 GENERATION ---
-            // Removed '#exp-2' from here since it's on Page 1 now
+            // --- PAGE 2 ---
+            // Magnum + Education + Certifications
             const canvas2 = await generatePageCanvas(
-                ['.education', '.certifications'],
-                ['.core-competencies', '.tools', '.languages']
+                ['#exp-page-2', '.education', '.certifications'], 
+                ['.core-competencies', '.tools', '.languages'],
+                false
             );
-
-            let imgH2 = (canvas2.height * pageW) / canvas2.width;
 
             doc.addPage();
-            if (bgDataUrl) {
-                doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
-            }
+            if (bgDataUrl) doc.addImage(bgDataUrl, 'JPEG', 0, 0, pageW, pageH);
             doc.setFillColor(0, 35, 102);
             doc.rect(0, 0, pageW, headerH, 'F');
-            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, imgH2, undefined, 'FAST');
+            doc.addImage(canvas2.toDataURL('image/png'), 'PNG', 0, contentTop, pageW, (canvas2.height * pageW) / canvas2.width, undefined, 'FAST');
 
-            doc.save('Vikas_Tiwari_Resume_8K_Fixed.pdf');
+            doc.save('Vikas_Tiwari_Resume.pdf');
         } catch (error) {
             console.error(error);
-            alert("Error generating PDF: " + error.message);
+            alert("Error: " + error.message);
         }
     });
 
-    // --- Download as Word (Unchanged) ---
+    // --- Word Download (Unchanged) ---
     document.getElementById("download-word").addEventListener("click", function (e) {
         e.preventDefault();
         try {
@@ -225,7 +212,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         p, li { font-size: 14px; line-height: 1.5; color: #000000; font-weight: 500; }
                         ul { list-style: none; margin-left: 20px; padding: 0; }
                         li:before { content: "•"; color: #002366; font-weight: bold; position: absolute; left: 0; }
-                        .section-content { border: 1px solid #000; padding: 10px; margin-top:5px; }
                     </style>
                 </head>
                 <body>
@@ -247,7 +233,9 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                         <div class="main-content">
-                             </div>
+                             <h2>PROFESSIONAL SUMMARY</h2>
+                             <p>I am an entry-level Marketing and Sales professional...</p>
+                        </div>
                     </div>
                 </body>
                 </html>
